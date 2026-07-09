@@ -96,13 +96,20 @@ const dateFmt = new Intl.DateTimeFormat("en", {
   // down; we re-assert the top in page-load, the last hook to fire.
   history.scrollRestoration = 'manual'
 
+  let keyboard = false
+  addEventListener('keydown', () => (keyboard = true), true)
+  addEventListener('pointerdown', () => (keyboard = false), true)
+
   document.addEventListener('astro:after-swap', () => {
-    // Astro restores focus to the clicked rail link and focus() scrolls it
-    // into view, pulling the page back down. Hand focus to "← home" instead
-    // — the first tab stop, with the post one Tab away.
-    document
-      .querySelector<HTMLElement>('.back a')
-      ?.focus({ preventScroll: true })
+    // Astro refocuses the clicked rail link, scrolling it into view.
+    // Keyboard users get focus on "← home" instead; pointer users a blur.
+    if (keyboard) {
+      document
+        .querySelector<HTMLElement>('.back a')
+        ?.focus({ preventScroll: true })
+    } else {
+      ;(document.activeElement as HTMLElement | null)?.blur?.()
+    }
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
   })
 

@@ -140,6 +140,14 @@ a:focus-visible {
 
 /* ---- view transitions (writing pages use Astro's ClientRouter) ---- */
 
+/* Below 900px the rail sits under the article, so its named group would
+   streak off-screen on long posts — let it crossfade with the page. */
+@media (max-width: 900px) {
+	aside[data-astro-transition-scope] {
+		view-transition-name: none !important;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	::view-transition-group(*),
 	::view-transition-old(*),
