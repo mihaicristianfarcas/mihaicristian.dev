@@ -1,0 +1,25 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "mihaicristian-dev",
+	"main": "worker/index.js",
+	"compatibility_date": "2026-07-09",
+	"assets": {
+		"directory": "./dist",
+		"binding": "ASSETS",
+		"not_found_handling": "404-page",
+		// Needed so www requests reach the worker for the redirect instead of
+		// being served directly from assets.
+		"run_worker_first": true
+	},
+	"routes": [
+		{
+			"pattern": "mihaicristian.dev",
+			"custom_domain": true
+		},
+		{
+			"pattern": "www.mihaicristian.dev",
+			"custom_domain": true
+		}
+	],
+	"workers_dev": false
+}
