@@ -1,0 +1,67 @@
+---
+import { ClientRouter } from "astro:transitions";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/jetbrains-mono";
+import "lenis/dist/lenis.css";
+import "../styles/global.css";
+import { site } from "../data/site";
+import CustomCursor from "../components/CustomCursor.astro";
+
+interface Props {
+	title?: string;
+	description?: string;
+	wide?: boolean;
+	router?: boolean;
+}
+
+const {
+	title,
+	description = site.description,
+	wide = false,
+	router = false,
+} = Astro.props;
+const pageTitle = title ? `${title} — ${site.name}` : site.name;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={site.name}
+      href={new URL('rss.xml', Astro.site)}
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="generator" content={Astro.generator} />
+    {router && <ClientRouter />}
+  </head>
+  <body>
+    <script>
+      import Lenis from 'lenis'
+
+      /* Subtle wheel smoothing. A lerp above the 0.1 default tracks the
+         wheel closely instead of drifting. Survives client-router swaps
+         since it drives the window scroll. */
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        new Lenis({ autoRaf: true, lerp: 0.18, anchors: true })
+      }
+    </script>
+    <CustomCursor />
+    <main class:list={[{ wide }]}>
+      <slot />
+    </main>
+  </body>
+</html>

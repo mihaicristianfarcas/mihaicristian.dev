@@ -1,0 +1,325 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import PassionPattern from "../components/PassionPattern.astro";
+import { site } from "../data/site";
+import { quotes } from "../data/quotes";
+
+const posts = (
+	await getCollection("writing", ({ data }) =>
+		import.meta.env.PROD ? data.draft !== true : true,
+	)
+)
+	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+	.slice(0, 3);
+
+const dateFmt = new Intl.DateTimeFormat("en", {
+	month: "short",
+	day: "numeric",
+	year: "numeric",
+});
+
+const projects = [
+	{
+		name: "pq-boringtun",
+		href: "https://github.com/mihaicristianfarcas/pq-boringtun",
+		tech: "Rust · cryptography · networking",
+		story:
+			"Hybrid post-quantum key exchange for WireGuard: ML-KEM-768 alongside X25519 in the Noise IK handshake, built on Cloudflare’s BoringTun. The first FIPS 203-compliant hybrid WireGuard on a production Rust codebase, benchmarked on Apple M4 and Raspberry Pi 5. My BSc thesis.",
+	},
+	{
+		name: "Supernova",
+		href: null,
+		tech: "Swift 6 · Metal · Core Audio",
+		story:
+			"A live-wallpaper engine for macOS. Renders looping video, Shadertoy-style GLSL shaders transpiled to Metal, and sandboxed web bundles behind desktop icons — with audio, cursor, and motion reactivity, per-display assignment, and smart playlists.",
+	},
+	{
+		name: "Atlas — RAG platform for BluePlan",
+		href: "https://ai.blueplan.ro",
+		tech: "Python · FastAPI · Qdrant · React",
+		story:
+			"Retrieval-augmented chat over uploaded technical documents: hybrid dense, sparse, and image retrieval fused with RRF, reranked, with verbatim citations pinned to the source PDF. Multi-tenant, multilingual, closed-source, and in daily production use.",
+	},
+	{
+		name: "eBPF network analysis",
+		href: "https://github.com/mihaicristianfarcas/ebpf-network-analysis-system",
+		tech: "eBPF · C · Rust · Python",
+		story:
+			"Network traffic classification for QUIC protocols using eBPF — inspecting encrypted flows at the kernel boundary.",
+	},
+	{
+		name: "nvim-search-and-replace",
+		href: "https://github.com/mihaicristianfarcas/nvim-search-and-replace",
+		tech: "Lua · Neovim · ripgrep",
+		story:
+			"Project-wide search and replace for Neovim — async streaming ripgrep search, live before/after preview, selective replacement, and its own undo/redo stack. No quickfix list, no sed. Neovim, btw.",
+	},
+	{
+		name: "GeoDraw",
+		href: null,
+		tech: "React · TLDraw · LLM APIs",
+		story:
+			"An AI-powered canvas for sketching and wireframing apps — natural language in, accurate real-time design output on the canvas.",
+	},
+];
+
+const experience = [
+	{
+		org: "BluePlan",
+		line: "Built and shipped Atlas, a production RAG platform for technical documents, end to end.",
+	},
+	{
+		org: "Baseline Studios",
+		line: "Full-stack work across client apps: stratosphere.vip, pursuitofx.org, kabu.xyz.",
+	},
+	{
+		org: "GeoDraw",
+		line: "Developed an AI-powered canvas turning natural language into real-time wireframes.",
+	},
+	{
+		org: "Tvarita",
+		line: "Rebuilt and redesigned a monitoring site for an optician clinic chain.",
+	},
+];
+---
+
+<Base>
+  <header class="s" style="--i: 0">
+    <h1>Mihai-Cristian Farcaș</h1>
+    <p class="epigraph mono">γνῶθι σεαυτόν</p>
+    <p class="intro">
+    Software engineer in Cluj-Napoca, Romania.
+    Living life thinking about computers, philosophy, history and legends, with a touch of optimism and introspection.
+    <br />Welcome to my page.
+    </p>
+    <ul class="links mono" role="list">
+      {
+        site.links.map((l) => (
+          <li>
+            <a
+              href={l.href}
+              target={l.href.startsWith('http') ? '_blank' : undefined}
+              rel={l.href.startsWith('http') ? 'noopener' : undefined}
+            >
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </header>
+
+  <section class="s" style="--i: 1" aria-labelledby="now">
+    <h2 id="now">Now <span class="mono">· July 2026</span></h2>
+    <p>
+      Just finished my BSc thesis at Babeș-Bolyai University — hybrid
+      post-quantum key exchange for WireGuard. Currently building Supernova
+      and taking on freelance work.
+    </p>
+  </section>
+
+  <section class="s" style="--i: 2" aria-labelledby="projects">
+    <h2 id="projects">Selected projects</h2>
+    <ul role="list">
+      {
+        projects.map((p) => (
+          <li class="project">
+            <h3>
+              {p.href ? (
+                <a href={p.href} target="_blank" rel="noopener">
+                  {p.name}
+                </a>
+              ) : (
+                p.name
+              )}
+              <span class="mono tech">{p.tech}</span>
+            </h3>
+            <p>{p.story}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="s" style="--i: 3" aria-labelledby="experience">
+    <h2 id="experience">Experience</h2>
+    <ul role="list">
+      {
+        experience.map((e) => (
+          <li class="xp">
+            <span class="org">{e.org}</span> — {e.line}
+          </li>
+        ))
+      }
+    </ul>
+    <p class="edu">
+      BSc in Computer Science, Babeș-Bolyai University, Cluj-Napoca.
+    </p>
+  </section>
+
+  <section class="s" style="--i: 4" aria-labelledby="writing">
+    <h2 id="writing">Writing</h2>
+    {
+      posts.length > 0 ? (
+        <ul role="list">
+          {posts.map((post) => (
+            <li class="post">
+              <a href={`/writing/${post.id}/`}>{post.data.title}</a>
+              <span class="mono">{dateFmt.format(post.data.date)}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="empty">
+          Notes on software and life, coming soon. There’s an{' '}
+          <a href="/rss.xml">RSS feed</a> for when they do.
+        </p>
+      )
+    }
+    {posts.length > 0 && <p class="all"><a href="/writing/">All writing →</a></p>}
+  </section>
+
+  <aside class="s quote" style="--i: 5">
+    <blockquote>
+      <p id="q-text">{quotes[0].text}</p>
+      <footer class="mono" id="q-author">— {quotes[0].author}</footer>
+    </blockquote>
+    <script is:inline define:vars={{ quotes }}>
+      const q = quotes[Math.floor(Math.random() * quotes.length)]
+      document.getElementById('q-text').textContent = q.text
+      document.getElementById('q-author').textContent = `— ${q.author}`
+    </script>
+  </aside>
+
+  <PassionPattern />
+</Base>
+
+<style>
+  .epigraph {
+    margin-top: 0.375rem;
+  }
+
+  header p.intro {
+    margin-top: 1.25rem;
+  }
+
+  .links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1.25rem;
+  }
+
+  .links a {
+    color: var(--muted);
+  }
+
+  .links a:hover {
+    color: var(--accent);
+  }
+
+  section {
+    margin-top: 3.5rem;
+  }
+
+  section > p,
+  section > ul {
+    margin-top: 0.875rem;
+  }
+
+  section ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  h2 .mono {
+    font-weight: 400;
+    margin-left: 0.25rem;
+  }
+
+  .project {
+    margin: 0 -0.875rem;
+    padding: 0.875rem;
+    border-radius: 8px;
+    transition: background 180ms ease;
+  }
+
+  .project:hover,
+  .project:focus-within {
+    background: var(--faint);
+  }
+
+  .project + .project {
+    margin-top: 0.25rem;
+  }
+
+  .project h3 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .project p {
+    color: var(--muted);
+    margin-top: 0.25rem;
+    font-size: 0.9375rem;
+  }
+
+  .xp + .xp {
+    margin-top: 0.5rem;
+  }
+
+  .org {
+    font-weight: 550;
+  }
+
+  .edu {
+    color: var(--muted);
+    margin-top: 0.875rem;
+    font-size: 0.9375rem;
+  }
+
+  .post {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .post + .post {
+    margin-top: 0.5rem;
+  }
+
+  .empty,
+  .all {
+    color: var(--muted);
+  }
+
+  .all {
+    margin-top: 0.875rem;
+  }
+
+  /* ---- the quote: one thing allowed to be a little theatrical ---- */
+
+  .quote {
+    margin-top: 4.5rem;
+    position: relative;
+  }
+
+  .quote blockquote {
+    padding: 0;
+  }
+
+  .quote p {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+
+  .quote footer {
+    margin-top: 0.625rem;
+  }
+
+</style>

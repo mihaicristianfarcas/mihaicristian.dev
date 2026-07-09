@@ -1,0 +1,215 @@
+/* ------------------------------------------------------------------ */
+/*  mihaicristian.dev — hand-written, no frameworks                    */
+/* ------------------------------------------------------------------ */
+
+:root {
+	color-scheme: light dark;
+
+	--bg: #fbfaf8;
+	--text: #1d1c1a;
+	--muted: #6b6863;
+	--faint: #eceae4;
+	--hairline: #e4e1da;
+	--accent: #0e7263;
+
+	--font-sans: "Inter Variable", system-ui, -apple-system, sans-serif;
+	--font-mono: "JetBrains Mono Variable", ui-monospace, "SF Mono", monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #151413;
+		--text: #e7e5e0;
+		--muted: #8f8c85;
+		--faint: #24221e;
+		--hairline: #2c2a25;
+		--accent: #56c2a8;
+	}
+}
+
+/* ---- reset ---- */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+}
+
+html {
+	/* On the root element so navigation snapshots never composite
+     against the browser's default white canvas. */
+	background: var(--bg);
+	-webkit-text-size-adjust: 100%;
+	scrollbar-gutter: stable;
+}
+
+body {
+	background: var(--bg);
+	color: var(--text);
+	font-family: var(--font-sans);
+	font-size: 1rem;
+	line-height: 1.75;
+	font-feature-settings:
+		"ss03" 1,
+		"cv05" 1; /* Inter: rounded quotes, open l */
+	-webkit-font-smoothing: antialiased;
+}
+
+img,
+video {
+	max-width: 100%;
+	height: auto;
+}
+
+/* ---- the column: anchored left of center ---- */
+
+main {
+	max-width: 65ch;
+	margin-left: clamp(1.5rem, 16vw, 18rem);
+	margin-right: 1.5rem;
+	padding-block: clamp(3.5rem, 9vh, 6.5rem) 5rem;
+}
+
+/* Writing pages: room for the timeline rail beside the post column. */
+main.wide {
+	max-width: calc(15rem + 3.5rem + 65ch);
+}
+
+/* ---- type ---- */
+
+h1 {
+	font-size: 1.0625rem;
+	font-weight: 600;
+	letter-spacing: -0.011em;
+}
+
+h2 {
+	font-size: 1rem;
+	font-weight: 600;
+	letter-spacing: -0.011em;
+}
+
+h3 {
+	font-size: 1rem;
+	font-weight: 550;
+}
+
+p {
+	letter-spacing: -0.006em;
+}
+
+strong {
+	font-weight: 600;
+}
+
+.mono {
+	font-family: var(--font-mono);
+	font-size: 0.8125rem;
+	letter-spacing: 0;
+	color: var(--muted);
+}
+
+/* ---- links ---- */
+
+a {
+	color: var(--text);
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
+	text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+	transition:
+		text-decoration-color 150ms ease,
+		color 150ms ease;
+}
+
+a:hover {
+	color: var(--accent);
+	text-decoration-color: var(--accent);
+}
+
+a:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 3px;
+	border-radius: 2px;
+}
+
+::selection {
+	background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+/* ---- view transitions (writing pages use Astro's ClientRouter) ---- */
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-group(*),
+	::view-transition-old(*),
+	::view-transition-new(*) {
+		animation: none !important;
+	}
+}
+
+/* ---- entrance stagger (once, fast, subtle) ---- */
+
+@keyframes enter {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+.s {
+	animation: enter 0.5s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
+	animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.s {
+		animation: none;
+	}
+}
+
+/* ---- code ---- */
+
+code {
+	font-family: var(--font-mono);
+	font-size: 0.85em;
+}
+
+:not(pre) > code {
+	background: var(--faint);
+	padding: 0.1em 0.35em;
+	border-radius: 4px;
+}
+
+.astro-code {
+	padding: 1rem 1.25rem;
+	border-radius: 6px;
+	border: 1px solid var(--hairline);
+	overflow-x: auto;
+	line-height: 1.6;
+	font-size: 0.8125rem;
+	/* Site surface instead of vitesse-light's pure white; the dark
+     media query below restores the theme background in dark mode. */
+	background: var(--faint);
+}
+
+.astro-code,
+.astro-code span {
+	color: var(--shiki-light) !important;
+	font-style: var(--shiki-light-font-style) !important;
+	font-weight: var(--shiki-light-font-weight) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+	.astro-code,
+	.astro-code span {
+		color: var(--shiki-dark) !important;
+		background-color: var(--shiki-dark-bg) !important;
+		font-style: var(--shiki-dark-font-style) !important;
+		font-weight: var(--shiki-dark-font-weight) !important;
+	}
+}

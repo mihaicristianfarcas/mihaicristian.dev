@@ -1,0 +1,23 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Not found">
+  <h1 class="s" style="--i: 0">There’s nothing at this address.</h1>
+  <p class="s mono" style="--i: 1"><a href="/">← home</a></p>
+</Base>
+
+<style>
+  p {
+    margin-top: 1.25rem;
+  }
+
+  p a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  p a:hover {
+    color: var(--accent);
+  }
+</style>
