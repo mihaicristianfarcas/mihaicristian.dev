@@ -11,7 +11,7 @@ export const site = {
 		{ label: "X", href: "https://x.com/mihaicristianf" },
 		{
 			label: "LinkedIn",
-			href: "https://www.linkedin.com/in/mihaicristianfarcas",
+			href: "https://www.linkedin.com/in/mihai-cristian-farca%C8%99-6660542a6/",
 		},
 		{
 			label: "Email",
