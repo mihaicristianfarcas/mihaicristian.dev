@@ -25,42 +25,42 @@ const projects = [
 		href: "https://github.com/mihaicristianfarcas/pq-boringtun",
 		tech: "Rust · cryptography · networking",
 		story:
-			"Hybrid post-quantum key exchange for WireGuard: ML-KEM-768 alongside X25519 in the Noise IK handshake, built on Cloudflare’s BoringTun. The first FIPS 203-compliant hybrid WireGuard on a production Rust codebase, benchmarked on Apple M4 and Raspberry Pi 5. My BSc thesis.",
+			"Hybrid post-quantum key exchange for WireGuard, built on Cloudflare's BoringTun. It runs ML-KEM-768 alongside X25519 in the handshake, making it the first FIPS 203-compliant hybrid WireGuard on a production Rust codebase. My BSc thesis, benchmarked on Apple M4 and Raspberry Pi 5.",
 	},
 	{
 		name: "Supernova",
 		href: null,
 		tech: "Swift 6 · Metal · Core Audio",
 		story:
-			"A live-wallpaper engine for macOS. Renders looping video, Shadertoy-style GLSL shaders transpiled to Metal, and sandboxed web bundles behind desktop icons — with audio, cursor, and motion reactivity, per-display assignment, and smart playlists.",
+			"A live-wallpaper engine for macOS. It renders looping video, GLSL shaders transpiled to Metal, and sandboxed web bundles behind desktop icons, with audio and motion reactivity, per-display assignment, and smart playlists.",
 	},
 	{
-		name: "Atlas — RAG platform for BluePlan",
+		name: "Atlas",
 		href: "https://ai.blueplan.ro",
 		tech: "Python · FastAPI · Qdrant · React",
 		story:
-			"Retrieval-augmented chat over uploaded technical documents: hybrid dense, sparse, and image retrieval fused with RRF, reranked, with verbatim citations pinned to the source PDF. Multi-tenant, multilingual, closed-source, and in daily production use.",
+			"A retrieval-augmented chat platform for technical documents, built end to end for BluePlan. It combines dense, sparse, and image retrieval with reranking, and answers with verbatim citations linked to the source PDF. Multi-tenant, multilingual, and in daily production use.",
 	},
 	{
 		name: "eBPF network analysis",
 		href: "https://github.com/mihaicristianfarcas/ebpf-network-analysis-system",
 		tech: "eBPF · C · Rust · Python",
 		story:
-			"Network traffic classification for QUIC protocols using eBPF — inspecting encrypted flows at the kernel boundary.",
+			"Network traffic classification for QUIC protocols, combining eBPF with machine learning to classify encrypted flows at the kernel boundary.",
 	},
 	{
 		name: "nvim-search-and-replace",
 		href: "https://github.com/mihaicristianfarcas/nvim-search-and-replace",
 		tech: "Lua · Neovim · ripgrep",
 		story:
-			"Project-wide search and replace for Neovim — async streaming ripgrep search, live before/after preview, selective replacement, and its own undo/redo stack. No quickfix list, no sed. Neovim, btw.",
+			"Project-wide search and replace for Neovim. It streams ripgrep results asynchronously, shows a live before/after preview, supports selective replacement, and keeps its own undo/redo stack.",
 	},
 	{
 		name: "GeoDraw",
 		href: null,
 		tech: "React · TLDraw · LLM APIs",
 		story:
-			"An AI-powered canvas for sketching and wireframing apps — natural language in, accurate real-time design output on the canvas.",
+			"An AI-powered canvas for sketching and wireframing apps. It turns natural language descriptions into real-time designs on the canvas.",
 	},
 ];
 
@@ -113,7 +113,7 @@ const experience = [
   <section class="s" style="--i: 1" aria-labelledby="now">
     <h2 id="now">Now <span class="mono">· July 2026</span></h2>
     <p>
-      Just finished my BSc thesis at Babeș-Bolyai University — hybrid
+      Just finished my BSc thesis at Babeș-Bolyai University, a hybrid
       post-quantum key exchange for WireGuard. Currently building Supernova
       and taking on freelance work.
     </p>
