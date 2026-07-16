@@ -1,0 +1,42 @@
+---
+title: NOVA
+description: A protocol for AI agents to divide work between themselves without tripping over each other.
+group: Systems
+order: 3
+years: "2026"
+role: Solo build
+status: Open source
+tech: Go · QUIC
+links:
+  - label: source
+    href: https://github.com/mihaicristianfarcas/nova
+features:
+  - title: Work gets claimed, not duplicated
+    body: Tasks are published to the group and agents claim them, so two agents can't quietly do the same job twice.
+  - title: One thing at a time, where it matters
+    body: Agents can lock a shared resource while they use it. Locks expire on their own, so a crashed agent can't block the others forever.
+  - title: Agents can talk
+    body: "Direct messages, broadcasts, and subscription channels: enough to coordinate rather than just take orders."
+  - title: A shared memory
+    body: A key-value store every agent can read and write, with conflict handling so simultaneous writes don't corrupt it.
+  - title: Built for many at once
+    body: QUIC transport, so each agent holds one connection carrying many parallel conversations, encrypted by default.
+shots:
+  - caption: Agents claiming tasks through the coordinator.
+  - caption: The multi-agent demo running.
+---
+
+**Network for Orchestrated Virtual Agents.** Once you have more than one agent
+working on something, you've stopped having an AI problem and started having a
+distributed systems problem.
+
+Two agents grab the same task. One dies mid-job holding a lock. Two write the
+same value and one of them silently wins. None of this is new. Databases and
+schedulers have been dealing with it for forty years, and the answers are
+well known and pretty unglamorous, which might be why the current excitement
+keeps rediscovering them the hard way.
+
+NOVA gives agents those primitives directly: task distribution with claiming,
+lease-based resource locking that survives a crash, message passing, and shared
+state with optimistic concurrency control. It runs over QUIC, so one connection
+carries many multiplexed streams and encryption comes for free.

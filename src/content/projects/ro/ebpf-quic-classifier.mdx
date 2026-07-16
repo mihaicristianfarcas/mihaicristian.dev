@@ -1,0 +1,42 @@
+---
+title: eBPF QUIC classifier
+description: Identificarea aplicației căreia îi aparține traficul de rețea criptat, în timp real, pe un Raspberry Pi.
+group: Systems
+order: 2
+years: "2026"
+role: Construit singur
+status: Open source · cercetare
+tech: eBPF · C · Rust · Python
+links:
+  - label: source
+    href: https://github.com/mihaicristianfarcas/ebpf-network-analysis-system
+features:
+  - title: Deosebește aplicațiile fără să decripteze nimic
+    body: "Conținutul nu intră în discuție, așa că identifică aplicațiile după forma traficului: dimensiunile pachetelor și cadența lor."
+  - title: Recunoaște peste o sută de aplicații
+    body: Antrenat pe un set de date public și mare, cu trafic din lumea reală, acoperind 102 categorii de aplicații.
+  - title: Rulează acolo unde sunt pachetele
+    body: Capturarea are loc chiar în kernel, destul de repede cât să țină pasul cu o legătură de rețea vie în loc să o eșantioneze.
+  - title: Destul de mic pentru un Raspberry Pi
+    body: Sub 5 MB și clasificând în sub 10 milisecunde pe un Pi 5.
+  - title: Privește-l lucrând
+    body: O interfață de terminal care arată clasificări și performanță în timp real, pe măsură ce trece traficul.
+shots:
+  - caption: Interfața de terminal, clasificând traficul pe măsură ce sosește.
+  - caption: Capturare și clasificare, de la hook-ul din kernel până la predicție.
+---
+
+Aproape tot traficul web e criptat acum, și tot mai mult din el e QUIC. Bun
+pentru confidențialitate, incomod pentru oricine trebuie să-și înțeleagă propria rețea:
+dacă nu poți citi pachetele, de unde știi ce e pe fir?
+
+Traficul are însă o formă. Nu poți vedea ce spune un apel video, dar un apel
+video *arată* cu totul altfel decât o descărcare de fișier: alte dimensiuni de
+pachete, alt ritm, alte rafale. Atât e de-ajuns ca să le deosebești fără să
+decriptezi un singur octet.
+
+Asta capturează pachete QUIC în interiorul kernelului cu eBPF/XDP, extrage acele
+trăsături statistice și le clasifică în 102 categorii de aplicații cu o rețea
+neuronală mică. Am ținut-o intenționat minusculă, sub 5 MB și sub 10 ms per
+inferență, ca să poată sta chiar pe dispozitivul de margine în loc să trimită
+întâi traficul tuturor în altă parte.

@@ -1,0 +1,46 @@
+---
+title: pq-boringtun
+description: Un handshake VPN care rezistă în fața unui calculator cuantic. Lucrarea mea de licență, construită peste BoringTun de la Cloudflare.
+group: Systems
+order: 1
+years: "2026"
+role: Lucrare de licență, Universitatea Babeș-Bolyai
+status: Măsurat și redactat
+tech: Rust · criptografie · rețelistică
+featured: true
+links:
+  - label: source
+    href: https://github.com/mihaicristianfarcas/pq-boringtun
+features:
+  - title: Apără împotriva unei amenințări care încă n-a sosit
+    body: Traficul criptat capturat azi poate fi stocat și spart mai târziu, când calculatoarele cuantice vor fi destul de bune. Asta închide fereastra acum, pentru traficul trimis acum.
+  - title: Cu nimic mai slab decât ce înlocuiește
+    body: Păstrează criptarea dovedită de azi și o adaugă pe cea nouă alături, așa că un atacator trebuie să le spargă pe amândouă.
+  - title: Construit peste ceva real
+    body: O extensie a BoringTun de la Cloudflare, o implementare WireGuard aflată deja în producție, nu un proiect pe hârtie.
+  - title: Respectă standardul publicat
+    body: FIPS 203, standardul american finalizat, nu o ciornă.
+  - title: Măsurat pe hardware real
+    body: Testat cap-coadă pe un Apple M4 și pe un Raspberry Pi 5, un laptop rapid și un dispozitiv mic de margine, ca să se vadă cât costă în practică.
+shots:
+  - caption: Măsurători ale handshake-ului pe Apple M4 și Raspberry Pi 5.
+  - caption: Schimbul de chei hibrid, alături de handshake-ul original.
+---
+
+Criptarea care protejează azi traficul VPN e sigură în fața oricărui calculator
+care există în prezent. E o promisiune mai slabă decât sună: un atacator îți
+poate înregistra traficul acum și îl poate decripta peste zece ani, când mașinile
+vor recupera decalajul. Dacă ce trimiți trebuie să rămână secret un deceniu,
+termenul a trecut deja.
+
+Aceasta e lucrarea mea de licență. Rulează ML-KEM-768 alături de handshake-ul
+X25519 existent al WireGuard, peste BoringTun de la Cloudflare. *Hibrid* e
+cuvântul important aici: ML-KEM e tânăr, iar criptografia tânără se mai și
+sparge, așa că am păstrat handshake-ul vechi dedesubt. Un atacator trebuie să le
+învingă pe amândouă, ceea ce înseamnă că adoptarea timpurie nu te poate costa
+securitatea pe care o aveai deja.
+
+Din câte îmi dau seama, e primul WireGuard hibrid conform cu FIPS 203 pe un cod
+Rust de producție. L-am măsurat cap-coadă pe un Apple M4 și pe un Raspberry Pi 5,
+fiindcă întrebarea dacă criptografia post-cuantică funcționează e deja lămurită.
+Ce voiam eu să știu e cât costă pe hardware pe care oamenii chiar îl au.

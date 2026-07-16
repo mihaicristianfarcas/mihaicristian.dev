@@ -1,0 +1,311 @@
+---
+/* The homepage in both languages. src/pages/index.astro and
+   src/pages/ro/index.astro are wrappers that pick the language. */
+import Base from "../../layouts/Base.astro";
+import PassionPattern from "../PassionPattern.astro";
+import LangSwitch from "../LangSwitch.astro";
+import { site } from "../../data/site";
+import { quotesFor } from "../../data/quotes";
+import {
+	experience,
+	type Lang,
+	localePath,
+	rssPitch,
+	ui,
+} from "../../data/i18n";
+import { getProjects, projectPath } from "../../data/projects";
+import { getPosts, postDateFmt, postPath } from "../../data/writing";
+
+interface Props {
+	lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = ui[lang];
+
+const posts = (await getPosts(lang)).slice(0, 3);
+const projects = (await getProjects(lang)).filter((p) => p.data.featured);
+const quotes = quotesFor(lang);
+const dateFmt = postDateFmt(lang);
+const emptyPitch = rssPitch[lang].home;
+---
+
+<Base {lang} router>
+  <header class="s" style="--i: 0">
+    <h1>Mihai-Cristian Farcaș</h1>
+    {/* Greek on both sites: it was never English to translate. */}
+    <p class="epigraph mono">γνῶθι σεαυτόν</p>
+    <p class="intro">
+      {t.intro}
+      <br />{t.introWelcome}
+    </p>
+    <ul class="links mono" role="list">
+      {
+        site.links.map((l) => {
+          const newTab = l.newTab || l.href.startsWith('http')
+          return (
+            <li>
+              <a
+                href={l.href}
+                target={newTab ? '_blank' : undefined}
+                rel={newTab ? 'noopener' : undefined}
+              >
+                {l.label}
+              </a>
+            </li>
+          )
+        })
+      }
+      <li class="switch"><LangSwitch {lang} /></li>
+    </ul>
+  </header>
+
+  <section class="s" style="--i: 1" aria-labelledby="now">
+    <h2 id="now">{t.nowHeading} <span class="mono">· {t.nowDate}</span></h2>
+    <p>{t.nowBody}</p>
+  </section>
+
+  <section class="s" style="--i: 2" aria-labelledby="experience">
+    <h2 id="experience">{t.experienceHeading}</h2>
+    <ul role="list">
+      {
+        experience[lang].map((e) => (
+          <li class="xp">
+            <span class="org">{e.org}</span> — {e.line}
+          </li>
+        ))
+      }
+    </ul>
+    <p class="edu">{t.edu}</p>
+  </section>
+
+  <section class="s" style="--i: 3" aria-labelledby="projects">
+    <h2 id="projects">{t.selectedProjects}</h2>
+    <ul role="list">
+      {
+        projects.map((p) => (
+          <li class="project">
+            <h3>
+              <a href={projectPath(lang, p.id)}>{p.data.title}</a>
+              <span class="mono tech">{p.data.tech}</span>
+            </h3>
+            <p>{p.data.description}</p>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="all">
+      <a href={localePath(lang, '/projects/')}>
+        {t.allProjects} <span class="arrow">→</span>
+      </a>
+    </p>
+  </section>
+
+  <section class="s" style="--i: 4" aria-labelledby="writing">
+    <h2 id="writing">{t.writingHeading}</h2>
+    {
+      posts.length > 0 ? (
+        <ul role="list">
+          {posts.map((post) => (
+            <li class="post">
+              <a href={postPath(lang, post.id)}>{post.data.title}</a>
+              <span class="mono">{dateFmt.format(post.data.date)}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="empty">
+          {emptyPitch.before}
+          <a href={localePath(lang, '/rss.xml')}>{emptyPitch.link}</a>
+          {emptyPitch.after}
+        </p>
+      )
+    }
+    {
+      posts.length > 0 && (
+        <p class="all">
+          <a href={localePath(lang, '/writing/')}>
+            {t.allWriting} <span class="arrow">→</span>
+          </a>
+        </p>
+      )
+    }
+  </section>
+
+  <aside class="s quote" style="--i: 5">
+    <blockquote>
+      <p id="q-text">{quotes[0].text}</p>
+      <footer class="mono" id="q-author">— {quotes[0].author}</footer>
+    </blockquote>
+    {/* data-astro-rerun: the router skips inline scripts it has already
+        run, which would pin the quote to the SSR default on return visits. */}
+    <script is:inline data-astro-rerun define:vars={{ quotes }}>
+      const q = quotes[Math.floor(Math.random() * quotes.length)]
+      document.getElementById('q-text').textContent = q.text
+      document.getElementById('q-author').textContent = `— ${q.author}`
+    </script>
+  </aside>
+
+  <PassionPattern />
+</Base>
+
+<style>
+  .epigraph {
+    margin-top: 0.375rem;
+  }
+
+  header p.intro {
+    margin-top: 1.25rem;
+  }
+
+  .links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    /* Wrap whole items when the row runs out — the language switch drops
+       to its own line rather than breaking apart mid-element. */
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-top: 1.25rem;
+  }
+
+  .links a {
+    color: var(--muted);
+  }
+
+  .links a:hover {
+    color: var(--accent);
+  }
+
+  /* Set off from the profile links: those leave the site, this one doesn't. */
+  .switch {
+    margin-left: auto;
+  }
+
+  /* A phone-width column misses one line by a few px at the desktop gap;
+     a slightly tighter one keeps every link and the switch on one row. */
+  @media (max-width: 480px) {
+    .links {
+      gap: 0.5rem 1rem;
+    }
+
+    /* On the narrowest phones the switch still drops to its own line; drop
+       the auto margin so that wrapped line aligns to the start rather than
+       stranding it on the right. */
+    .switch {
+      margin-left: 0;
+    }
+  }
+
+  section {
+    margin-top: 3.5rem;
+  }
+
+  section > p,
+  section > ul {
+    margin-top: 0.875rem;
+  }
+
+  section ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  h2 .mono {
+    font-weight: 400;
+    margin-left: 0.25rem;
+  }
+
+  .project {
+    margin: 0 -0.875rem;
+    padding: 0.875rem;
+    border-radius: 8px;
+    transition: background 180ms ease;
+  }
+
+  .project:hover,
+  .project:focus-within {
+    background: var(--faint);
+  }
+
+  .project + .project {
+    margin-top: 0.25rem;
+  }
+
+  .project h3 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .project p {
+    color: var(--muted);
+    margin-top: 0.25rem;
+    font-size: 0.9375rem;
+  }
+
+  .xp + .xp {
+    margin-top: 0.5rem;
+  }
+
+  .org {
+    font-weight: 550;
+  }
+
+  .edu {
+    color: var(--muted);
+    margin-top: 0.875rem;
+    font-size: 0.9375rem;
+  }
+
+  .post {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .post + .post {
+    margin-top: 0.5rem;
+  }
+
+  .empty,
+  .all {
+    color: var(--muted);
+  }
+
+  .all {
+    margin-top: 0.875rem;
+  }
+
+  /* ---- the quote: one thing allowed to be a little theatrical ---- */
+
+  .quote {
+    margin-top: 4.5rem;
+    position: relative;
+  }
+
+  .quote blockquote {
+    padding: 0;
+  }
+
+  .quote blockquote::before {
+    content: '\201C';
+    display: block;
+    color: var(--accent);
+    font-size: 1.375rem;
+    line-height: 1;
+    opacity: 0.65;
+    margin-bottom: 0.375rem;
+  }
+
+  .quote p {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+
+  .quote footer {
+    margin-top: 0.625rem;
+  }
+</style>

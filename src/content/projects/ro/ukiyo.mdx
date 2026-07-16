@@ -1,0 +1,41 @@
+---
+title: Ukiyo
+description: Un editor de text modal pentru terminal, scris în Rust ca să aflu cum se construiește unul.
+group: Tools
+order: 2
+years: "2026"
+role: Construit singur
+status: Open source
+tech: Rust
+links:
+  - label: source
+    href: https://github.com/mihaicristianfarcas/ukiyo
+features:
+  - title: Editare modală în stil Vim
+    body: Moduri normal și inserare, cu tastele de mișcare și editare deja în degete dacă ai folosit Vim.
+  - title: Un explorator de fișiere inclus
+    body: Navighează arborele de directoare și deschide fișiere fără să ieși din editor.
+  - title: Undo și redo care țin
+    body: Fiecare modificare e o comandă înregistrată, așa că istoricul e exact.
+  - title: Rândurile lungi rămân lizibile
+    body: Împachetare vizuală automată la lățimea terminalului tău.
+shots:
+  - caption: Editarea unui fișier în modul normal.
+  - caption: Exploratorul de fișiere inclus.
+---
+
+*Ukiyo*, lumea plutitoare. Un editor de text modal pentru terminal scris în
+Rust, construit ca să răspundă la o întrebare pe care o purtam cu mine de ani
+buni: ce e, de fapt, înăuntru?
+
+Folosisem editoare zilnic, ani la rând, fără să mă gândesc măcar o dată la
+mecanismul lor. Cum funcționează cu adevărat un buffer? Ce e un mod, la nivel de
+mecanică? De ce e undo mult mai greu decât pare? Singurul fel în care știu să
+încetez să mă întreb ceva e să îl construiesc, așa că am făcut-o — moduri, un
+explorator de fișiere, împachetare vizuală a rândurilor și un sistem de undo
+bazat pe comenzi. Pe fiecare dintre ele l-am înțeles cu adevărat abia după ce
+l-am implementat.
+
+Tot aici am ajuns să folosesc șabloanele State, Command și Observer undeva unde
+chiar se potriveau, în loc de unde le voia un manual. Asta m-a învățat mai mult
+decât editorul.

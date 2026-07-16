@@ -1,23 +1,37 @@
 ---
+/* Astro emits a single static 404.html, so this page cannot be per-language.
+   It says it in both rather than stranding a Romanian visitor in English. */
 import Base from "../layouts/Base.astro";
+import { ui } from "../data/i18n";
 ---
 
-<Base title="Not found">
-  <h1 class="s" style="--i: 0">There’s nothing at this address.</h1>
-  <p class="s mono" style="--i: 1"><a href="/">← home</a></p>
+<Base lang="en" title={ui.en.notFoundTitle} router alternates={false}>
+  <h1 class="s" style="--i: 0">{ui.en.notFound}</h1>
+  <p class="ro s" lang="ro" style="--i: 1">{ui.ro.notFound}</p>
+  <p class="s mono links" style="--i: 2">
+    <a href="/">{ui.en.backHome}</a>
+    <a href="/ro/" hreflang="ro">{ui.ro.backHome}</a>
+  </p>
 </Base>
 
 <style>
-  p {
+  .ro {
+    margin-top: 0.5rem;
+    color: var(--muted);
+  }
+
+  .links {
+    display: flex;
+    gap: 1.5rem;
     margin-top: 1.25rem;
   }
 
-  p a {
+  .links a {
     color: var(--muted);
     text-decoration: none;
   }
 
-  p a:hover {
+  .links a:hover {
     color: var(--accent);
   }
 </style>

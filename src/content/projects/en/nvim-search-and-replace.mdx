@@ -1,0 +1,43 @@
+---
+title: Search and Replace
+description: Project-wide search and replace for Neovim, showing you exactly what will change before it changes.
+group: Tools
+order: 1
+years: "2025–present"
+role: Solo build
+status: Open source · in use
+tech: Lua · Neovim · ripgrep
+featured: true
+links:
+  - label: source
+    href: https://github.com/mihaicristianfarcas/nvim-search-and-replace
+features:
+  - title: See the change before you make it
+    body: A side-by-side before and after for every match, so renaming something across a codebase stops being an act of faith.
+  - title: Results as fast as you type
+    body: Matches stream in as they're found, with a running count, so a search across a large project stays usable from the first keystroke.
+  - title: Pick and choose
+    body: Replace every match at once, or tick off just the ones you want.
+  - title: Undo it
+    body: Its own undo and redo history for replacements, so a bad search across forty files is one keystroke from being over.
+  - title: Real regular expressions
+    body: "Full regex, powered by ripgrep: the same engine and the same syntax as searching from the terminal."
+shots:
+  # The repo's assets/preview.gif is the shot to use here, but it's 4.6 MB —
+  # convert it to mp4/webm first, drop it in public/projects/, then set `src`.
+  - caption: Live search, preview, and selective replacement.
+  - caption: Marking individual matches for replacement.
+---
+
+Search and replace across a whole project has never had tooling I fully trust.
+You either read a quickfix list like a compiler dump, or you fire a `sed`
+command blind and hope.
+
+So this one shows you the change before you make it. Results stream in from
+ripgrep as they're found, every match gets a side-by-side before and after, you
+tick the ones you want, and the whole thing is undoable afterwards anyway.
+Before it writes, it checks the exact text still matches, so a stale result
+can't quietly corrupt a file.
+
+I built it because I wanted it, and I use it every day. Other people found it
+and use it too, which still surprises me.

@@ -1,0 +1,40 @@
+---
+title: Vibe
+description: Describe an app in a chat, and get a working one back with a live preview.
+group: Products
+order: 7
+years: "2025"
+role: Solo build
+status: Open source
+tech: Next.js · React · E2B · LLM APIs
+links:
+  - label: source
+    href: https://github.com/mihaicristianfarcas/vibe
+features:
+  - title: Build it by describing it
+    body: Say what you want and it writes the code, then keep talking to change it.
+  - title: See it running immediately
+    body: A live preview of the real thing, not a mockup. If it works in the preview, it works.
+  - title: Read the code it wrote
+    body: Browse every generated file with syntax highlighting. Nothing is hidden, and you can take the code with you.
+  - title: Each project is sealed off
+    body: Every app runs in its own isolated cloud sandbox, so generated code can't reach anything it shouldn't.
+  - title: Keep your projects
+    body: Sign in, and everything you've built stays organised in one place.
+shots:
+  - caption: Building an app by describing it in chat.
+  - caption: The live preview beside the generated code.
+  - caption: The file explorer for a generated project.
+---
+
+Vibe is my own go at the "chat with an AI, get an app" idea. You describe what
+you want, it generates a working application, and you watch it run in a live
+preview beside the conversation.
+
+Generation turned out to be the easy half. Running code an AI has just written
+is a genuine security problem, so every project gets its own isolated cloud
+sandbox and nothing generated ever touches the host. That constraint ended up
+shaping the whole architecture.
+
+Nobody paid me for this one. It was the most fun I'd had with an uncomfortable
+engineering problem in a while.

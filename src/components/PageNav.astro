@@ -1,0 +1,38 @@
+---
+/* The top row every page below the homepage carries: where you came from on
+   the left, the language on the right. */
+import LangSwitch from "./LangSwitch.astro";
+import type { Lang } from "../data/i18n";
+
+interface Props {
+	lang: Lang;
+	href: string;
+	label: string;
+}
+
+const { lang, href, label } = Astro.props;
+---
+
+<div class="nav mono" transition:name="nav">
+  <p class="back"><a href={href}>{label}</a></p>
+  <LangSwitch {lang} />
+</div>
+
+<style>
+  .nav {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .back a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .back a:hover {
+    color: var(--accent);
+  }
+</style>

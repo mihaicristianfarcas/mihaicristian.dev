@@ -12,8 +12,12 @@
 	--hairline: #e4e1da;
 	--accent: #0e7263;
 
-	--font-sans: "Inter Variable", system-ui, -apple-system, sans-serif;
-	--font-mono: "JetBrains Mono Variable", ui-monospace, "SF Mono", monospace;
+	/* Astro builds these: the family followed by metric-matched fallback
+	   faces, so text occupies identical space before and after the swap.
+	   Don't append fallbacks here — that would append them after the
+	   generic that terminates the chain, where they'd never be reached. */
+	--font-sans: var(--font-inter);
+	--font-mono: var(--font-meslo);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -110,6 +114,12 @@ strong {
 	color: var(--muted);
 }
 
+/* Inter draws no ← or →, so arrows in sans text borrow the mono. Its x-height
+   is within 0.2% of Inter's, so only the glyph changes. */
+.arrow {
+	font-family: var(--font-mono);
+}
+
 /* ---- links ---- */
 
 a {
@@ -140,12 +150,64 @@ a:focus-visible {
 
 /* ---- view transitions (writing pages use Astro's ClientRouter) ---- */
 
+/* One stable name for the root on every page. Astro's scope id differs
+   between pages, and unpaired old/new root groups fall back to the UA's
+   250ms crossfade — the compounding flash transition:animate="none" was
+   meant to prevent. Paired and de-animated, the swap is truly instant and
+   the entrance stagger below is the whole transition. */
+html[data-astro-transition-scope] {
+	view-transition-name: page;
+}
+
+::view-transition-group(page),
+::view-transition-old(page),
+::view-transition-new(page) {
+	animation: none;
+}
+
 /* Below 900px the rail sits under the article, so its named group would
    streak off-screen on long posts — let it crossfade with the page. */
 @media (max-width: 900px) {
 	aside[data-astro-transition-scope] {
 		view-transition-name: none !important;
 	}
+}
+
+/* A rail arriving on a page enters like any other block — same keyframes,
+   same curve; one leaving clears instantly with the rest of the outgoing
+   page, so it never lingers over incoming content. When a page swap keeps
+   the rail, neither rule matches and it simply persists. */
+::view-transition-old(rail):only-child,
+::view-transition-old(timeline):only-child {
+	animation: none;
+}
+
+::view-transition-new(rail):only-child,
+::view-transition-new(timeline):only-child {
+	animation: enter 0.5s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
+}
+
+/* The back-link row gets the rail treatment. Unlike the rail it isn't
+   transition:persist (its label changes page to page), so when both pages
+   carry one the old/new pair would crossfade — de-animating the pair makes
+   the swap instant and the row reads as one element holding still. */
+::view-transition-group(nav),
+::view-transition-old(nav),
+::view-transition-new(nav) {
+	animation: none;
+}
+
+/* De-animating alone still leaves the old snapshot painted for as long as
+   anything else keeps the transition alive (the rail's crossfade on a
+   language switch), and the row has no background of its own — so an
+   outgoing label ("acasă") showed through behind the incoming one ("home").
+   Hide the old snapshot outright: the label swap is truly instant. */
+::view-transition-old(nav) {
+	opacity: 0;
+}
+
+::view-transition-new(nav):only-child {
+	animation: enter 0.5s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -169,14 +231,86 @@ a:focus-visible {
 	}
 }
 
-.s {
+/* `.s` fades one element; `.s-blocks` fades an element's blocks, so a page-tall
+   article never becomes one page-tall compositing layer. Children inherit --i,
+   so they share a delay and still read as a single fade. `.prose` gives way to
+   its own children — on a long post the prose is the whole article. */
+.s,
+.s-blocks > *:not(.prose),
+.s-blocks > .prose > * {
 	animation: enter 0.5s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
 	animation-delay: calc(var(--i, 0) * 70ms);
 }
 
+/* Article pages stagger their blocks by DOM position, so a conditional
+   block (a project without a cover, say) never leaves a hole in the
+   cascade. Blocks start at 1, leaving slot 0 under the back-link row
+   (which fades on its own — see `.nav` below); blocks past the sixth
+   share a delay — that far down is below the fold. */
+.s-blocks > :nth-child(1) {
+	--i: 1;
+}
+.s-blocks > :nth-child(2) {
+	--i: 2;
+}
+.s-blocks > :nth-child(3) {
+	--i: 3;
+}
+.s-blocks > :nth-child(4) {
+	--i: 4;
+}
+.s-blocks > :nth-child(5) {
+	--i: 5;
+}
+.s-blocks > :nth-child(n + 6) {
+	--i: 6;
+}
+
+/* Held at the first frame until Base.astro drops the attribute. `both` covers
+   the delay, so this reads as opacity 0 rather than as a pause. Client-side
+   navigations never see it: Astro rewrites the <html> attributes from the
+   incoming page, which has none. */
+:root[data-loading] .s,
+:root[data-loading] .s-blocks > *:not(.prose),
+:root[data-loading] .s-blocks > .prose > * {
+	animation-play-state: paused;
+}
+
+/* The rail is transition:persist, so it takes a transition rather than `.s`:
+   an animation would re-run whenever a swap re-inserts the node. This only
+   plays when opacity changes, which is once, on first load. The back-link
+   row takes the same route for the same reason — an `.s` animation would
+   re-fade it on every swap. */
+aside[data-astro-transition-persist],
+.nav {
+	transition: opacity 0.5s cubic-bezier(0.21, 0.47, 0.32, 0.98);
+}
+
+:root[data-loading] aside[data-astro-transition-persist],
+:root[data-loading] .nav {
+	opacity: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
-	.s {
+	.s,
+	.s-blocks > *:not(.prose),
+	.s-blocks > .prose > * {
 		animation: none;
+	}
+
+	aside[data-astro-transition-persist],
+	.nav {
+		transition: none;
+	}
+
+	/* No animation left to hold, so hold the content itself — otherwise
+	   reduced motion opts out of the font gate and back into the flash. */
+	:root[data-loading] .s,
+	:root[data-loading] .s-blocks > *:not(.prose),
+	:root[data-loading] .s-blocks > .prose > *,
+	:root[data-loading] aside[data-astro-transition-persist],
+	:root[data-loading] .nav {
+		opacity: 0;
 	}
 }
 

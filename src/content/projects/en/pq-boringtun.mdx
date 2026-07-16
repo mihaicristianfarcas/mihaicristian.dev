@@ -1,0 +1,45 @@
+---
+title: pq-boringtun
+description: A VPN handshake that holds up against a quantum computer. My BSc thesis, built on Cloudflare's BoringTun.
+group: Systems
+order: 1
+years: "2026"
+role: BSc thesis, Babeș-Bolyai University
+status: Benchmarked and written up
+tech: Rust · cryptography · networking
+featured: true
+links:
+  - label: source
+    href: https://github.com/mihaicristianfarcas/pq-boringtun
+features:
+  - title: Protects against a threat that hasn't arrived yet
+    body: Encrypted traffic captured today can be stored and broken later, once quantum computers are good enough. This closes that window now, for traffic sent now.
+  - title: No worse than what it replaces
+    body: It keeps today's proven encryption and adds the new kind alongside it, so an attacker has to break both.
+  - title: Built on something real
+    body: An extension of Cloudflare's BoringTun, a WireGuard implementation already in production use, rather than a paper design.
+  - title: Meets the published standard
+    body: FIPS 203, the finalised US standard, rather than a draft.
+  - title: Measured on real hardware
+    body: Benchmarked end to end on an Apple M4 and a Raspberry Pi 5, a fast laptop and a small edge device, to show what it costs in practice.
+shots:
+  - caption: Handshake benchmarks on Apple M4 and Raspberry Pi 5.
+  - caption: The hybrid key exchange, alongside the original handshake.
+---
+
+The encryption protecting VPN traffic today is safe against every computer that
+currently exists. That's a weaker promise than it sounds: an attacker can record
+your traffic now and decrypt it in ten years, once the machines catch up. If
+what you're sending has to stay secret for a decade, the deadline has already
+passed.
+
+This is my BSc thesis. It runs ML-KEM-768 alongside WireGuard's existing X25519
+handshake, on top of Cloudflare's BoringTun. *Hybrid* is the important word here:
+ML-KEM is young, and young cryptography sometimes breaks, so I kept the old
+handshake underneath it. An attacker has to defeat both, which means adopting it
+early can't cost you the security you already had.
+
+As far as I can tell it's the first FIPS 203-compliant hybrid WireGuard on a
+production Rust codebase. I benchmarked it end to end on an Apple M4 and a
+Raspberry Pi 5, because whether post-quantum cryptography works is settled.
+What I wanted to know is what it costs on hardware people actually own.

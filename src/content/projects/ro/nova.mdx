@@ -1,0 +1,43 @@
+---
+title: NOVA
+description: Un protocol prin care agenții AI își împart munca între ei fără să se calce pe picioare.
+group: Systems
+order: 3
+years: "2026"
+role: Construit singur
+status: Open source
+tech: Go · QUIC
+links:
+  - label: source
+    href: https://github.com/mihaicristianfarcas/nova
+features:
+  - title: Munca se revendică, nu se dublează
+    body: Sarcinile sunt publicate grupului, iar agenții le revendică, așa că doi agenți nu pot face pe tăcute aceeași treabă de două ori.
+  - title: Un singur lucru pe rând, acolo unde contează
+    body: Agenții pot bloca o resursă comună cât timp o folosesc. Blocajele expiră de la sine, așa că un agent care se prăbușește nu îi poate ține pe ceilalți pe loc la nesfârșit.
+  - title: Agenții pot vorbi
+    body: "Mesaje directe, difuzări și canale de abonare: destul cât să se coordoneze, nu doar să primească ordine."
+  - title: O memorie comună
+    body: Un depozit cheie-valoare pe care orice agent îl poate citi și scrie, cu tratarea conflictelor, ca scrierile simultane să nu îl strice.
+  - title: Gândit pentru mulți deodată
+    body: Transport QUIC, așa că fiecare agent ține o singură conexiune care duce multe conversații în paralel, criptate din start.
+shots:
+  - caption: Agenți revendicând sarcini prin coordonator.
+  - caption: Demonstrația cu mai mulți agenți în funcțiune.
+---
+
+**Network for Orchestrated Virtual Agents.** În clipa în care ai mai mult de un
+agent care lucrează la ceva, ai încetat să ai o problemă de AI și ai început să
+ai o problemă de sisteme distribuite.
+
+Doi agenți apucă aceeași sarcină. Unul moare la mijlocul treburilor ținând un
+blocaj. Doi scriu aceeași valoare și unul dintre ei câștigă pe tăcute. Nimic din
+toate astea nu e nou. Bazele de date și planificatoarele se ocupă de ele de
+patruzeci de ani, iar răspunsurile sunt binecunoscute și destul de lipsite de
+strălucire — poate de asta entuziasmul de acum le tot redescoperă pe propria piele.
+
+NOVA le dă agenților acele primitive direct: distribuirea sarcinilor cu
+revendicare, blocarea resurselor pe bază de lease care supraviețuiește
+unei prăbușiri, schimb de mesaje și stare comună cu control optimist al
+concurenței. Rulează peste QUIC, așa că o singură conexiune duce multe fluxuri
+multiplexate, iar criptarea vine pe gratis.

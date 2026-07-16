@@ -1,49 +1,135 @@
 ---
 import { ClientRouter } from "astro:transitions";
-import "@fontsource-variable/inter";
-import "@fontsource-variable/jetbrains-mono";
+import { Font } from "astro:assets";
 import "lenis/dist/lenis.css";
 import "../styles/global.css";
 import { site } from "../data/site";
+import {
+	altPaths,
+	htmlLang,
+	type Lang,
+	localePath,
+	ogLocale,
+	ui,
+} from "../data/i18n";
 import CustomCursor from "../components/CustomCursor.astro";
 
 interface Props {
+	lang: Lang;
 	title?: string;
 	description?: string;
 	wide?: boolean;
 	router?: boolean;
+	/* Off for the 404, the one page with no counterpart to point at. */
+	alternates?: boolean;
 }
 
 const {
+	lang,
 	title,
-	description = site.description,
 	wide = false,
 	router = false,
+	alternates = true,
 } = Astro.props;
+const description = Astro.props.description ?? ui[lang].siteDescription;
 const pageTitle = title ? `${title} — ${site.name}` : site.name;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+
+/* Every page exists in both languages, so each one advertises the other.
+   x-default points at English, which is what an unprefixed URL serves. */
+const alts = altPaths(Astro.url.pathname);
+const feed = new URL(localePath(lang, "/rss.xml"), Astro.site);
 ---
 
 <!doctype html>
-<html lang="en">
+{/* No root crossfade: it would compound with the entrance stagger below —
+    the old page washing out over content still at opacity 0 reads as a
+    flash. Instead the swap is instant and the entrance is the transition,
+    so client navigations and hard loads look the same. */}
+<html lang={htmlLang[lang]} transition:animate="none">
   <head>
     <meta charset="utf-8" />
     <meta name="color-scheme" content="light dark" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* Every glyph on the site is in one of these two, so nothing loads on
+        demand and both are worth preloading. */}
+    <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-meslo" preload />
+    <script is:inline>
+      /* Holds the page until the fonts and the DOM are ready, then lets the
+         entrance in global.css run — see `[data-loading]` there. Inline and
+         above the stylesheet so the attribute is set before the first paint.
+         With JS off it is never set and the page renders as normal. */
+      ;(() => {
+        const root = document.documentElement
+        root.dataset.loading = ''
+
+        let revealed = false
+        const reveal = () => {
+          if (revealed) return
+          revealed = true
+          delete root.dataset.loading
+        }
+
+        const domReady = new Promise((done) => {
+          if (document.readyState !== 'loading') done()
+          else document.addEventListener('DOMContentLoaded', done, { once: true })
+        })
+
+        /* Load each face rather than awaiting document.fonts.ready: `ready`
+           only covers loads already pending, and nothing is pending until
+           layout asks for a font, so it can resolve before the fonts exist.
+           Relies on the @font-face rules above being registered by now. */
+        const fontsLoaded = (() => {
+          if (!document.fonts) return Promise.resolve()
+          const loads = []
+          // Also the local() fallbacks, which reject when the font isn't installed.
+          document.fonts.forEach((face) => loads.push(face.load().catch(() => {})))
+          return loads.length ? Promise.all(loads) : Promise.resolve()
+        })()
+
+        Promise.all([domReady, fontsLoaded]).then(reveal, reveal)
+
+        // Never let a stalled font leave the page blank.
+        setTimeout(reveal, 1200)
+      })()
+    </script>
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.png" type="image/png" />
+    {
+      alternates && (
+        <>
+          <link
+            rel="alternate"
+            hreflang="en"
+            href={new URL(alts.en, Astro.site)}
+          />
+          <link
+            rel="alternate"
+            hreflang="ro"
+            href={new URL(alts.ro, Astro.site)}
+          />
+          <link
+            rel="alternate"
+            hreflang="x-default"
+            href={new URL(alts.en, Astro.site)}
+          />
+        </>
+      )
+    }
     <link
       rel="alternate"
       type="application/rss+xml"
       title={site.name}
-      href={new URL('rss.xml', Astro.site)}
+      href={feed}
     />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={ogLocale[lang]} />
     <meta name="twitter:card" content="summary" />
     <meta name="generator" content={Astro.generator} />
     {router && <ClientRouter />}

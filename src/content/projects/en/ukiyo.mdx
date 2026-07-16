@@ -1,0 +1,40 @@
+---
+title: Ukiyo
+description: A modal text editor for the terminal, written in Rust to find out how one is built.
+group: Tools
+order: 2
+years: "2026"
+role: Solo build
+status: Open source
+tech: Rust
+links:
+  - label: source
+    href: https://github.com/mihaicristianfarcas/ukiyo
+features:
+  - title: Vim-style modal editing
+    body: Normal and insert modes, with the movement and editing keys already in your fingers if you've used Vim.
+  - title: A file explorer built in
+    body: Navigate the directory tree and open files without leaving the editor.
+  - title: Undo and redo that hold up
+    body: Every edit is a recorded command, so the history is exact.
+  - title: Long lines stay readable
+    body: Automatic visual wrapping to the width of your terminal.
+shots:
+  - caption: Editing a file in normal mode.
+  - caption: The built-in file explorer.
+---
+
+*Ukiyo*, the floating world. A modal terminal text editor written in Rust,
+built to answer a question I'd been carrying around for years: what's actually
+in there?
+
+I'd used editors every day for years without once thinking about the machinery.
+How does a buffer really work? What is a mode, mechanically? Why is undo so much
+harder than it looks? The only way I know to stop wondering about something is
+to build it, so I did — modes, a file explorer, visual line wrapping, and a
+command-based undo system. Every one of those I understood properly only after
+implementing it.
+
+It's also where I got to use the State, Command, and Observer patterns somewhere
+they genuinely fit, instead of where a textbook wanted them. That taught me more
+than the editor did.

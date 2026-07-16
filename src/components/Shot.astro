@@ -1,0 +1,87 @@
+---
+/* A screenshot in its frame. With no `src` it renders a placeholder of the
+   same shape, so the page reads correctly before the real image exists —
+   drop the file into src/assets/projects/ and point `src` at it.
+
+   `src` is an ImageMetadata, resolved by `image()` in the collection schema.
+   Image writes the real width/height onto the tag, which is what reserves the
+   frame's height before the bytes arrive. */
+import { Image } from "astro:assets";
+
+interface Props {
+	src?: ImageMetadata;
+	alt?: string;
+	caption: string;
+	/* The cover sits above the fold, so it shouldn't wait to be scrolled to. */
+	eager?: boolean;
+}
+
+const { src, alt, caption, eager = false } = Astro.props;
+---
+
+<figure>
+  <div class:list={['frame', { empty: !src }]}>
+    {
+      src ? (
+        <Image
+          src={src}
+          alt={alt ?? caption}
+          widths={[480, 800, 1200]}
+          sizes="(max-width: 900px) 100vw, 65ch"
+          loading={eager ? 'eager' : 'lazy'}
+          fetchpriority={eager ? 'high' : undefined}
+          decoding="async"
+        />
+      ) : (
+        <span class="mono ph" aria-hidden="true">
+          screenshot
+        </span>
+      )
+    }
+  </div>
+  <figcaption class="mono">{caption}</figcaption>
+</figure>
+
+<style>
+  figure {
+    margin-top: 1.75rem;
+  }
+
+  .frame {
+    border: 1px solid var(--hairline);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--faint);
+  }
+
+  .frame img {
+    display: block;
+    width: 100%;
+  }
+
+  /* Placeholder: the frame at a 16:10 plate, hatched like unetched copper
+     so it reads as deliberately blank rather than as a broken image. */
+  .frame.empty {
+    aspect-ratio: 16 / 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: repeating-linear-gradient(
+      -45deg,
+      transparent 0 7px,
+      var(--hairline) 7px 8px
+    );
+  }
+
+  .ph {
+    background: var(--bg);
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+    padding: 0.25rem 0.625rem;
+    letter-spacing: 0.06em;
+  }
+
+  figcaption {
+    margin-top: 0.625rem;
+  }
+</style>

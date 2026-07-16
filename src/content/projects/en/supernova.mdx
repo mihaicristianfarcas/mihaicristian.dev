@@ -1,0 +1,40 @@
+---
+title: Supernova
+description: "A live wallpaper engine for macOS: video, shaders, and web pages running behind your desktop icons."
+group: Products
+order: 2
+years: "2026–present"
+role: Solo build
+status: Launched
+tech: Swift 6 · Metal · Core Audio
+featured: true
+links:
+  - label: supernova
+    href: https://supernova-macos.vercel.app
+features:
+  - title: Anything can be a wallpaper
+    body: Looping video, a live shader, or a small web page, running behind your icons and still interactive where that makes sense.
+  - title: Reacts to sound and movement
+    body: Wallpapers can move with whatever you're playing, so the desktop responds to the room instead of looping the same ten seconds forever.
+  - title: A different wallpaper per screen
+    body: Every display gets its own, and remembers it when you unplug and come back.
+  - title: Playlists that know the time
+    body: Rotate through a set on a schedule, one thing in the morning and another at night, or shuffle whenever you unlock.
+  - title: Stays out of the way
+    body: It pauses when a window covers it and when you're on battery, so it costs you nothing while you're actually working.
+shots:
+  - caption: A shader wallpaper running behind the desktop.
+  - caption: The library, with playlists and per-display assignment.
+  - caption: Audio reactivity settings.
+---
+
+Supernova renders looping video, GLSL shaders transpiled to Metal, and
+sandboxed web bundles behind your desktop icons. Wallpapers can react to audio
+and motion, every display gets its own, and playlists rotate them on a
+schedule.
+
+Most of the work has gone into knowing when *not* to draw. A wallpaper is the
+one piece of software on your machine that has no right to cost you anything,
+and the moment it spins up a fan or eats a percent of battery you'll uninstall
+it. I would. So it sleeps under covering windows, throttles on battery, and
+hands the GPU back the instant nobody's looking.

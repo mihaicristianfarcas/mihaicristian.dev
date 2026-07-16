@@ -348,8 +348,9 @@ const { wide = false } = Astro.props;
     );
   }
 
+  /* Same curve as the entrance stagger, arriving just after the content. */
   #passion-pattern.on {
-    animation: pp-fade 0.9s ease 0.25s both;
+    animation: pp-fade 0.5s cubic-bezier(0.21, 0.47, 0.32, 0.98) 0.25s both;
   }
 
   @keyframes pp-fade {

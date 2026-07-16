@@ -1,0 +1,88 @@
+---
+import Base from "../../layouts/Base.astro";
+import PassionPattern from "../PassionPattern.astro";
+import PageNav from "../PageNav.astro";
+import Rail from "../Rail.astro";
+import { getProjectRail } from "../../data/projects";
+import { type Lang, localePath, projectKinds, ui } from "../../data/i18n";
+
+interface Props {
+	lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = ui[lang];
+const groups = await getProjectRail(lang);
+const kinds = projectKinds[lang];
+---
+
+<Base
+  {lang}
+  title={t.projectsTitle}
+  description={t.projectsDescription}
+  wide
+  router
+>
+  <PageNav {lang} href={localePath(lang, '/')} label={t.backHome} />
+  {
+    groups.length > 0 ? (
+      <div class="layout">
+        {/* Persist id carries the language so a language switch swaps in
+            the other locale's rail instead of keeping this one. */}
+        <aside transition:name="rail" transition:persist={`rail-${lang}`}>
+          <Rail groups={groups} label={t.projectsRailLabel} />
+        </aside>
+        <div class="blurb s" style="--i: 1">
+          <h1>{t.projectsTitle}</h1>
+          <p>{t.projectsBlurb}</p>
+          <p>
+            {t.projectsKindsLead}{' '}
+            {kinds.map((k, i) => (
+              <>
+                <strong>{k.name}</strong> {k.body}
+                {i < kinds.length - 1 ? ' ' : ''}
+              </>
+            ))}
+          </p>
+          <p class="hire">{t.projectsHire}</p>
+        </div>
+      </div>
+    ) : (
+      <p class="empty s" style="--i: 0">
+        {t.projectsEmpty}
+      </p>
+    )
+  }
+  <PassionPattern wide />
+</Base>
+
+<style>
+  .layout {
+    display: grid;
+    grid-template-columns: 15rem minmax(0, 65ch);
+    gap: 3.5rem;
+    align-items: start;
+  }
+
+  .blurb p {
+    margin-top: 0.875rem;
+    color: var(--muted);
+  }
+
+  .empty {
+    color: var(--muted);
+  }
+
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2.5rem;
+    }
+
+    /* The aside is transition:persist, so select it through the fresh
+       .layout parent — it carries the other page's scope after navigation. */
+    .layout > :global(aside) {
+      order: 2;
+    }
+  }
+</style>

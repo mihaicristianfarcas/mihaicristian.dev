@@ -1,0 +1,43 @@
+---
+title: Search and Replace
+description: Căutare și înlocuire în tot proiectul pentru Neovim, arătându-ți exact ce se va schimba înainte să se schimbe.
+group: Tools
+order: 1
+years: "2025–prezent"
+role: Construit singur
+status: Open source · în uz
+tech: Lua · Neovim · ripgrep
+featured: true
+links:
+  - label: source
+    href: https://github.com/mihaicristianfarcas/nvim-search-and-replace
+features:
+  - title: Vezi schimbarea înainte s-o faci
+    body: Un înainte-și-după alăturat pentru fiecare potrivire, așa că a redenumi ceva într-o bază de cod întreagă încetează să mai fie un act de credință.
+  - title: Rezultate pe măsură ce scrii
+    body: Potrivirile curg pe măsură ce sunt găsite, cu un contor viu, așa că o căutare într-un proiect mare rămâne utilizabilă de la prima tastă.
+  - title: Alege ce vrei
+    body: Înlocuiește toate potrivirile deodată sau bifează-le doar pe cele care te interesează.
+  - title: Poți da înapoi
+    body: Propriul istoric de undo și redo pentru înlocuiri, așa că o căutare greșită în patruzeci de fișiere e la o tastă distanță de a se termina.
+  - title: Expresii regulate adevărate
+    body: "Regex complet, cu ripgrep dedesubt: același motor și aceeași sintaxă ca la o căutare din terminal."
+shots:
+  # The repo's assets/preview.gif is the shot to use here, but it's 4.6 MB —
+  # convert it to mp4/webm first, drop it in public/projects/, then set `src`.
+  - caption: Căutare live, previzualizare și înlocuire selectivă.
+  - caption: Marcarea potrivirilor individuale pentru înlocuire.
+---
+
+Căutarea și înlocuirea într-un proiect întreg n-a avut niciodată unelte în care
+să am încredere deplină. Ori citești o listă quickfix ca pe un dump de
+compilator, ori tragi o comandă `sed` pe nevăzute și speri.
+
+Așa că asta îți arată schimbarea înainte s-o faci. Rezultatele curg din ripgrep
+pe măsură ce sunt găsite, fiecare potrivire primește un înainte-și-după alăturat,
+bifezi ce vrei, iar tot ce iese se poate oricum anula după aceea. Înainte să
+scrie, verifică dacă textul exact încă se potrivește, așa că un rezultat învechit
+nu poate strica pe tăcute un fișier.
+
+L-am construit fiindcă îl voiam și îl folosesc în fiecare zi. L-au găsit și alți
+oameni și îl folosesc și ei, ceea ce încă mă miră.

@@ -28,3 +28,6 @@ dist-ssr
 
 # Wrangler local state
 .wrangler/
+
+# Superpowers session artifacts
+.superpowers/

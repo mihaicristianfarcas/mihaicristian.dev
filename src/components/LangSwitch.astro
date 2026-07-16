@@ -1,0 +1,62 @@
+---
+/* EN / RO, set in mono to sit with the other meta on the page. Each link is
+   the current page's counterpart, so switching language keeps your place
+   rather than dropping you at a home page.
+
+   A plain link on purpose: the entrance stagger is the only transition here,
+   and a crossfade on top of it reads as a flash. */
+import { altPaths, langNames, languages, type Lang, ui } from "../data/i18n";
+
+interface Props {
+	lang: Lang;
+}
+
+const { lang } = Astro.props;
+const alts = altPaths(Astro.url.pathname);
+---
+
+<nav class="lang mono" aria-label={ui[lang].langLabel}>
+  {
+    /* Kept on one line: whitespace inside the anchor would render as a
+       stray space after the slash separator and hand the browser a place
+       to break the pair in two. */
+    languages.map((l) => (
+      <a href={alts[l]} hreflang={l} aria-current={l === lang ? 'true' : undefined}>{langNames[l]}</a>
+    ))
+  }
+</nav>
+
+<style>
+  .lang {
+    display: flex;
+    gap: 0.5rem;
+    /* Never break inside — squeezed in a flex row, the second link would
+       otherwise wrap between its slash and its label. */
+    white-space: nowrap;
+  }
+
+  a {
+    color: var(--muted);
+    text-decoration: none;
+    opacity: 0.7;
+  }
+
+  a:hover {
+    color: var(--accent);
+    opacity: 1;
+  }
+
+  /* The language you're already reading: present, but not offering itself. */
+  a[aria-current='true'] {
+    color: var(--text);
+    opacity: 1;
+    cursor: default;
+  }
+
+  a + a::before {
+    content: '/';
+    color: var(--muted);
+    opacity: 0.4;
+    margin-right: 0.5rem;
+  }
+</style>

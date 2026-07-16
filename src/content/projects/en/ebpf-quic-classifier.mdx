@@ -1,0 +1,42 @@
+---
+title: eBPF QUIC classifier
+description: Identifying which application encrypted network traffic belongs to, in real time, on a Raspberry Pi.
+group: Systems
+order: 2
+years: "2026"
+role: Solo build
+status: Open source · research
+tech: eBPF · C · Rust · Python
+links:
+  - label: source
+    href: https://github.com/mihaicristianfarcas/ebpf-network-analysis-system
+features:
+  - title: Tells apps apart without decrypting anything
+    body: "The contents are off the table, so it identifies applications from the shape of the traffic: packet sizes and timing."
+  - title: Recognises over a hundred applications
+    body: Trained on a large public dataset of real-world traffic, covering 102 application categories.
+  - title: Runs where the packets are
+    body: Capture happens inside the kernel itself, fast enough to keep up with a live network link instead of sampling it.
+  - title: Small enough for a Raspberry Pi
+    body: Under 5 MB, and classifying in under 10 milliseconds on a Pi 5.
+  - title: Watch it work
+    body: A terminal interface showing live classifications and performance as traffic flows through.
+shots:
+  - caption: The live terminal interface, classifying traffic as it arrives.
+  - caption: Capture and classification, from kernel hook to prediction.
+---
+
+Almost all web traffic is encrypted now, and more and more of it is QUIC. Good
+for privacy, awkward for anyone who needs to understand their own network: if
+you can't read the packets, how do you know what's on the wire?
+
+Traffic has a shape, though. You can't see what a video call is saying, but a
+video call *looks* nothing like a file download: different packet sizes,
+different rhythm, different bursts. That's enough to tell them apart without
+decrypting a single byte.
+
+This captures QUIC packets inside the kernel with eBPF/XDP, extracts those
+statistical features, and classifies them into 102 application categories with a
+small neural network. I kept it deliberately tiny, under 5 MB and under 10 ms
+per inference, so it can sit on the edge device itself instead of shipping
+everyone's traffic somewhere else first.
