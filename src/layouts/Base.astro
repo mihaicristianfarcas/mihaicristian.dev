@@ -145,6 +145,43 @@ const feed = new URL(localePath(lang, "/rss.xml"), Astro.site);
         new Lenis({ autoRaf: true, lerp: 0.18, anchors: true })
       }
     </script>
+    <script>
+      /* The rail/timeline and the back-link row enter in the real DOM, not
+         as view-transition pseudo-elements: a pseudo animation holds the
+         transition open for its whole run, and while it is open the page
+         renders through the snapshot tree — the entrance stagger visibly
+         hitches. So every group is de-animated in global.css and this marks
+         the freshly arrived elements `entering` instead. Entry means the
+         outgoing page had no counterpart; the class is stripped before the
+         next swap so re-inserting a persisted node never replays the fade. */
+      const persistKeys = () =>
+        new Set(
+          [...document.querySelectorAll('[data-astro-transition-persist]')].map(
+            (el) => el.getAttribute('data-astro-transition-persist'),
+          ),
+        )
+
+      let hadNav = true
+      let hadAsides = persistKeys()
+
+      document.addEventListener('astro:before-swap', () => {
+        hadNav = !!document.querySelector('.nav')
+        hadAsides = persistKeys()
+        document
+          .querySelectorAll('.entering')
+          .forEach((el) => el.classList.remove('entering'))
+      })
+
+      document.addEventListener('astro:after-swap', () => {
+        if (!hadNav) document.querySelector('.nav')?.classList.add('entering')
+        document
+          .querySelectorAll('[data-astro-transition-persist]')
+          .forEach((el) => {
+            if (!hadAsides.has(el.getAttribute('data-astro-transition-persist')))
+              el.classList.add('entering')
+          })
+      })
+    </script>
     <CustomCursor />
     <main class:list={[{ wide }]}>
       <slot />

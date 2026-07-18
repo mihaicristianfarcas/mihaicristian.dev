@@ -173,41 +173,33 @@ html[data-astro-transition-scope] {
 	}
 }
 
-/* A rail arriving on a page enters like any other block — same keyframes,
-   same curve; one leaving clears instantly with the rest of the outgoing
-   page, so it never lingers over incoming content. When a page swap keeps
-   the rail, neither rule matches and it simply persists. */
-::view-transition-old(rail):only-child,
-::view-transition-old(timeline):only-child {
-	animation: none;
-}
-
-::view-transition-new(rail):only-child,
-::view-transition-new(timeline):only-child {
-	animation: enter 0.5s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
-}
-
-/* The back-link row gets the rail treatment. Unlike the rail it isn't
-   transition:persist (its label changes page to page), so when both pages
-   carry one the old/new pair would crossfade — de-animating the pair makes
-   the swap instant and the row reads as one element holding still. */
+/* The rail, timeline, and back-link groups are de-animated wholesale. Any
+   animation here would hold the transition open for its whole run, and
+   while it is open every frame renders through the snapshot tree instead
+   of the page — the entrance stagger visibly hitches mid-fade. A rail or
+   back-link row arriving on a page still enters like any other block, but
+   on its real element: Base.astro marks it `entering` (see below). */
+::view-transition-group(rail),
+::view-transition-old(rail),
+::view-transition-new(rail),
+::view-transition-group(timeline),
+::view-transition-old(timeline),
+::view-transition-new(timeline),
 ::view-transition-group(nav),
 ::view-transition-old(nav),
 ::view-transition-new(nav) {
 	animation: none;
 }
 
-/* De-animating alone still leaves the old snapshot painted for as long as
-   anything else keeps the transition alive (the rail's crossfade on a
-   language switch), and the row has no background of its own — so an
-   outgoing label ("acasă") showed through behind the incoming one ("home").
-   Hide the old snapshot outright: the label swap is truly instant. */
+/* The pseudo tree still paints for the frame or two before the transition
+   finishes, and these elements have no background of their own — an
+   outgoing back-link label ("acasă") would show through behind the
+   incoming one ("home"). Hide the old snapshots outright: only the new
+   state is ever painted, and the swap reads as truly instant. */
+::view-transition-old(rail),
+::view-transition-old(timeline),
 ::view-transition-old(nav) {
 	opacity: 0;
-}
-
-::view-transition-new(nav):only-child {
-	animation: enter 0.5s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -291,6 +283,15 @@ aside[data-astro-transition-persist],
 	opacity: 0;
 }
 
+/* A rail or back-link row arriving via the client router (entry from a
+   page without one) enters like any other block — same keyframes, same
+   curve. Base.astro sets the class on arrival and strips it before the
+   next swap, so re-inserting a persisted node never replays the fade. */
+aside[data-astro-transition-persist].entering,
+.nav.entering {
+	animation: enter 0.5s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.s,
 	.s-blocks > *:not(.prose),
@@ -301,6 +302,11 @@ aside[data-astro-transition-persist],
 	aside[data-astro-transition-persist],
 	.nav {
 		transition: none;
+	}
+
+	aside[data-astro-transition-persist].entering,
+	.nav.entering {
+		animation: none;
 	}
 
 	/* No animation left to hold, so hold the content itself — otherwise
