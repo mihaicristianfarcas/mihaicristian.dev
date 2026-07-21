@@ -61,7 +61,6 @@ const en = {
 
 	// Navigation
 	backHome: "← home",
-	backProjects: "← projects",
 	langLabel: "Language",
 
 	// 404
@@ -116,7 +115,6 @@ const ro: UI = {
 
 	// Navigation
 	backHome: "← acasă",
-	backProjects: "← proiecte",
 	langLabel: "Limbă",
 
 	// 404
