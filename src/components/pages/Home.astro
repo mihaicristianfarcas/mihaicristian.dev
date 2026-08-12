@@ -1,13 +1,13 @@
 ---
 /* The homepage in both languages. src/pages/index.astro and
    src/pages/ro/index.astro are wrappers that pick the language. */
-import { Image } from "astro:assets";
 import Base from "../../layouts/Base.astro";
 import PassionPattern from "../PassionPattern.astro";
 import LangSwitch from "../LangSwitch.astro";
-/* The GitHub avatar, cropped to the subject at check-in rather than in CSS:
-   at 56px every pixel the browser downloads should be one it shows. */
-import avatar from "../../assets/avatar.jpg";
+/* The GitHub avatar, cropped and sized to the circle before check-in, then
+   inlined: a request of its own arrives after the entrance has started, and
+   a router swap has no loading gate to hold it. 112px covers 56px at 2x. */
+import avatar from "../../assets/avatar.webp?inline";
 import { site } from "../../data/site";
 import { quotesFor } from "../../data/quotes";
 import {
@@ -37,22 +37,13 @@ const emptyPitch = rssPitch[lang].home;
 <Base {lang} router>
   <header class="s" style="--i: 0">
     <div class="id">
-      {/* alt="": the name it belongs to is right beside it, so a screen
-          reader would only hear it twice.
-
-          Eager and decoded synchronously: Astro's defaults would let the
-          header's entrance start without the portrait and pop it in a frame
-          later, and at 168px the decode costs nothing. */}
-      <Image
+      {/* alt="": the name is right beside it. */}
+      <img
         class="avatar"
         src={avatar}
         alt=""
-        width={56}
-        height={56}
-        densities={[2, 3]}
-        quality={90}
-        loading="eager"
-        fetchpriority="high"
+        width="56"
+        height="56"
         decoding="sync"
       />
       <div>
@@ -176,7 +167,6 @@ const emptyPitch = rssPitch[lang].home;
 </Base>
 
 <style>
-  /* Portrait beside the name, centred on the two lines it belongs to. */
   .id {
     display: flex;
     align-items: center;
@@ -188,9 +178,7 @@ const emptyPitch = rssPitch[lang].home;
     width: 3.5rem;
     height: 3.5rem;
     border-radius: 50%;
-    /* A ring rather than a border: it sits on the crop instead of adding to
-       the box, so the circle stays exactly 3.5rem. Drawn in the epigraph's
-       colour, which follows the theme on its own. */
+    /* A ring rather than a border, so the circle stays exactly 3.5rem. */
     box-shadow: 0 0 0 1px var(--muted);
   }
 
