@@ -1,9 +1,13 @@
 ---
 /* The homepage in both languages. src/pages/index.astro and
    src/pages/ro/index.astro are wrappers that pick the language. */
+import { Image } from "astro:assets";
 import Base from "../../layouts/Base.astro";
 import PassionPattern from "../PassionPattern.astro";
 import LangSwitch from "../LangSwitch.astro";
+/* The GitHub avatar, cropped to the subject at check-in rather than in CSS:
+   at 56px every pixel the browser downloads should be one it shows. */
+import avatar from "../../assets/avatar.jpg";
 import { site } from "../../data/site";
 import { quotesFor } from "../../data/quotes";
 import {
@@ -32,9 +36,31 @@ const emptyPitch = rssPitch[lang].home;
 
 <Base {lang} router>
   <header class="s" style="--i: 0">
-    <h1>Mihai-Cristian Farcaș</h1>
-    {/* Greek on both sites: it was never English to translate. */}
-    <p class="epigraph mono">γνῶθι σεαυτόν</p>
+    <div class="id">
+      {/* alt="": the name it belongs to is right beside it, so a screen
+          reader would only hear it twice.
+
+          Eager and decoded synchronously: Astro's defaults would let the
+          header's entrance start without the portrait and pop it in a frame
+          later, and at 168px the decode costs nothing. */}
+      <Image
+        class="avatar"
+        src={avatar}
+        alt=""
+        width={56}
+        height={56}
+        densities={[2, 3]}
+        quality={90}
+        loading="eager"
+        fetchpriority="high"
+        decoding="sync"
+      />
+      <div>
+        <h1>Mihai-Cristian Farcaș</h1>
+        {/* Greek on both sites: it was never English to translate. */}
+        <p class="epigraph mono">γνῶθι σεαυτόν</p>
+      </div>
+    </div>
     <p class="intro">
       {t.intro}
       <br />{t.introWelcome}
@@ -150,8 +176,26 @@ const emptyPitch = rssPitch[lang].home;
 </Base>
 
 <style>
+  /* Portrait beside the name, centred on the two lines it belongs to. */
+  .id {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+  }
+
+  .avatar {
+    flex: none;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    /* A ring rather than a border: it sits on the crop instead of adding to
+       the box, so the circle stays exactly 3.5rem. Drawn in the epigraph's
+       colour, which follows the theme on its own. */
+    box-shadow: 0 0 0 1px var(--muted);
+  }
+
   .epigraph {
-    margin-top: 0.375rem;
+    margin-top: 0.125rem;
   }
 
   header p.intro {
