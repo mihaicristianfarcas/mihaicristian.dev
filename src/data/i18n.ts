@@ -26,9 +26,9 @@ const en = {
 		"Software engineer in Cluj-Napoca, Romania. Living life thinking about computers, philosophy, history and legends, with a touch of optimism and introspection.",
 	introWelcome: "Welcome to my page.",
 	nowHeading: "Now",
-	nowDate: "July 2026",
+	nowDate: "October 2026",
 	nowBody:
-		"Just finished my BSc thesis at Babeș-Bolyai University, a hybrid post-quantum key exchange for WireGuard. Currently building Supernova and taking on freelance work.",
+		"Enrolled in an MSc in Cloud, Network Infrastructure and High-Performance Computation at Babeș-Bolyai University in Cluj-Napoca. Freelancing for BluePlan and open to other work.",
 	experienceHeading: "Experience",
 	edu: "BSc in Computer Science, Babeș-Bolyai University, Cluj-Napoca.",
 	selectedProjects: "Selected projects",
@@ -79,9 +79,9 @@ const ro: UI = {
 		"Inginer software în Cluj-Napoca, România. Îmi trăiesc viața gândindu-mă la calculatoare, filosofie, istorie și legende, cu un strop de optimism și introspecție.",
 	introWelcome: "Bine ai venit pe pagina mea.",
 	nowHeading: "Acum",
-	nowDate: "iulie 2026",
+	nowDate: "octombrie 2026",
 	nowBody:
-		"Tocmai mi-am terminat lucrarea de licență la Universitatea Babeș-Bolyai, un schimb de chei hibrid post-cuantic pentru WireGuard. Momentan construiesc Supernova și lucrez ca freelancer.",
+		"Sunt înscris la un master în Cloud, Infrastructură de Rețea și Calcul de Înaltă Performanță la Universitatea Babeș-Bolyai din Cluj-Napoca. Lucrez ca freelancer pentru BluePlan și sunt deschis la alte proiecte.",
 	experienceHeading: "Experiență",
 	edu: "Licență în Informatică, Universitatea Babeș-Bolyai, Cluj-Napoca.",
 	selectedProjects: "Proiecte selectate",
