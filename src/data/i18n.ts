@@ -18,12 +18,12 @@ export const ogLocale: Record<Lang, string> = { en: "en_US", ro: "ro_RO" };
    only the prose around them is in here. */
 const en = {
 	siteDescription:
-		"Software engineer in Cluj-Napoca, Romania. Systems, networking, and well-made software.",
+		"Systems software engineer in Cluj-Napoca, Romania.",
 
 	// Homepage
-	role: "Systems Software Engineer",
+	role: "Systems software engineer",
 	intro:
-		"Software engineer in Cluj-Napoca, Romania. Living life thinking about computers, philosophy, history and legends, with a touch of optimism and introspection.",
+		"Systems software engineer in Cluj-Napoca, Romania. Living life thinking about computers, philosophy, history and legends, with a touch of optimism and introspection.",
 	introWelcome: "Welcome to my page.",
 	nowHeading: "Now",
 	nowDate: "October 2026",
@@ -72,12 +72,12 @@ type UI = { readonly [K in keyof typeof en]: string };
 
 const ro: UI = {
 	siteDescription:
-		"Inginer software în Cluj-Napoca, România. Sisteme, rețelistică și software bine făcut.",
+		"Inginer software de sistem în Cluj-Napoca, România.",
 
 	// Homepage
 	role: "Inginer software de sistem",
 	intro:
-		"Inginer software în Cluj-Napoca, România. Îmi trăiesc viața gândindu-mă la calculatoare, filosofie, istorie și legende, cu un strop de optimism și introspecție.",
+		"Inginer software de sistem în Cluj-Napoca, România. Îmi trăiesc viața gândindu-mă la calculatoare, filosofie, istorie și legende, cu un strop de optimism și introspecție.",
 	introWelcome: "Bine ai venit pe pagina mea.",
 	nowHeading: "Acum",
 	nowDate: "octombrie 2026",
