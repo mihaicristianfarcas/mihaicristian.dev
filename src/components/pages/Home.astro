@@ -2,7 +2,8 @@
 /* The homepage content. */
 import Base from "../../layouts/Base.astro";
 import PassionPattern from "../PassionPattern.astro";
-import avatar from "../../assets/avatar.webp?inline";
+import avatarLight from "../../assets/avatar-dithered-light.png?inline";
+import avatarDark from "../../assets/avatar-dithered.png?inline";
 import { site } from "../../data/site";
 import { quotes } from "../../data/quotes";
 import { getProjects, projectPath } from "../../data/projects";
@@ -16,14 +17,16 @@ const projects = (await getProjects()).filter((p) => p.data.featured);
   <header class="s" style="--i: 0">
     <div class="id">
       {/* alt="": the name is right beside it. */}
-      <img
-        class="avatar"
-        src={avatar}
-        alt=""
-        width="56"
-        height="56"
-        decoding="sync"
-      />
+      <picture class="avatar">
+        <source media="(prefers-color-scheme: dark)" srcset={avatarDark} />
+        <img
+          src={avatarLight}
+          alt=""
+          width="56"
+          height="56"
+          decoding="sync"
+        />
+      </picture>
       <div>
         <h1>Mihai-Cristian Farcaș</h1>
         <p class="role mono">Systems software engineer</p>
@@ -153,11 +156,20 @@ const projects = (await getProjects()).filter((p) => p.data.featured);
   }
 
   .avatar {
+    display: block;
     flex: none;
-    width: 3.5rem;
-    height: 3.5rem;
+    width: 3rem;
+    height: 3rem;
     border-radius: 50%;
+    overflow: hidden;
     pointer-events: none;
+  }
+
+  .avatar img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
   }
 
   .role {

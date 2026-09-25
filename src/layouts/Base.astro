@@ -105,7 +105,7 @@ const feed = new URL("/rss.xml", Astro.site);
       /* Keep wheel smoothing, but only request frames while a scroll is
          moving. The default autoRaf loop also runs on an idle page. */
       if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        const lenis = new Lenis({ lerp: 0.18, anchors: { onStart: schedule } });
+        const lenis = new Lenis({ lerp: 0.5, anchors: { onStart: schedule } });
         let frame = 0;
 
         function tick(time: number) {
