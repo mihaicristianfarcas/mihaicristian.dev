@@ -7,8 +7,8 @@
 
 <style>
   /* Hide the real cursor everywhere, including over links and inputs. */
-  :global(html),
-  :global(html *) {
+  :global(html.custom-cursor),
+  :global(html.custom-cursor *) {
     cursor: none !important;
   }
 
@@ -97,15 +97,21 @@
     function hide() {
       if (dot) dot.style.opacity = '0'
       visible = false
+      cancelAnimationFrame(rafId)
+      rafId = 0
     }
 
     window.addEventListener('mousemove', (e) => {
       mouseX = e.clientX; mouseY = e.clientY
       show()
+      if (!rafId) rafId = requestAnimationFrame(tick)
     }, { passive: true })
 
     window.addEventListener('mouseleave', hide, { passive: true })
     window.addEventListener('mouseenter', show, { passive: true })
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) hide()
+    })
 
     document.addEventListener('mouseover', (e) => {
       if (dot && (e.target as Element).closest(INTERACTIVE))
@@ -118,21 +124,26 @@
     }, { passive: true })
 
     function tick() {
+      rafId = 0
       dotX += (mouseX - dotX) * LERP
       dotY += (mouseY - dotY) * LERP
+      const moving = Math.abs(mouseX - dotX) > 0.1 || Math.abs(mouseY - dotY) > 0.1
+      if (!moving) { dotX = mouseX; dotY = mouseY }
       if (dot) dot.style.transform = `translate(calc(${dotX}px - 50%), calc(${dotY}px - 50%))`
-      rafId = requestAnimationFrame(tick)
+      if (moving && visible) rafId = requestAnimationFrame(tick)
     }
 
     function init() {
       dot = document.getElementById('cursor-dot')
       if (!dot) return
 
+      document.documentElement.classList.add('custom-cursor')
+
       dot.classList.remove('is-hovering')
       visible = false
 
       cancelAnimationFrame(rafId)
-      rafId = requestAnimationFrame(tick)
+      rafId = 0
     }
 
     init()
