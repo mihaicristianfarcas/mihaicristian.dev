@@ -15,13 +15,13 @@ export const htmlLang: Record<Lang, string> = { en: "en", ro: "ro" };
 export const ogLocale: Record<Lang, string> = { en: "en_US", ro: "ro_RO" };
 
 /* Names, orgs, tech stacks and URLs are proper nouns and stay as they are;
-   only the prose around them is in here. The γνῶθι σεαυτόν epigraph is Greek
-   on both sites, so it lives in the markup rather than here. */
+   only the prose around them is in here. */
 const en = {
 	siteDescription:
 		"Software engineer in Cluj-Napoca, Romania. Systems, networking, and well-made software.",
 
 	// Homepage
+	role: "Systems Software Engineer",
 	intro:
 		"Software engineer in Cluj-Napoca, Romania. Living life thinking about computers, philosophy, history and legends, with a touch of optimism and introspection.",
 	introWelcome: "Welcome to my page.",
@@ -75,6 +75,7 @@ const ro: UI = {
 		"Inginer software în Cluj-Napoca, România. Sisteme, rețelistică și software bine făcut.",
 
 	// Homepage
+	role: "Inginer software de sistem",
 	intro:
 		"Inginer software în Cluj-Napoca, România. Îmi trăiesc viața gândindu-mă la calculatoare, filosofie, istorie și legende, cu un strop de optimism și introspecție.",
 	introWelcome: "Bine ai venit pe pagina mea.",

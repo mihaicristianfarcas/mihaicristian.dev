@@ -48,8 +48,7 @@ const emptyPitch = rssPitch[lang].home;
       />
       <div>
         <h1>Mihai-Cristian Farcaș</h1>
-        {/* Greek on both sites: it was never English to translate. */}
-        <p class="epigraph mono">γνῶθι σεαυτόν</p>
+        <p class="role mono">{t.role}</p>
       </div>
     </div>
     <p class="intro">
@@ -181,7 +180,7 @@ const emptyPitch = rssPitch[lang].home;
     pointer-events: none;
   }
 
-  .epigraph {
+  .role {
     margin-top: 0.125rem;
   }
 
@@ -251,12 +250,6 @@ const emptyPitch = rssPitch[lang].home;
     margin: 0 -0.875rem;
     padding: 0.875rem;
     border-radius: 8px;
-    transition: background 180ms ease;
-  }
-
-  .project:hover,
-  .project:focus-within {
-    background: var(--faint);
   }
 
   .project + .project {
