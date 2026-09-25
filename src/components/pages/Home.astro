@@ -234,6 +234,11 @@ const projects = (await getProjects()).filter((p) => p.data.featured);
     flex-wrap: wrap;
   }
 
+  .project h3 a {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
   .project p {
     color: var(--muted);
     margin-top: 0.25rem;
@@ -261,6 +266,17 @@ const projects = (await getProjects()).filter((p) => p.data.featured);
 
   .post .mono {
     white-space: nowrap;
+  }
+
+  @media (max-width: 480px) {
+    .post {
+      display: block;
+    }
+
+    .post .mono {
+      display: block;
+      margin-top: 0.125rem;
+    }
   }
 
   .empty,

@@ -80,6 +80,12 @@ main.wide {
 	max-width: calc(15rem + 3.5rem + 65ch);
 }
 
+@media (max-width: 900px) {
+	main {
+		margin-inline: 2.5rem;
+	}
+}
+
 /* ---- type ---- */
 
 h1 {
