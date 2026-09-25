@@ -30,10 +30,8 @@ const projects = (await getProjects()).filter((p) => p.data.featured);
       </div>
     </div>
     <p class="intro">
-      Systems software engineer in Cluj-Napoca, Romania. Living life thinking
-      about computers, philosophy, history and legends, with a touch of optimism
-      and introspection.
-      <br />Welcome to my page.
+      I build tools for technical work, from network software to AI products.
+      Based in Cluj-Napoca, Romania.
     </p>
     <ul class="links mono" role="list">
       {
@@ -56,11 +54,10 @@ const projects = (await getProjects()).filter((p) => p.data.featured);
   </header>
 
   <section class="s" style="--i: 1" aria-labelledby="now">
-    <h2 id="now">Now <span class="mono">· October 2026</span></h2>
+    <h2 id="now">Now</h2>
     <p>
-      Enrolled in an MSc in Cloud, Network Infrastructure and High-Performance
-      Computation at Babeș-Bolyai University in Cluj-Napoca. Freelancing for
-      BluePlan and open to other work.
+      MSc in cloud and network systems at Babeș-Bolyai University. Freelancing
+      with BluePlan; open to work.
     </p>
   </section>
 
@@ -71,19 +68,19 @@ const projects = (await getProjects()).filter((p) => p.data.featured);
         [
           {
             org: "BluePlan",
-            line: "Built and shipped Atlas, a production RAG platform for technical documents, end to end.",
+            line: "Built Atlas, a document search platform.",
           },
           {
             org: "Baseline Studios",
-            line: "Full-stack work across client apps: stratosphere.vip, pursuitofx.org, kabu.xyz.",
+            line: "Built client apps across the stack.",
           },
           {
             org: "GeoDraw",
-            line: "Developed an AI-powered canvas turning natural language into real-time wireframes.",
+            line: "Built an AI wireframing canvas.",
           },
           {
             org: "Tvarita",
-            line: "Rebuilt and redesigned a monitoring site for an optician clinic chain.",
+            line: "Redesigned a monitoring site for optician clinics.",
           },
         ].map((e) => (
           <li class="xp">
@@ -93,7 +90,7 @@ const projects = (await getProjects()).filter((p) => p.data.featured);
       }
     </ul>
     <p class="edu">
-      BSc in Computer Science, Babeș-Bolyai University, Cluj-Napoca.
+      BSc in Computer Science · Babeș-Bolyai University.
     </p>
   </section>
 
@@ -226,11 +223,6 @@ const projects = (await getProjects()).filter((p) => p.data.featured);
   section ul {
     list-style: none;
     padding: 0;
-  }
-
-  h2 .mono {
-    font-weight: 400;
-    margin-left: 0.25rem;
   }
 
   .project {
