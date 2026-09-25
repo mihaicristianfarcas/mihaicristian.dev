@@ -6,41 +6,30 @@ import PassionPattern from "../PassionPattern.astro";
 import PageNav from "../PageNav.astro";
 import Rail from "../Rail.astro";
 import { getWritingRail, postDateFmt, postPath } from "../../data/writing";
-import { type Lang, localePath, ui } from "../../data/i18n";
 
 interface Props {
-	lang: Lang;
-	post: CollectionEntry<"writing">;
+  post: CollectionEntry<"writing">;
 }
 
-const { lang, post } = Astro.props;
-const t = ui[lang];
+const { post } = Astro.props;
 const { Content } = await render(post);
-const groups = await getWritingRail(lang);
-const dateFmt = postDateFmt(lang);
+const groups = await getWritingRail();
 ---
 
-<Base {lang} title={post.data.title} description={post.data.description} wide router>
-  <PageNav {lang} href={localePath(lang, '/')} label={t.backHome} />
+<Base title={post.data.title} description={post.data.description} wide router>
+  <PageNav href="/" label="← home" />
   <div class="layout">
     <article class="s-blocks">
       <header>
         <h1>{post.data.title}</h1>
-        <p class="mono">{dateFmt.format(post.data.date)}</p>
+        <p class="mono">{postDateFmt.format(post.data.date)}</p>
       </header>
       <div class="prose">
         <Content />
       </div>
     </article>
-    {/* Persistence is scoped per language: a language switch must swap in
-        the other locale's timeline (titles, hrefs, highlight), not keep
-        this one; only same-language travel keeps the drift frozen. */}
-    <aside transition:name="timeline" transition:persist={`timeline-${lang}`}>
-      <Rail
-        groups={groups}
-        current={postPath(lang, post.id)}
-        label={t.writingRailLabel}
-      />
+    <aside transition:name="timeline" transition:persist="timeline">
+      <Rail groups={groups} current={postPath(post.id)} label="All posts" />
     </aside>
   </div>
   <PassionPattern wide />
@@ -50,7 +39,7 @@ const dateFmt = postDateFmt(lang);
   /* Article comes first in the DOM so keyboard users reach the post before
      the rail; the grid places the rail to its left. The aside is
      transition:persist, so select it through the fresh .layout parent —
-     after a navigation it carries the other page's scope attribute. */
+     after a navigation it carries the previous page's scope attribute. */
   .layout {
     display: grid;
     grid-template-columns: 15rem minmax(0, 65ch);

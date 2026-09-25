@@ -7,17 +7,14 @@ import PageNav from "../PageNav.astro";
 import Rail from "../Rail.astro";
 import Shot from "../Shot.astro";
 import { getProjectRail, projectPath } from "../../data/projects";
-import { type Lang, localePath, ui } from "../../data/i18n";
 
 interface Props {
-	lang: Lang;
-	project: CollectionEntry<"projects">;
+  project: CollectionEntry<"projects">;
 }
 
-const { lang, project } = Astro.props;
-const t = ui[lang];
+const { project } = Astro.props;
 const { Content } = await render(project);
-const groups = await getProjectRail(lang);
+const groups = await getProjectRail();
 
 const { years, role, status, tech, links, features, shots } = project.data;
 /* Shots without a src would render placeholder frames; skip them until the
@@ -26,26 +23,21 @@ const [cover, ...rest] = (shots ?? []).filter((s) => s.src);
 ---
 
 <Base
-  {lang}
   title={project.data.title}
   description={project.data.description}
   wide
   router
 >
-  <PageNav
-    {lang}
-    href={localePath(lang, '/')}
-    label={t.backHome}
-  />
+  <PageNav href="/" label="← home" />
   <div class="layout">
     <article class="s-blocks">
       <header>
         <h1>{project.data.title}</h1>
         <p class="lede">{project.data.description}</p>
         <dl class="meta mono">
-          <div><dt>{t.projectYears}</dt><dd>{years}</dd></div>
-          <div><dt>{t.projectRole}</dt><dd>{role}</dd></div>
-          <div><dt>{t.projectStatus}</dt><dd>{status}</dd></div>
+          <div><dt>Years</dt><dd>{years}</dd></div>
+          <div><dt>Role</dt><dd>{role}</dd></div>
+          <div><dt>Status</dt><dd>{status}</dd></div>
         </dl>
       </header>
 
@@ -56,7 +48,7 @@ const [cover, ...rest] = (shots ?? []).filter((s) => s.src);
       </div>
 
       <section class="features">
-        <h2>{t.projectFeatures}</h2>
+        <h2>What it does</h2>
         <ul role="list">
           {
             features.map((f) => (
@@ -69,10 +61,18 @@ const [cover, ...rest] = (shots ?? []).filter((s) => s.src);
         </ul>
       </section>
 
-      {rest.length > 0 && <section class="shots">{rest.map((s) => <Shot {...s} />)}</section>}
+      {
+        rest.length > 0 && (
+          <section class="shots">
+            {rest.map((s) => (
+              <Shot {...s} />
+            ))}
+          </section>
+        )
+      }
 
       <section class="built">
-        <h2>{t.projectBuiltWith}</h2>
+        <h2>Built with</h2>
         <p class="mono">{tech}</p>
         {
           links && links.length > 0 && (
@@ -81,8 +81,8 @@ const [cover, ...rest] = (shots ?? []).filter((s) => s.src);
                 <li>
                   <a
                     href={l.href}
-                    target={l.href.startsWith('http') ? '_blank' : undefined}
-                    rel={l.href.startsWith('http') ? 'noopener' : undefined}
+                    target={l.href.startsWith("http") ? "_blank" : undefined}
+                    rel={l.href.startsWith("http") ? "noopener" : undefined}
                   >
                     {l.label}
                   </a>
@@ -93,14 +93,11 @@ const [cover, ...rest] = (shots ?? []).filter((s) => s.src);
         }
       </section>
     </article>
-    {/* Persistence is scoped per language: a language switch must swap in
-        the other locale's rail (headers, hrefs, highlight), not keep this
-        one; only same-language travel keeps the drift frozen. */}
-    <aside transition:name="rail" transition:persist={`rail-${lang}`}>
+    <aside transition:name="rail" transition:persist="rail">
       <Rail
         groups={groups}
-        current={projectPath(lang, project.id)}
-        label={t.projectsRailLabel}
+        current={projectPath(project.id)}
+        label="All projects"
       />
     </aside>
   </div>
@@ -111,7 +108,7 @@ const [cover, ...rest] = (shots ?? []).filter((s) => s.src);
   /* Article first in the DOM so keyboard users reach it before the rail;
      the grid places the rail to its left. The aside is transition:persist,
      so select it through the fresh .layout parent — after a navigation it
-     carries the other page's scope attribute. */
+     carries the previous page's scope attribute. */
   .layout {
     display: grid;
     grid-template-columns: 15rem minmax(0, 65ch);
@@ -218,7 +215,7 @@ const [cover, ...rest] = (shots ?? []).filter((s) => s.src);
   }
 
   .features li::before {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     top: 0.8125em;

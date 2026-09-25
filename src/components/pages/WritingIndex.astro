@@ -4,38 +4,30 @@ import PassionPattern from "../PassionPattern.astro";
 import PageNav from "../PageNav.astro";
 import Rail from "../Rail.astro";
 import { getWritingRail } from "../../data/writing";
-import { type Lang, localePath, rssPitch, ui } from "../../data/i18n";
 
-interface Props {
-	lang: Lang;
-}
-
-const { lang } = Astro.props;
-const t = ui[lang];
-const groups = await getWritingRail(lang);
-const empty = rssPitch[lang].writing;
+const groups = await getWritingRail();
 ---
 
-<Base {lang} title={t.writingTitle} description={t.writingDescription} wide router>
-  <PageNav {lang} href={localePath(lang, '/')} label={t.backHome} />
+<Base title="Writing" description="Notes on software and life." wide router>
+  <PageNav href="/" label="← home" />
   {
     groups.length > 0 ? (
       <div class="layout">
-        {/* Persist id carries the language so a language switch swaps in
-            the other locale's timeline instead of keeping this one. */}
-        <aside transition:name="timeline" transition:persist={`timeline-${lang}`}>
-          <Rail groups={groups} label={t.writingRailLabel} />
+        <aside transition:name="timeline" transition:persist="timeline">
+          <Rail groups={groups} label="All posts" />
         </aside>
         <div class="blurb s" style="--i: 1">
-          <h1>{t.writingTitle}</h1>
-          <p>{t.writingBlurb}</p>
+          <h1>Writing</h1>
+          <p>
+            This is my blog — notes on software and life. Pick a post from the
+            timeline to start reading.
+          </p>
         </div>
       </div>
     ) : (
       <p class="empty s" style="--i: 0">
-        {empty.before}
-        <a href={localePath(lang, '/rss.xml')}>{empty.link}</a>
-        {empty.after}
+        Nothing here yet. Subscribe to the <a href="/rss.xml">RSS feed</a> to
+        catch the first post.
       </p>
     )
   }
@@ -66,7 +58,7 @@ const empty = rssPitch[lang].writing;
     }
 
     /* The aside is transition:persist, so select it through the fresh
-       .layout parent — it carries the other page's scope after navigation. */
+       .layout parent — it carries the previous page's scope after navigation. */
     .layout > :global(aside) {
       order: 2;
     }

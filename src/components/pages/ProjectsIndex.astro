@@ -4,52 +4,45 @@ import PassionPattern from "../PassionPattern.astro";
 import PageNav from "../PageNav.astro";
 import Rail from "../Rail.astro";
 import { getProjectRail } from "../../data/projects";
-import { type Lang, localePath, projectKinds, ui } from "../../data/i18n";
 
-interface Props {
-	lang: Lang;
-}
-
-const { lang } = Astro.props;
-const t = ui[lang];
-const groups = await getProjectRail(lang);
-const kinds = projectKinds[lang];
+const groups = await getProjectRail();
 ---
 
 <Base
-  {lang}
-  title={t.projectsTitle}
-  description={t.projectsDescription}
+  title="Projects"
+  description="Things I've built: products, tools, and systems."
   wide
   router
 >
-  <PageNav {lang} href={localePath(lang, '/')} label={t.backHome} />
+  <PageNav href="/" label="← home" />
   {
     groups.length > 0 ? (
       <div class="layout">
-        {/* Persist id carries the language so a language switch swaps in
-            the other locale's rail instead of keeping this one. */}
-        <aside transition:name="rail" transition:persist={`rail-${lang}`}>
-          <Rail groups={groups} label={t.projectsRailLabel} />
+        <aside transition:name="rail" transition:persist="rail">
+          <Rail groups={groups} label="All projects" />
         </aside>
         <div class="blurb s" style="--i: 1">
-          <h1>{t.projectsTitle}</h1>
-          <p>{t.projectsBlurb}</p>
+          <h1>Projects</h1>
           <p>
-            {t.projectsKindsLead}{' '}
-            {kinds.map((k, i) => (
-              <>
-                <strong>{k.name}</strong> {k.body}
-                {i < kinds.length - 1 ? ' ' : ''}
-              </>
-            ))}
+            Things I've built, and what each one actually does. Pick one from
+            the rail to read about it.
           </p>
-          <p class="hire">{t.projectsHire}</p>
+          <p>
+            They fall into three kinds. <strong>Products</strong> are things
+            people use: apps built for a client or for a problem I had.{" "}
+            <strong>Tools</strong> are for other developers, and I use them
+            daily myself. <strong>Systems</strong> are the low-level work where
+            most of my research sits: networking, cryptography, and the kernel.
+          </p>
+          <p class="hire">
+            If you're weighing up working together, the Products are the closest
+            thing to what that looks like.
+          </p>
         </div>
       </div>
     ) : (
       <p class="empty s" style="--i: 0">
-        {t.projectsEmpty}
+        Nothing here yet.
       </p>
     )
   }
@@ -80,7 +73,7 @@ const kinds = projectKinds[lang];
     }
 
     /* The aside is transition:persist, so select it through the fresh
-       .layout parent — it carries the other page's scope after navigation. */
+       .layout parent — it carries the previous page's scope after navigation. */
     .layout > :global(aside) {
       order: 2;
     }
