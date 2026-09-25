@@ -53,44 +53,24 @@ const projects = (await getProjects()).filter((p) => p.data.featured);
     </ul>
   </header>
 
-  <section class="s" style="--i: 1" aria-labelledby="now">
-    <h2 id="now">Now</h2>
+  <section class="s experience" style="--i: 1" aria-label="Background">
     <p>
-    MSc in cloud and network systems at Babeș-Bolyai University.<br/>Freelancing
-      with BluePlan; open to work.
+      These days I freelance with BluePlan. I built <a href={projectPath("atlas")}>Atlas</a>
+      there, a tool that helps engineering teams find answers in technical documents
+      and check them against the original pages.
+    </p>
+    <p>
+      Earlier, I built client apps across the stack at Baseline Studios. I've also
+      worked on <a href={projectPath("geodraw")}>GeoDraw</a>'s AI wireframing canvas
+      and redesigned a monitoring site for optician clinics at Tvarita. I studied
+      computer science at Babeș-Bolyai University.
     </p>
   </section>
 
-  <section class="s" style="--i: 2" aria-labelledby="experience">
-    <h2 id="experience">Experience</h2>
-    <ul role="list">
-      {
-        [
-          {
-            org: "BluePlan",
-            line: "Shipped Atlas, a document search platform.",
-          },
-          {
-            org: "Baseline Studios",
-            line: "Built client apps across the stack.",
-          },
-          {
-            org: "GeoDraw",
-            line: "Built an AI wireframing canvas.",
-          },
-          {
-            org: "Tvarita",
-            line: "Redesigned a monitoring site for optician clinics.",
-          },
-        ].map((e) => (
-          <li class="xp">
-            <span class="org">{e.org}</span> — {e.line}
-          </li>
-        ))
-      }
-    </ul>
-    <p class="edu">
-      BSc in Computer Science · Babeș-Bolyai University.
+  <section class="s" style="--i: 2" aria-labelledby="now">
+    <h2 id="now">Now</h2>
+    <p>
+      MSc in cloud and network systems at Babeș-Bolyai University. Open to work.
     </p>
   </section>
 
@@ -248,18 +228,12 @@ const projects = (await getProjects()).filter((p) => p.data.featured);
     font-size: 0.9375rem;
   }
 
-  .xp + .xp {
-    margin-top: 0.5rem;
+  .experience > p:first-child {
+    margin-top: 0;
   }
 
-  .org {
-    font-weight: 550;
-  }
-
-  .edu {
-    color: var(--muted);
+  .experience p + p {
     margin-top: 0.875rem;
-    font-size: 0.9375rem;
   }
 
   .post {
