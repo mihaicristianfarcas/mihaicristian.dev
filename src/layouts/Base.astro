@@ -7,16 +7,16 @@ import { site } from "../data/site";
 import CustomCursor from "../components/CustomCursor.astro";
 
 interface Props {
-  title?: string;
-  description?: string;
-  wide?: boolean;
-  router?: boolean;
+	title?: string;
+	description?: string;
+	wide?: boolean;
+	router?: boolean;
 }
 
 const { title, wide = false, router = false } = Astro.props;
 const description =
-  Astro.props.description ??
-  "Systems software engineer in Cluj-Napoca, Romania.";
+	Astro.props.description ??
+	"Systems software engineer in Cluj-Napoca, Romania.";
 const pageTitle = title ? `${title} — ${site.name}` : site.name;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
