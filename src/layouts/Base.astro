@@ -89,12 +89,18 @@ const feed = new URL("/rss.xml", Astro.site);
           image.src = video.poster;
           return decoded(image);
         };
-        const mediaLoaded = domReady.then(() =>
-          Promise.all([
+        const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+        const mediaLoaded = domReady.then(() => {
+          /* A recording with a poster per theme gets the one that matches,
+             here rather than in the markup, so only that one downloads. */
+          for (const video of document.querySelectorAll("video[data-poster]"))
+            video.poster =
+              (dark && video.dataset.posterDark) || video.dataset.poster;
+          return Promise.all([
             ...[...document.images].map(decoded),
             ...[...document.querySelectorAll("video[poster]")].map(poster),
-          ]),
-        );
+          ]);
+        });
 
         /* Both handlers: a rejection here should still show the page. */
         Promise.all([mediaLoaded, fontsLoaded]).then(reveal, reveal);
@@ -192,7 +198,7 @@ const feed = new URL("/rss.xml", Astro.site);
         const image = new Image();
         image.sizes = sizes;
         image.srcset = srcset;
-        image.src = src;
+        if (src) image.src = src;
         try {
           await image.decode();
         } catch {}
@@ -203,8 +209,27 @@ const feed = new URL("/rss.xml", Astro.site);
         event.loader = async () => {
           await load();
           const next = event.newDocument;
+          const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+          for (const video of next.querySelectorAll<HTMLVideoElement>(
+            "video[data-poster]",
+          ))
+            video.setAttribute(
+              "poster",
+              (dark && video.dataset.posterDark) || video.dataset.poster || "",
+            );
           await Promise.all([
-            ...[...next.images].map((img) => warm(img.src, img.srcset, img.sizes)),
+            ...[...next.images].map((img) => {
+              /* Inside a <picture>, warm the source the browser will pick for
+                 this theme, not the fallback. */
+              const source = img.parentElement?.matches("picture")
+                ? [...img.parentElement.querySelectorAll("source")].find(
+                    (s) => !s.media || matchMedia(s.media).matches,
+                  )
+                : undefined;
+              return source
+                ? warm("", source.srcset, source.sizes)
+                : warm(img.src, img.srcset, img.sizes);
+            }),
             ...[...next.querySelectorAll<HTMLVideoElement>("video[poster]")].map(
               (video) => warm(video.poster),
             ),

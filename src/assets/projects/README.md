@@ -33,6 +33,24 @@ Placeholders are sized 16:10. Any ratio works and none of them shift the page,
 but frames that all share a ratio look considerably calmer stacked up than ones
 that don't.
 
+## Light and dark
+
+Media with a theme of its own, like a terminal recording or a chart, can come
+in both. `src` (and `video`) are the light versions; add the dark ones beside
+them:
+
+```yaml
+shots:
+  - src: ../../assets/projects/pq-boringtun-benchmarks.png
+    srcDark: ../../assets/projects/pq-boringtun-benchmarks-dark.png
+    caption: What it costs, measured on a laptop and an edge device.
+```
+
+The browser picks by `prefers-color-scheme` and downloads only the one it
+shows, and switches if the system theme changes. A recording takes `videoDark`
+alongside `srcDark`, its dark poster. Screenshots of an app are what they are;
+leave those single.
+
 ## Recordings
 
 A shot can be a video instead. Put the `.mp4` here next to a still of its first

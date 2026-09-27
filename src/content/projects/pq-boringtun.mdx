@@ -32,6 +32,7 @@ shots:
     alt: "Sequence diagram of the hybrid handshake. The initiator generates ephemeral X25519 and ML-KEM-768 keys and sends the handshake initiation with the 1,184-byte ML-KEM encapsulation key. The responder encapsulates against it and replies with the 1,088-byte ciphertext; the initiator decapsulates. Both sides feed the four X25519 shared secrets and the ML-KEM secret through sequential HMAC-BLAKE2s into the session key, which stays secure if either X25519 or ML-KEM remains unbroken."
     caption: The hybrid handshake. Still two messages, with every secret chained into one session key.
   - src: ../../assets/projects/pq-boringtun-benchmarks.png
+    srcDark: ../../assets/projects/pq-boringtun-benchmarks-dark.png
     alt: "Four bar charts. Handshake time on Apple M4: vanilla 150.8, PSK-slot 151.0, hybrid 247.3 µs (+64%). On Raspberry Pi 5: 1,312, 1,312 and 1,643 µs (+25%). Message size: initiation 148 vs 1,332 B, response 92 vs 1,180 B, both under 1,500 B. Throughput: 473 vs 469 Mbps on M4 loopback, 85 vs 79 Mbps from M4 to Pi 5."
     caption: What it costs, measured on a laptop and an edge device.
 ---

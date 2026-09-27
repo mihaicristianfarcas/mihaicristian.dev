@@ -28,10 +28,13 @@ features:
     body: Search runs asynchronously, edits are computed in small chunks, and files are written off the main thread, so replacing thousands of matches doesn't lock up Neovim.
 shots:
   - src: ../../assets/projects/nvim-search-and-replace-rename.png
+    srcDark: ../../assets/projects/nvim-search-and-replace-rename-dark.png
     video: ../../assets/projects/nvim-search-and-replace-rename.mp4
+    videoDark: ../../assets/projects/nvim-search-and-replace-rename-dark.mp4
     alt: Neovim with the plugin open over a Rust project. Searching \bBuffer\b and replacing with Document shows 55 results and a before-and-after preview; three are replaced, undone, then all 55 are replaced and the file shows the new name.
     caption: Renaming Buffer to Document across a Rust project. Live results, a preview, three matches replaced and undone, then all 55.
   - src: ../../assets/projects/nvim-search-and-replace-visual-selection.png
+    srcDark: ../../assets/projects/nvim-search-and-replace-visual-selection-dark.png
     alt: Three results selected in visual mode in the results list, with the preview pane showing the highlighted match and its replacement.
     caption: Marking a range of matches in visual mode, with the change previewed on the right.
 ---

@@ -10,12 +10,20 @@
    With a `video`, `src` is its poster and lends the <video> its dimensions.
    The .mp4 is resolved from src/assets/projects/ at build time, so a typo
    fails the build, and it ships under a content hash in /_astro/, where the
-   worker lets browsers cache it for good. */
+   worker lets browsers cache it for good.
+
+   `srcDark` and `videoDark` are the same shot for dark mode, for media that
+   has a theme of its own (a terminal, a chart). The browser picks between them
+   by prefers-color-scheme and fetches only the one it shows. A poster can't
+   carry a media query, so a themed recording keeps both in data attributes
+   and Base.astro sets the right one before the page is revealed. */
 import { Image, getImage } from "astro:assets";
 
 interface Props {
 	src?: ImageMetadata;
+	srcDark?: ImageMetadata;
 	video?: string;
+	videoDark?: string;
 	alt?: string;
 	caption: string;
 	/* The cover sits above the fold, so it goes first in the queue. Nothing
@@ -24,22 +32,42 @@ interface Props {
 	eager?: boolean;
 }
 
-const { src, video, alt, caption, eager = false } = Astro.props;
+const {
+	src,
+	srcDark,
+	video,
+	videoDark,
+	alt,
+	caption,
+	eager = false,
+} = Astro.props;
+
+const widths = [480, 800, 1200];
+const sizes = "(max-width: 900px) 100vw, 65ch";
+const dark = "(prefers-color-scheme: dark)";
 
 const videos = import.meta.glob<string>("../assets/projects/*.mp4", {
 	query: "?url",
 	import: "default",
 	eager: true,
 });
-const videoUrl = video
-	? videos[`../assets/projects/${video.split("/").pop()}`]
-	: undefined;
-if (video && !videoUrl) {
-	throw new Error(`Shot: no video named ${video} in src/assets/projects/`);
+function videoNamed(name?: string) {
+	if (!name) return undefined;
+	const url = videos[`../assets/projects/${name.split("/").pop()}`];
+	if (!url) throw new Error(`Shot: no video named ${name} in src/assets/projects/`);
+	return url;
 }
-const poster =
-	videoUrl && src
-		? await getImage({ src, width: Math.min(src.width, 1440), format: "webp" })
+const posterOf = (image?: ImageMetadata) =>
+	image &&
+	getImage({ src: image, width: Math.min(image.width, 1440), format: "webp" });
+
+const videoUrl = videoNamed(video);
+const videoDarkUrl = videoNamed(videoDark);
+const poster = videoUrl ? await posterOf(src) : undefined;
+const posterDark = videoDarkUrl ? await posterOf(srcDark) : undefined;
+const imageDark =
+	!videoUrl && srcDark
+		? await getImage({ src: srcDark, widths, format: "webp" })
 		: undefined;
 ---
 
@@ -51,8 +79,9 @@ const poster =
           {/* Native controls until the script below takes over, so it still
               plays with JavaScript off. */}
           <video
-            src={videoUrl}
-            poster={poster.src}
+            poster={posterDark ? undefined : poster.src}
+            data-poster={posterDark ? poster.src : undefined}
+            data-poster-dark={posterDark?.src}
             width={src.width}
             height={src.height}
             aria-label={alt ?? caption}
@@ -62,21 +91,36 @@ const poster =
             playsinline
             controls
             data-shot-video
-          />
+          >
+            {videoDarkUrl && (
+              <source src={videoDarkUrl} type="video/mp4" media={dark} />
+            )}
+            <source src={videoUrl} type="video/mp4" />
+          </video>
           <button type="button" class="mono toggle" hidden>
             play
           </button>
         </>
       ) : src ? (
-        <Image
-          src={src}
-          alt={alt ?? caption}
-          widths={[480, 800, 1200]}
-          sizes="(max-width: 900px) 100vw, 65ch"
-          loading="eager"
-          fetchpriority={eager ? 'high' : undefined}
-          decoding="async"
-        />
+        <picture>
+          {imageDark && (
+            <source
+              media={dark}
+              srcset={imageDark.srcSet.attribute}
+              sizes={sizes}
+              type="image/webp"
+            />
+          )}
+          <Image
+            src={src}
+            alt={alt ?? caption}
+            widths={widths}
+            sizes={sizes}
+            loading="eager"
+            fetchpriority={eager ? 'high' : undefined}
+            decoding="async"
+          />
+        </picture>
       ) : (
         <span class="mono ph" aria-hidden="true">
           screenshot
@@ -93,7 +137,22 @@ const poster =
      on its own; the button still plays it. A video the reader paused stays
      paused until they play it again. */
   const still = matchMedia("(prefers-reduced-motion: reduce)");
+  const dark = matchMedia("(prefers-color-scheme: dark)");
   let observer: IntersectionObserver | undefined;
+
+  /* A themed recording picks its source and poster once, on load. If the
+     system switches theme with the page open, pick again and carry on. */
+  dark.addEventListener("change", () => {
+    for (const video of document.querySelectorAll<HTMLVideoElement>(
+      "video[data-poster-dark]",
+    )) {
+      const playing = !video.paused;
+      video.poster =
+        (dark.matches && video.dataset.posterDark) || video.dataset.poster || "";
+      video.load();
+      if (playing) video.play().catch(() => {});
+    }
+  });
 
   function label(video: HTMLVideoElement, button: HTMLButtonElement) {
     button.textContent = video.paused ? "play" : "pause";
@@ -155,6 +214,7 @@ const poster =
     background: var(--faint);
   }
 
+  .frame picture,
   .frame img,
   .frame video {
     display: block;

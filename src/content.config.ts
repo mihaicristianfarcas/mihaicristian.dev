@@ -46,18 +46,28 @@ const projects = defineCollection({
 			features: z.array(z.object({ title: z.string(), body: z.string() })),
 			/* Omit `src` and a placeholder frame renders in its place. With a
 			   `video` (an .mp4 in src/assets/projects/), `src` is its poster and
-			   still supplies the frame's dimensions. */
+			   still supplies the frame's dimensions. `srcDark` and `videoDark`
+			   are the same shot drawn for dark mode. */
 			shots: z
 				.array(
 					z
 						.object({
 							src: image().optional(),
+							srcDark: image().optional(),
 							video: z.string().optional(),
+							videoDark: z.string().optional(),
 							alt: z.string().optional(),
 							caption: z.string(),
 						})
 						.refine((s) => !s.video || s.src, {
 							message: "A shot with a `video` needs a `src` for its poster.",
+						})
+						.refine((s) => !s.srcDark || s.src, {
+							message: "A shot with a `srcDark` needs a `src` for light mode.",
+						})
+						.refine((s) => !s.videoDark || (s.video && s.srcDark), {
+							message:
+								"A shot with a `videoDark` needs a `video` and a `srcDark` poster.",
 						}),
 				)
 				.optional(),

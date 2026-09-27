@@ -25,6 +25,7 @@ features:
     body: A terminal interface with four views, covering live flows, the applications they belong to, per-stage latency, and how confident each classification is.
 shots:
   - src: ../../assets/projects/ebpf-quic-classifier-pipeline.png
+    srcDark: ../../assets/projects/ebpf-quic-classifier-pipeline-dark.png
     alt: "A pipeline diagram. In the kernel: the network interface feeds an XDP hook that parses QUIC headers, which fills a flow map with the first 30 packets' sizes, directions and gaps. A ring buffer carries finished flows to user space, where they become feature vectors, a neural network in ONNX Runtime picks one of 102 applications, and a terminal UI shows the result."
     caption: From packet to prediction. Capture in the kernel, classification in user space.
 ---
