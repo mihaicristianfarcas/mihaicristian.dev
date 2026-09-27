@@ -41,6 +41,52 @@ test("pages, feeds, and missing assets retain their freshness policy", async () 
 	}
 });
 
+const video = {
+	ASSETS: {
+		fetch: async () =>
+			new Response("0123456789", {
+				headers: { "Cache-Control": fresh, "Content-Type": "video/mp4" },
+			}),
+	},
+};
+const ranged = (range) =>
+	worker.fetch(
+		new Request("https://mihaicristian.dev/_astro/demo.ABC12345.mp4", {
+			headers: range ? { Range: range } : {},
+		}),
+		video,
+	);
+
+test("videos answer byte ranges, which Safari needs before it will play", async () => {
+	for (const [range, body, contentRange] of [
+		["bytes=2-5", "2345", "bytes 2-5/10"],
+		["bytes=7-", "789", "bytes 7-9/10"],
+		["bytes=-3", "789", "bytes 7-9/10"],
+		["bytes=8-99", "89", "bytes 8-9/10"],
+	]) {
+		const response = await ranged(range);
+		assert.equal(response.status, 206, range);
+		assert.equal(await response.text(), body, range);
+		assert.equal(response.headers.get("Content-Range"), contentRange, range);
+		assert.equal(response.headers.get("Content-Length"), String(body.length));
+		assert.equal(response.headers.get("Content-Type"), "video/mp4");
+		assert.equal(
+			response.headers.get("Cache-Control"),
+			"public, max-age=31536000, immutable",
+		);
+	}
+});
+
+test("videos refuse a range past the end, and send it whole without one", async () => {
+	const beyond = await ranged("bytes=20-");
+	assert.equal(beyond.status, 416);
+	assert.equal(beyond.headers.get("Content-Range"), "bytes */10");
+
+	const whole = await ranged();
+	assert.equal(whole.status, 200);
+	assert.equal(await whole.text(), "0123456789");
+});
+
 test("www redirects preserve the path and query", async () => {
 	const response = await worker.fetch(
 		new Request("https://www.mihaicristian.dev/writing/?a=b"),
