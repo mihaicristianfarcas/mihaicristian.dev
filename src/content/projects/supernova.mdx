@@ -1,6 +1,6 @@
 ---
 title: Supernova
-description: "Live wallpapers for macOS, powered by video, shaders, and web pages."
+description: "Live wallpapers for macOS: looping video, Shadertoy shaders, and whole web pages, running natively behind your desktop."
 group: Products
 order: 2
 years: "2026–present"
@@ -13,28 +13,110 @@ links:
     href: https://supernova-macos.app
 features:
   - title: Anything can be a wallpaper
-    body: Looping video, a live shader, or a small web page, running behind your icons and still interactive where that makes sense.
-  - title: Reacts to sound and movement
-    body: Wallpapers can move with whatever you're playing, so the desktop responds to the room instead of looping the same ten seconds forever.
+    body: Looping video, a Shadertoy-style shader, a web page, or a WebGL or three.js scene. Paste a shader in and it's compiled to Metal on import.
+  - title: Reacts to sound, the cursor, and the laptop itself
+    body: Wallpapers can follow whatever's playing, where your cursor is, and, on Apple silicon MacBooks, which way you tilt the machine.
+  - title: Follows light and dark mode
+    body: Shaders can read the system appearance live, so one wallpaper can carry both palettes and switch with the rest of macOS.
   - title: A different wallpaper per screen
-    body: Every display gets its own, and remembers it when you unplug and come back.
+    body: Every display gets its own wallpaper or playlist, and keeps it when you unplug and come back.
   - title: Playlists that know the time
-    body: Rotate through a set on a schedule, one thing in the morning and another at night, or shuffle whenever you unlock.
+    body: Rotate through a set on a timer, or switch by time of day or when you go on battery.
+  - title: Tuned per wallpaper
+    body: Set the render scale and frame-rate cap for each wallpaper, so a heavy shader can run at a fraction of the resolution nobody would notice.
   - title: Stays out of the way
-    body: It pauses when a window covers it and when you're on battery, so it costs you nothing while you're actually working.
+    body: It lives in the menu bar, never the Dock, and pauses under fullscreen apps, in Low Power Mode, and while the display sleeps.
+  - title: Scriptable
+    body: A command-line tool ships alongside the app, for scripts and Shortcuts, and the same wallpapers work as a screen saver.
 shots:
-  - caption: A shader wallpaper running behind the desktop.
-  - caption: The library, with playlists and per-display assignment.
-  - caption: Audio reactivity settings.
+  - src: ../../assets/projects/supernova-landing-hero.png
+    video: ../../assets/projects/supernova-landing-hero.mp4
+    alt: "The Supernova landing page open in Safari: under the headline 'The missing Wallpaper Engine for Mac.', a MacBook's screen runs a live wallpaper that switches from Aurora, a pink and teal shader, to Flow, a deep blue one."
+    caption: The landing page. The laptop in the hero runs the real wallpapers, rotating from one to the next.
 ---
 
-Supernova renders looping video, GLSL shaders transpiled to Metal, and
-sandboxed web bundles behind your desktop icons. Wallpapers can react to audio
-and motion, every display gets its own, and playlists rotate them on a
-schedule.
+import Shot from "../../components/Shot.astro";
+import onboarding from "../../assets/projects/supernova-onboarding.jpg";
+import menubar from "../../assets/projects/supernova-menubar.png";
+import controlCenter from "../../assets/projects/supernova-control-center.png";
+import tiltPoster from "../../assets/projects/supernova-tilt-reactive.png";
+import treePoster from "../../assets/projects/supernova-tree-wallpaper.png";
 
-Most of the work has gone into knowing when *not* to draw. A wallpaper is the
-one piece of software on your machine that has no right to cost you anything,
-and the moment it spins up a fan or eats a percent of battery you'll uninstall
-it. I would. So it sleeps under covering windows, throttles on battery, and
-hands the GPU back the instant nobody's looking.
+Supernova is the live-wallpaper engine I wanted on my Mac and couldn't find.
+Other wallpaper apps hand you a gallery and hope you like something in it.
+Supernova runs whatever you can render: a looping video, a GLSL shader, a
+WebGL or three.js scene, or an entire folder of HTML, drawn natively behind
+your desktop icons. The library is infinite because you're not picking from
+one.
+
+<Shot
+  src={onboarding}
+  alt="Supernova's first-run window over a painted landscape wallpaper, reading 'Your desktop, now alive.' with a Get started button."
+  caption="First launch. A short welcome, and then it gets out of the way."
+/>
+
+It lives in the menu bar and never in the Dock. Day to day, that menu is all
+you need: pause every wallpaper at once, mute them, or pick what each display
+shows without opening a window. Every screen gets its own wallpaper or its own
+playlist, and keeps it when you unplug and plug back in.
+
+<Shot
+  src={menubar}
+  alt="Supernova's menu bar menu with Open Control Center, Pause Wallpapers, and Mute All, and a submenu for the built-in display listing wallpapers including Flow, Aurora, Particle Fields, Noise, Cat vs Ball of Wool, Rabbit & Carrot, Fluid, Tree, Year Progress, and Lion."
+  caption="Pause or mute everything, or pick a wallpaper for each display, straight from the menu bar."
+/>
+
+Everything else happens in the Control Center. The library is sorted into
+video, web, and shader wallpapers, playlists sit underneath, and the inspector
+on the right controls whatever's selected: which displays it's on, how it
+fills the screen, whether it reacts to sound or the cursor, and how hard it's
+allowed to work, through a render scale and a frame-rate cap.
+
+<Shot
+  src={controlCenter}
+  alt="The Supernova Control Center: a library sidebar with Videos, Web, and Shaders and a Playlists section; a grid of wallpaper previews; and an inspector for Aurora with display assignment, fit, render scale, frame-rate cap, and audio-reactive and interactive toggles."
+  caption="The Control Center. The library by type, playlists, and per-wallpaper settings for fit, render scale, and frame rate."
+/>
+
+That last setting matters more than it looks. Most of the work has gone into
+knowing when *not* to draw. A wallpaper is the one piece of software on your
+machine that has no right to cost you anything, and the moment it spins up a
+fan or eats a percent of battery you'll uninstall it. I would. So everything
+renders on the GPU through Metal, a heavy shader can run at three quarters of
+the resolution at thirty frames a second, and the whole thing pauses under
+fullscreen apps, in Low Power Mode, and while the display sleeps, handing the
+GPU back the instant nobody's looking.
+
+## How it works
+
+Shaders are the fun part. Paste in something from Shadertoy and Supernova
+compiles it to Metal when you import it, through a small bundled compiler, and
+rewrites the common WebGL dialects on the way, so most snippets you find online
+run unmodified. Multi-pass shaders work too, extra buffers and all, and a flag
+tracks the system's light or dark appearance live, so one shader can ship both
+palettes.
+
+Sound comes in through a Core Audio tap and is analysed into the same audio
+texture Shadertoy uses, so audio-reactive shaders work exactly as written. The
+cursor position comes in the same way. On Apple silicon MacBooks the
+accelerometer and gyroscope are piped in too, so a wallpaper can know which
+way is down.
+
+<Shot
+  src={tiltPoster}
+  video="../../assets/projects/supernova-tilt-reactive.mp4"
+  alt="A hand tilts a MacBook back and forth; the particle wallpaper on its screen pours toward whichever side is lower."
+  caption="Tilt the MacBook and the particles pour downhill. Wallpapers can read the laptop's motion sensors."
+/>
+
+Web wallpapers run in a sandboxed web view with no way out to your files or the
+network, and receive the same signals: sound level, cursor, and tilt. Anything
+that runs in a browser tab can become a wallpaper, without being trusted like
+an app, including full 3D scenes.
+
+<Shot
+  src={treePoster}
+  video="../../assets/projects/supernova-tree-wallpaper.mp4"
+  alt="Tree, a three.js forest scene with glowing rabbits hopping through the grass, running as the macOS wallpaper behind the Dock; a translucent terminal window opens over it."
+  caption="Tree, a three.js scene, running as a web wallpaper behind the Dock and a translucent terminal."
+/>

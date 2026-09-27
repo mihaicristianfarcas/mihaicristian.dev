@@ -1,12 +1,12 @@
 ---
 title: Adso
-description: A note app built for working an idea out while it's still shapeless.
+description: A block-based note app for working an idea out while it's still shapeless, with an assistant that has read the page.
 group: Products
 order: 5
 years: "2025"
 role: Solo build
 status: Open source · live demo
-tech: Next.js · React · Convex · BlockNote
+tech: Next.js · React · Convex · BlockNote · Gemini
 links:
   - label: adso
     href: https://adso-one.vercel.app
@@ -17,16 +17,21 @@ features:
     body: Every paragraph, heading, and image is a block you can pick up and move, so restructuring a document is dragging instead of retyping.
   - title: Notes inside notes
     body: Nest documents as deep as the thought goes, and the sidebar ends up shaped like the idea.
+  - title: Ask your notes
+    body: A chat beside every document answers questions about what's in it, streaming the reply as it writes.
   - title: Saves as you type
     body: No save button, and no lost work. Changes sync the instant you make them, on every device you're signed in on.
+  - title: Find anything, lose nothing
+    body: Search every note from the keyboard, and deleted notes wait in a trash you can restore them from.
+  - title: Publish in one click
+    body: Share any note as a read-only public page, and unpublish it just as fast.
   - title: Make it yours
-    body: Cover images and icons per document, enough that you can find the right note by sight.
-  - title: Reads well anywhere
-    body: Light and dark, desktop and phone, all first-class.
+    body: Cover images and icons per document, in light or dark, enough that you can find the right note by sight.
 shots:
-  - caption: A document with a cover image and nested pages.
-  - caption: Rearranging blocks by dragging.
-  - caption: The sidebar, showing the document tree.
+  - src: ../../assets/projects/adso-note-and-chat.png
+    video: ../../assets/projects/adso-note-and-chat.mp4
+    alt: Adso's landing page, then a to-do note with a cover image in the editor, then the side chat answering what the note is about and what's still left on the list.
+    caption: From the landing page to a note with a cover image, then asking Adso what's still left on the list.
 ---
 
 Most note apps are filing cabinets. They're good at putting something away and
@@ -37,6 +42,16 @@ So Adso is block-based and nests as deep as you like. A thought that turns out
 to be three thoughts becomes three thoughts by dragging. A note that grows a
 whole subject underneath it can keep it there, and the structure follows the
 thinking instead of a folder.
+
+When you lose the thread, there's a chat beside the page that has read it. It
+gets the document and the conversation so far, and streams its answer back as
+it writes, so you can ask what a sprawling note actually says, or what's still
+left on a list, without leaving it.
+
+Underneath, every keystroke syncs through a real-time backend, so there's no
+save button and the same note stays current on every device. Search is one
+shortcut away, deleted notes go to a trash you can restore from, and any note
+can be published as a read-only page with a single toggle.
 
 It's named after the novice in *The Name of the Rose*, who spends the entire
 book taking notes on something he doesn't understand yet. I related.

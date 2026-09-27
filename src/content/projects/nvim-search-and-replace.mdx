@@ -1,6 +1,6 @@
 ---
 title: nvim-search-and-replace
-description: Preview project-wide search and replace in Neovim.
+description: Project-wide search and replace for Neovim, with a live preview of every change before it's made.
 group: Tools
 order: 1
 years: "2025–present"
@@ -13,31 +13,61 @@ links:
     href: https://github.com/mihaicristianfarcas/nvim-search-and-replace
 features:
   - title: See the change before you make it
-    body: A side-by-side before and after for every match, so renaming something across a codebase stops being an act of faith.
+    body: A before and after for every match, so renaming something across a codebase stops being an act of faith.
   - title: Results as fast as you type
     body: Matches stream in as they're found, with a running count, so a search across a large project stays usable from the first keystroke.
   - title: Pick and choose
-    body: Replace every match at once, or tick off just the ones you want.
-  - title: Undo it
-    body: Its own undo and redo history for replacements, so a bad search across forty files is one keystroke from being over.
+    body: Select a range of matches in visual mode and replace just those, or replace everything at once.
+  - title: Undo it, even tomorrow
+    body: Its own undo and redo history for replacements, kept across sessions, so a bad search across forty files is one keystroke from being over.
+  - title: Won't write a stale match
+    body: Before it touches a file it checks the text still matches exactly, and it leaves alone any file you have unsaved changes in.
   - title: Real regular expressions
-    body: "Full regex, powered by ripgrep: the same engine and the same syntax as searching from the terminal."
+    body: "Full regex, powered by ripgrep: the same engine and the same syntax as searching from the terminal, including patterns that span lines."
+  - title: Never freezes the editor
+    body: Search runs asynchronously, edits are computed in small chunks, and files are written off the main thread, so replacing thousands of matches doesn't lock up Neovim.
 shots:
-  # The repo's assets/preview.gif is the shot to use here, but it's 4.6 MB —
-  # convert it to mp4/webm first, drop it in public/projects/, then set `src`.
-  - caption: Live search, preview, and selective replacement.
-  - caption: Marking individual matches for replacement.
+  - src: ../../assets/projects/nvim-search-and-replace-rename.png
+    video: ../../assets/projects/nvim-search-and-replace-rename.mp4
+    alt: Neovim with the plugin open over a Rust project. Searching \bBuffer\b and replacing with Document shows 55 results and a before-and-after preview; three are replaced, undone, then all 55 are replaced and the file shows the new name.
+    caption: Renaming Buffer to Document across a Rust project. Live results, a preview, three matches replaced and undone, then all 55.
+  - src: ../../assets/projects/nvim-search-and-replace-visual-selection.png
+    alt: Three results selected in visual mode in the results list, with the preview pane showing the highlighted match and its replacement.
+    caption: Marking a range of matches in visual mode, with the change previewed on the right.
 ---
 
 Search and replace across a whole project has never had tooling I fully trust.
 You either read a quickfix list like a compiler dump, or you fire a `sed`
 command blind and hope.
 
-So this one shows you the change before you make it. Results stream in from
-ripgrep as they're found, every match gets a side-by-side before and after, you
-tick the ones you want, and the whole thing is undoable afterwards anyway.
-Before it writes, it checks the exact text still matches, so a stale result
-can't quietly corrupt a file.
+So this one shows you the change before you make it. You type a pattern and
+results stream in while the search is still running, with a count that ticks
+up as they arrive. Every match gets a before and after in the preview pane, you
+pick the ones you want or take them all, and the whole thing is undoable
+afterwards anyway. It opens with the word under your cursor or your visual
+selection already filled in, so the common case is a keystroke away.
+
+## Being careful with your files
+
+A tool that edits forty files at once has to be paranoid, so most of the work
+went into what happens at write time. Before it touches a file it checks the
+exact text it's about to replace is still there, so a result that went stale
+while you were deciding can't quietly corrupt anything. It keeps each file's
+line endings and trailing newline as they were, skips any file you have open
+with unsaved changes, and asks before replacing everything when the results
+were cut off at the limit.
+
+Undo is held to the same standard. The history persists across sessions, and
+undoing checks each file against what was written, skipping any that changed
+since rather than clobbering your newer edits.
+
+## Staying fast
+
+Search runs through ripgrep and streams its output, so a large tree never
+blocks the editor. Replacements are computed in small chunks between editor
+events and written to disk off the main thread, which is what lets a big
+rename finish without Neovim ever freezing. It has a health check, sensible
+limits on result count and file size, and every keymap can be changed.
 
 I built it because I wanted it, and I use it every day. Other people found it
 and use it too.

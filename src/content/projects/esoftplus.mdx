@@ -14,30 +14,46 @@ links:
     href: https://github.com/mihaicristianfarcas/esoftplus-landing
 features:
   - title: The scroll is the demo
-    body: The hero's dashboard unfolds as you move down the page — the frame opens, the sidebar slides in, tooltips surface one by one — so you've seen the product work before you reach the pricing.
+    body: The hero's dashboard unfolds as you move down the page. The frame opens, the view crops down to the mobile app, and tooltips surface one by one, so you've seen the product work before you reach the pricing.
   - title: No animation library underneath
     body: Scroll position is interpolated into a handful of CSS custom properties and the browser composites the rest, so the sequence stays smooth even mid-flick.
   - title: Everything a landing page owes you
     body: Features, pricing, team, FAQ, and a contact form, each with its own section on one long page.
   - title: Reads well on a phone
-    body: The scroll story collapses gracefully on small screens, and the menu becomes a drawer.
+    body: The scroll story collapses gracefully on small screens, landscape phones get their own layouts, and the menu becomes a drawer.
+  - title: Respects reduced motion
+    body: With reduced motion on, smooth scrolling steps aside and transitions resolve instantly, so the page still reads without the choreography.
 shots:
-  - caption: The hero mid-scroll, the dashboard unfolding out of its frame.
-  - caption: The pricing tiers.
-  - caption: The team section.
+  - src: ../../assets/projects/esoftplus-hero-scroll.png
+    video: ../../assets/projects/esoftplus-hero-scroll.mp4
+    alt: Scrolling the ESoftPlus hero. A dashboard screenshot inside an oval grows to fill the screen, crops down to a phone-sized sidebar, and labelled tooltips draw in beside it.
+    caption: Scrolling the hero. The dashboard unfolds out of its oval, crops to the mobile view, and the tooltips surface one by one.
+  - src: ../../assets/projects/esoftplus-pricing.png
+    alt: Three pricing tiers at $55, $150 and $400, with the middle one highlighted, above a custom-plan card.
+    caption: The pricing tiers.
 ---
 
 Most landing pages tell you the product is polished and then ask you to book a
 demo to see it. This one shows you instead: as you scroll, the dashboard in
-the hero unfolds out of its oval frame, the sidebar slides into place, and
+the hero unfolds out of its oval frame, crops down to the mobile view, and
 tooltips surface one by one, so the pitch and the demonstration are the same
 gesture.
 
-There's no animation library underneath. Scroll progress is interpolated into
-a handful of CSS custom properties and the browser composites everything else,
-which is why it stays smooth even when you throw the page. Lenis paces the
-scrolling so the story reads at any speed.
+The sequence runs in two acts over three screens of scrolling. In the first,
+the oval grows until the dashboard fills the view. Because the oval scales
+more in height than in width, the screenshot inside is counter-scaled so it
+never stretches, and the crop narrows until only the phone-sized sidebar is
+left. In the second, the sidebar scrolls inside its frame while five tooltips
+draw in on a stagger, each pointing at the part of the product it describes.
 
-Built freelance for ESoftPlus, an analytics platform for businesses — profit,
-inventory, a daily summary. One long page, one idea, and most of the work in
-how it moves.
+There's no animation library underneath. The hero reduces scroll position to a
+single number between 0 and 1 and interpolates it into about twenty CSS custom
+properties: the oval's scale, the crop, the parallax, each tooltip's reveal.
+Updates are batched to one per frame and skipped when nothing has changed, and
+the browser composites everything else, which is why it stays smooth even when
+you throw the page. Lenis paces the scrolling so the story reads at any speed.
+
+Below the hero it's everything a landing page owes you: a features carousel,
+pricing, the team, an FAQ, and a contact form. Built freelance for ESoftPlus,
+an analytics platform for businesses: profit, inventory, a daily summary. One
+long page, one idea, and most of the work in how it moves.

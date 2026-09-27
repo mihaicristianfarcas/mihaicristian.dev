@@ -1,6 +1,6 @@
 ---
 title: pq-boringtun
-description: A post-quantum VPN handshake built on BoringTun.
+description: A post-quantum VPN handshake for WireGuard, built on Cloudflare's BoringTun and measured on a laptop and a Raspberry Pi.
 group: Systems
 order: 1
 years: "2026"
@@ -11,20 +11,29 @@ featured: true
 links:
   - label: source
     href: https://github.com/mihaicristianfarcas/pq-boringtun
+  - label: paper
+    href: /Hybrid-Post-Quantum-Key-Exchange-For-WireGuard.pdf
+    newTab: true
 features:
   - title: Protects against a threat that hasn't arrived yet
     body: Encrypted traffic captured today can be stored and broken later, once quantum computers are good enough. This closes that window now, for traffic sent now.
   - title: No worse than what it replaces
     body: It keeps today's proven encryption and adds the new kind alongside it, so an attacker has to break both.
-  - title: Built on something real
-    body: An extension of Cloudflare's BoringTun, a WireGuard implementation already in production use, rather than a paper design.
+  - title: A fresh key every handshake
+    body: The post-quantum key is new for every handshake, so breaking one session tells an attacker nothing about the next.
+  - title: Cheap where it counts
+    body: About 97 µs more per handshake on an Apple M4 and 331 µs on a Raspberry Pi 5. Both messages still fit in a single packet, and tunnel throughput doesn't change.
+  - title: Opt-in, and invisible when off
+    body: A compile-time switch. Built without it, the binary is identical to upstream; built with it, it's about 65 KB larger.
   - title: Meets the published standard
-    body: FIPS 203, the finalised US standard, rather than a draft.
-  - title: Measured on real hardware
-    body: Benchmarked end to end on an Apple M4 and a Raspberry Pi 5, a fast laptop and a small edge device, to show what it costs in practice.
+    body: FIPS 203, the finalised US standard, rather than a draft, on top of a WireGuard implementation already in production use.
 shots:
-  - caption: Handshake benchmarks on Apple M4 and Raspberry Pi 5.
-  - caption: The hybrid key exchange, alongside the original handshake.
+  - src: ../../assets/projects/pq-boringtun-hybrid-handshake.png
+    alt: "Sequence diagram of the hybrid handshake. The initiator generates ephemeral X25519 and ML-KEM-768 keys and sends the handshake initiation with the 1,184-byte ML-KEM encapsulation key. The responder encapsulates against it and replies with the 1,088-byte ciphertext; the initiator decapsulates. Both sides feed the four X25519 shared secrets and the ML-KEM secret through sequential HMAC-BLAKE2s into the session key, which stays secure if either X25519 or ML-KEM remains unbroken."
+    caption: The hybrid handshake. Still two messages, with every secret chained into one session key.
+  - src: ../../assets/projects/pq-boringtun-benchmarks.png
+    alt: "Four bar charts. Handshake time on Apple M4: vanilla 150.8, PSK-slot 151.0, hybrid 247.3 µs (+64%). On Raspberry Pi 5: 1,312, 1,312 and 1,643 µs (+25%). Message size: initiation 148 vs 1,332 B, response 92 vs 1,180 B, both under 1,500 B. Throughput: 473 vs 469 Mbps on M4 loopback, 85 vs 79 Mbps from M4 to Pi 5."
+    caption: What it costs, measured on a laptop and an edge device.
 ---
 
 The encryption protecting VPN traffic today is safe against every computer that
@@ -43,3 +52,42 @@ As far as I can tell it's the first FIPS 203-compliant hybrid WireGuard on a
 production Rust codebase. I benchmarked it end to end on an Apple M4 and a
 Raspberry Pi 5, because whether post-quantum cryptography works is settled.
 What I wanted to know is what it costs on hardware people actually own.
+
+## How it works
+
+A WireGuard tunnel opens with two messages: an initiation and a response. The
+hybrid version has the initiator generate a fresh ML-KEM-768 key pair alongside
+its usual X25519 key and send the 1,184-byte public half in the initiation. The
+responder encapsulates a secret against it and returns the 1,088-byte
+ciphertext in the response, and the initiator decapsulates it. That's still a
+single round trip.
+
+Both sides then feed every secret, the four from X25519 and the one from
+ML-KEM, through the same chain of HMAC-BLAKE2s steps that WireGuard already
+uses, and derive the session key from the end of it. The key depends on all of
+them, so it stays safe as long as either X25519 or ML-KEM holds, and because
+the ML-KEM key pair is new for every handshake, every session is protected on
+its own.
+
+The thesis also measures a lighter alternative: using a one-time ML-KEM
+exchange to fill WireGuard's existing pre-shared-key slot. It costs nothing
+per handshake and changes nothing on the wire, but the key never changes, so
+it gives up the per-session protection. The benchmarks put the two side by side.
+
+The code went through the same scrutiny as the numbers. The post-quantum part
+of the handshake is domain-separated, which closed a downgrade denial-of-service
+an earlier version allowed, the secret decapsulation key is wiped from memory
+after use, and tests check that tampered messages are rejected. For the thesis
+defense I built a live demo that runs all three variants against a remote
+server, captures each handshake as it happens, and sends a file through every
+tunnel to show that only the handshake changes.
+
+## What it costs
+
+Less than you'd think. A handshake takes about 97 microseconds longer on the
+M4 and 331 longer on the Pi, and on either machine that's dwarfed by the
+network round trip it sits inside. The handshake messages grow from 148 and 92
+bytes to 1,332 and 1,180, but each still fits in a single packet, so there's
+no extra round trip and nothing to fragment. Once the tunnel is up the data
+plane is untouched, throughput is the same as before, and a running peer uses
+about 160 KB more memory.

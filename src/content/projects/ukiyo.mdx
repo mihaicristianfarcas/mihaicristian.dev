@@ -6,22 +6,26 @@ order: 2
 years: "2026"
 role: Solo build
 status: Open source
-tech: Rust
+tech: Rust · crossterm
 links:
   - label: source
     href: https://github.com/mihaicristianfarcas/ukiyo
 features:
   - title: Vim-style modal editing
-    body: Normal and insert modes, with the movement and editing keys already in your fingers if you've used Vim.
+    body: Normal, insert, and command modes, with the movement and editing keys already in your fingers if you've used Vim.
   - title: A file explorer built in
     body: Navigate the directory tree and open files without leaving the editor.
   - title: Undo and redo that hold up
     body: Every edit is a recorded command, so the history is exact.
   - title: Long lines stay readable
     body: Automatic visual wrapping to the width of your terminal.
+  - title: Small and self-contained
+    body: About fifteen hundred lines of Rust on top of a terminal library, with nothing else underneath.
 shots:
-  - caption: Editing a file in normal mode.
-  - caption: The built-in file explorer.
+  - src: ../../assets/projects/ukiyo-editing.png
+    video: ../../assets/projects/ukiyo-editing.mp4
+    alt: Ukiyo editing a Markdown note in the terminal. The cursor jumps by word and line, a new line is typed in insert mode, a line is deleted and restored with undo, then the file explorer opens another file.
+    caption: Moving by word and line, adding a line in insert mode, deleting one and undoing it, then opening another file from the explorer.
 ---
 
 *Ukiyo*, the floating world. A modal terminal text editor written in Rust,
@@ -31,10 +35,24 @@ in there?
 I'd used editors every day for years without once thinking about the machinery.
 How does a buffer really work? What is a mode, mechanically? Why is undo so much
 harder than it looks? The only way I know to stop wondering about something is
-to build it, so I did — modes, a file explorer, visual line wrapping, and a
+to build it, so I did: modes, a file explorer, visual line wrapping, and a
 command-based undo system. Every one of those I understood properly only after
 implementing it.
 
-It's also where I got to use the State, Command, and Observer patterns somewhere
-they genuinely fit, instead of where a textbook wanted them. That taught me more
-than the editor did.
+## What's inside
+
+It's also where I got to use the classic design patterns somewhere they
+genuinely fit, instead of where a textbook wanted them, and each one earns its
+place.
+
+Modes are the State pattern. Normal, insert, command, and explorer are each
+their own type that reads a key and hands back an action, so the editor never
+asks which mode it's in, and adding a mode doesn't touch the others. Every edit
+is a Command that knows how to undo itself, which, it turns out, is all undo
+and redo really are: two stacks of those. The status bar and the editor view
+observe the buffer rather than being told when to redraw, so the text itself
+knows nothing about the screen. The file explorer is a Composite, a tree where a
+directory and a file answer to the same interface.
+
+None of that is how I'd have written it before. That taught me more than the
+editor did.

@@ -1,40 +1,61 @@
 ---
 title: Vibe
-description: Describe an app in a chat, and get a working one back with a live preview.
+description: Describe an app in a chat, and an agent builds a working one in a sandbox, with a live preview and the code beside it.
 group: Products
 order: 7
 years: "2025"
 role: Solo build
 status: Open source
-tech: Next.js · React · E2B · LLM APIs
+tech: Next.js · Inngest · E2B · OpenAI
 links:
   - label: source
     href: https://github.com/mihaicristianfarcas/vibe
 features:
   - title: Build it by describing it
-    body: Say what you want and it writes the code, then keep talking to change it.
+    body: Say what you want and an agent writes the app, then keep talking to change it.
   - title: See it running immediately
     body: A live preview of the real thing, not a mockup. If it works in the preview, it works.
   - title: Read the code it wrote
     body: Browse every generated file with syntax highlighting. Nothing is hidden, and you can take the code with you.
   - title: Each project is sealed off
-    body: Every app runs in its own isolated cloud sandbox, so generated code can't reach anything it shouldn't.
+    body: Every app is written, built, and run in its own isolated cloud sandbox, so generated code can't reach anything it shouldn't.
+  - title: Every version is kept
+    body: Each answer is saved with the files it produced, so you can go back to any step of the conversation and see what it built.
   - title: Keep your projects
     body: Sign in, and everything you've built stays organised in one place.
 shots:
-  - caption: Building an app by describing it in chat.
-  - caption: The live preview beside the generated code.
-  - caption: The file explorer for a generated project.
+  - src: ../../assets/projects/vibe-store-build.png
+    video: ../../assets/projects/vibe-store-build.mp4
+    alt: Vibe's home screen takes a prompt for a store page with category filters and a cart; the generated store runs in a live preview, items go into the cart, and the Code tab lists the generated files.
+    caption: Asking for a store page with filters and a cart, then trying the running app and reading the code it wrote.
 ---
 
 Vibe is my own go at the "chat with an AI, get an app" idea. You describe what
-you want, it generates a working application, and you watch it run in a live
-preview beside the conversation.
+you want, an agent writes a working Next.js application, and you watch it run
+in a live preview beside the conversation. Keep talking and it keeps editing.
 
 Generation turned out to be the easy half. Running code an AI has just written
 is a genuine security problem, so every project gets its own isolated cloud
 sandbox and nothing generated ever touches the host. That constraint ended up
 shaping the whole architecture.
+
+## How it works
+
+Each sandbox boots from a template I built: a Next.js app with every shadcn/ui
+component already installed, so the agent spends its time on the product and
+not on setup. The agent itself has exactly three tools: a terminal, and reading
+and writing files. It installs what it needs, writes the pages, and when it's done
+it hands back a short summary of what it built.
+
+The whole run happens as a background job, so a long generation isn't tied to
+an open request, and the app just waits for the result. That result is saved
+as a fragment: the files, a title, and the address of the sandbox it's running
+in. The live preview and the code view both read from it, and every answer
+keeps its own fragment, so you can click back to any earlier version and see
+exactly what it built.
+
+Around that sits an ordinary product: sign-in, a list of projects, and a
+conversation history per project, all typed end to end.
 
 Nobody paid me for this one. It was the most fun I'd had with an uncomfortable
 engineering problem in a while.

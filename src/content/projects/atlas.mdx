@@ -1,31 +1,42 @@
 ---
 title: Atlas
-description: Answers questions from technical documents with page-level citations.
+description: Answers questions across thousands of pages of technical documents, and shows you the exact page each answer came from.
 group: Products
 order: 1
 years: "2025–present"
 role: Built end to end for BluePlan
 status: In daily production use
-tech: Python · FastAPI · Qdrant · React
+tech: Python · FastAPI · Qdrant · Gemini · React
 featured: true
 links:
   - label: atlas
     href: https://ai.blueplan.ro
 features:
   - title: Ask in plain language
-    body: Ask a question the way you'd ask a colleague. No search syntax, no keywords to guess.
-  - title: Every answer shows its source
-    body: Answers quote the document word for word and link to the page in the original PDF, so you can check them yourself.
-  - title: Finds what keyword search misses
-    body: It searches by meaning as well as by exact wording, and reads diagrams and scanned pages too, so the right paragraph turns up even when it doesn't use your words.
-  - title: Each team sees only its own documents
-    body: One installation serves many companies, and their libraries stay separate.
+    body: Ask the way you'd ask a colleague. No search syntax, and no guessing which words the standard happens to use.
+  - title: Every claim shows its source
+    body: Answers cite the exact passage. Hover a citation to read it word for word; click it and the original PDF opens beside the chat, at that page.
+  - title: Reads what keyword search can't
+    body: Scanned pages, formulas, tables, and drawings are converted and indexed too, and search runs by meaning and by exact wording at once, so the right clause turns up even when it doesn't share your words.
+  - title: Name a clause and it's found
+    body: Mention a clause number like §4.2.1 and that clause is pinned to the top of the search, instead of being left to chance.
   - title: Works across languages
-    body: Ask in one language about a document written in another and it still finds the passage.
+    body: Ask in English about a Romanian standard, or the other way round. The answer comes back in the language you asked in, with formulas and clause numbers quoted exactly as the document has them.
+  - title: Keeps working when you leave
+    body: Answers are written in the background. Close the tab mid-answer and it carries on, then sends a notification when it's ready.
+  - title: Workspaces for teams
+    body: Documents live in workspaces you share with an invite link, and one installation serves many companies without their libraries ever mixing.
 shots:
-  - caption: Asking a question, with the answer cited back to the source page.
-  - caption: The citation panel, open beside the original PDF.
-  - caption: Uploading and indexing a new document library.
+  - src: ../../assets/projects/atlas-cited-answer.png
+    video: ../../assets/projects/atlas-cited-answer.mp4
+    alt: A question about showing reinforcing-bar bending dimensions on drawings is answered with numbered citations, then the cited page of SR EN ISO 3766 opens in a panel beside the chat.
+    caption: Asking in English about a Romanian standard. The answer streams in with citations, and one click opens the cited page.
+  - src: ../../assets/projects/atlas-citation-hover.png
+    alt: A citation's hover card showing the original Romanian passage from SR EN ISO 3766, page 13, over an English answer.
+    caption: Hover a citation and the source passage appears word for word, in the document's own language.
+  - src: ../../assets/projects/atlas-answer-beside-pdf.png
+    alt: The finished answer on the left, with the standard's page 13 open in the PDF viewer on the right.
+    caption: The answer beside the source PDF, open at the cited page.
 ---
 
 I built Atlas for BluePlan, end to end. Engineering teams keep enormous amounts
@@ -34,10 +45,47 @@ you need on any given day is one paragraph somewhere in three thousand pages,
 and keyword search only helps if you already guessed the words.
 
 You ask Atlas a question the way you'd ask a colleague. It finds the passage,
-quotes it back to you, and links straight to the page in the original PDF.
+answers in your language, and cites every claim back to the page it came from.
+Hover a citation to read the source word for word; click it and the PDF opens
+beside the conversation, at that page.
 
 That last part is what I spent the most time on. People act on these answers,
 and in this line of work an answer you can't check is worse than no answer at
 all. So nothing comes back unsourced.
+
+## How it works
+
+Getting the text out is the unglamorous half. Engineering PDFs are scans,
+tables, formulas, and drawings as often as they're prose. Every upload goes
+through OCR that keeps formulas and tables intact and records where each line
+sits on the page, which is what lets a citation land on the right spot later.
+The document is then split along its own structure, by clause, table, and
+figure rather than every few hundred words, so a table is never cut in half,
+and each formula gets a short plain-language gloss so it can be found by what
+it means rather than by its symbols.
+
+Every passage is indexed three ways: by meaning, by exact wording, and, for
+figures and drawings, by what the image shows. A question runs through all
+three at once, and the results are fused and reranked. Name a clause outright
+and it's pinned to the top rather than left to the ranking.
+
+The model never sees the whole library. It gets one search tool and a list of
+the workspaces you can see, decides where to look (several places, if the
+question spans them), and answers only from the passages that come back,
+citing each one. The citations are resolved on the server against the stored
+page positions, so a number in the answer always points at a real place in a
+real PDF.
+
+## Built for teams
+
+Documents live in workspaces. You create one, upload into it, and invite
+colleagues with a link; from then on the agent searches whichever workspaces
+fit the question. Every company's documents share one database but are
+partitioned by tenant, so a search can never cross into someone else's
+library. Answers are generated by a background worker rather than inside your
+request, so a long one survives you closing the tab, and a notification tells
+you when it's ready. Uploads are processed the same way, with per-user quotas,
+and conversions are cached by content, so the same PDF is never paid for
+twice.
 
 It's been in daily production use since it shipped.
