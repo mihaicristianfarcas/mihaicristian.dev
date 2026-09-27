@@ -1,4 +1,4 @@
-# Project screenshots
+# Project screenshots and recordings
 
 Drop screenshots in here, then point the project's frontmatter at them.
 
@@ -23,7 +23,8 @@ shots:
 - `caption` is always shown under the frame.
 
 The first shot in the list is the cover and sits directly under the title, so it
-loads eagerly. The rest are lazy-loaded further down the page.
+loads first. Nothing is lazy-loaded: the page holds until every image and video
+poster has decoded, then fades in whole, however large the files are.
 
 These live in `src/` rather than `public/` because only files Astro resolves get
 dimensions and optimization; anything in `public/` is copied out verbatim.
@@ -31,3 +32,36 @@ dimensions and optimization; anything in `public/` is copied out verbatim.
 Placeholders are sized 16:10. Any ratio works and none of them shift the page,
 but frames that all share a ratio look considerably calmer stacked up than ones
 that don't.
+
+## Recordings
+
+A shot can be a video instead. Put the `.mp4` here next to a still of its first
+frame, and give the shot both:
+
+```yaml
+shots:
+  - src: ../../assets/projects/ukiyo-editing.png
+    video: ../../assets/projects/ukiyo-editing.mp4
+    alt: What happens in the recording, for screen readers.
+    caption: Editing a file, then opening another from the explorer.
+```
+
+- `src` becomes the poster, and still supplies the frame's dimensions. A shot
+  with a `video` and no `src` fails the build.
+- The video is matched by file name and emitted under a content hash in
+  `/_astro/`, so it's cached like every other asset. A missing file fails the
+  build too.
+- It preloads with the page, then plays muted and looped while it's on screen
+  and pauses when it scrolls away. Under reduced motion nothing starts on its
+  own; the play button does.
+- Unlike images, videos aren't re-encoded. Encode them before dropping them in:
+  H.264 in an `.mp4` (the one format every browser plays), no audio track, and
+  the index at the front so playback starts before the download finishes:
+
+  ```sh
+  ffmpeg -i in.mov -vf fps=30 -c:v libx264 -preset veryslow -crf 24 \
+    -pix_fmt yuv420p -movflags +faststart -an out.mp4
+  ```
+
+  Terminal recordings compress to almost nothing; anything photographic wants
+  a higher `-crf` (28–30) to stay around a couple of megabytes.

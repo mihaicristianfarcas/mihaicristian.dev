@@ -32,18 +32,33 @@ const projects = defineCollection({
 			role: z.string(),
 			status: z.string(),
 			tech: z.string(),
+			/* `newTab` opens a same-origin link in its own tab, the way the CV
+			   does, for files like a paper; external links always do. */
 			links: z
-				.array(z.object({ label: z.string(), href: z.string() }))
-				.optional(),
-			features: z.array(z.object({ title: z.string(), body: z.string() })),
-			/* Omit `src` and a placeholder frame renders in its place. */
-			shots: z
 				.array(
 					z.object({
-						src: image().optional(),
-						alt: z.string().optional(),
-						caption: z.string(),
+						label: z.string(),
+						href: z.string(),
+						newTab: z.boolean().optional(),
 					}),
+				)
+				.optional(),
+			features: z.array(z.object({ title: z.string(), body: z.string() })),
+			/* Omit `src` and a placeholder frame renders in its place. With a
+			   `video` (an .mp4 in src/assets/projects/), `src` is its poster and
+			   still supplies the frame's dimensions. */
+			shots: z
+				.array(
+					z
+						.object({
+							src: image().optional(),
+							video: z.string().optional(),
+							alt: z.string().optional(),
+							caption: z.string(),
+						})
+						.refine((s) => !s.video || s.src, {
+							message: "A shot with a `video` needs a `src` for its poster.",
+						}),
 				)
 				.optional(),
 			featured: z.boolean().optional(),

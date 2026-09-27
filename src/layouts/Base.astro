@@ -75,8 +75,29 @@ const feed = new URL("/rss.xml", Astro.site);
           return document.fonts.ready;
         })();
 
+        /* Nothing loads lazily, so the page holds for its media as well:
+           every image, and every video's poster, decoded before the fade.
+           A recording's poster is its first frame, so the page arrives
+           whole and the video takes over from there. */
+        const decoded = async (image) => {
+          try {
+            await image.decode();
+          } catch {}
+        };
+        const poster = (video) => {
+          const image = new Image();
+          image.src = video.poster;
+          return decoded(image);
+        };
+        const mediaLoaded = domReady.then(() =>
+          Promise.all([
+            ...[...document.images].map(decoded),
+            ...[...document.querySelectorAll("video[poster]")].map(poster),
+          ]),
+        );
+
         /* Both handlers: a rejection here should still show the page. */
-        Promise.all([domReady, fontsLoaded]).then(reveal, reveal);
+        Promise.all([mediaLoaded, fontsLoaded]).then(reveal, reveal);
       })();
     </script>
     <title>{pageTitle}</title>
@@ -161,6 +182,34 @@ const feed = new URL("/rss.xml", Astro.site);
         document
           .querySelectorAll(".entering")
           .forEach((el) => el.classList.remove("entering"));
+      });
+
+      /* The router's side of the hold in <head>: fetch the next page, then
+         decode its images and posters before swapping it in, so a client-side
+         navigation fades in whole too. The incoming document is detached and
+         loads nothing itself; these warm the cache its elements then hit. */
+      async function warm(src: string, srcset = "", sizes = "") {
+        const image = new Image();
+        image.sizes = sizes;
+        image.srcset = srcset;
+        image.src = src;
+        try {
+          await image.decode();
+        } catch {}
+      }
+
+      document.addEventListener("astro:before-preparation", (event) => {
+        const load = event.loader;
+        event.loader = async () => {
+          await load();
+          const next = event.newDocument;
+          await Promise.all([
+            ...[...next.images].map((img) => warm(img.src, img.srcset, img.sizes)),
+            ...[...next.querySelectorAll<HTMLVideoElement>("video[poster]")].map(
+              (video) => warm(video.poster),
+            ),
+          ]);
+        };
       });
 
       document.addEventListener("astro:after-swap", () => {

@@ -77,17 +77,20 @@ const [cover, ...rest] = (shots ?? []).filter((s) => s.src);
         {
           links && links.length > 0 && (
             <ul class="links mono" role="list">
-              {links.map((l) => (
-                <li>
-                  <a
-                    href={l.href}
-                    target={l.href.startsWith("http") ? "_blank" : undefined}
-                    rel={l.href.startsWith("http") ? "noopener" : undefined}
-                  >
-                    {l.label}
-                  </a>
-                </li>
-              ))}
+              {links.map((l) => {
+                const newTab = l.newTab || l.href.startsWith("http");
+                return (
+                  <li>
+                    <a
+                      href={l.href}
+                      target={newTab ? "_blank" : undefined}
+                      rel={newTab ? "noopener" : undefined}
+                    >
+                      {l.label}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           )
         }
