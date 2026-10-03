@@ -7,6 +7,9 @@ type SiteLink = { label: string; href: string; newTab?: boolean };
 export const site = {
 	name: "Mihai-Cristian Farcaș",
 	url: "https://mihaicristian.dev",
+	jobTitle: "Systems software engineer",
+	description:
+		"Mihai-Cristian Farcaș is a systems software engineer in Cluj-Napoca, Romania, building network software, developer tools, and AI products.",
 	links: [
 		{ label: "X", href: "https://x.com/mihaicristianf" },
 		{
@@ -27,4 +30,16 @@ export const site = {
 			newTab: true,
 		},
 	] satisfies SiteLink[],
+};
+
+export const person = {
+	"@type": "Person",
+	"@id": `${site.url}/#person`,
+	name: site.name,
+	alternateName: ["Mihai-Cristian Farcas", "Mihai Cristian Farcas"],
+	url: `${site.url}/`,
+	jobTitle: site.jobTitle,
+	sameAs: site.links
+		.filter((link) => link.href.startsWith("https://"))
+		.map((link) => link.href),
 };
