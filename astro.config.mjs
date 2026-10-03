@@ -62,11 +62,7 @@ export default defineConfig({
 			rehypePlugins: [[rehypeExternalLinks, externalLinks]],
 		}),
 		shikiConfig: {
-			themes: {
-				light: "vitesse-light",
-				dark: "vitesse-dark",
-			},
-			defaultColor: false,
+			theme: "css-variables",
 		},
 	},
 });

@@ -340,30 +340,30 @@ code {
 }
 
 .astro-code {
+	--astro-code-foreground: var(--text);
+	--astro-code-background: var(--faint);
+	--astro-code-token-constant: var(--text);
+	/* A deeper terracotta keeps small code text readable on the light surface. */
+	--astro-code-token-string: #9f513b;
+	--astro-code-token-comment: var(--muted);
+	--astro-code-token-keyword: var(--muted);
+	--astro-code-token-parameter: var(--text);
+	--astro-code-token-function: var(--text);
+	--astro-code-token-string-expression: var(--astro-code-token-string);
+	--astro-code-token-punctuation: var(--muted);
+	--astro-code-token-link: var(--text);
+
 	padding: 1rem 1.25rem;
 	border-radius: 6px;
 	border: 1px solid var(--hairline);
 	overflow-x: auto;
 	line-height: 1.6;
 	font-size: 0.8125rem;
-	/* Site surface instead of vitesse-light's pure white; the dark
-     media query below restores the theme background in dark mode. */
 	background: var(--faint);
 }
 
-.astro-code,
-.astro-code span {
-	color: var(--shiki-light) !important;
-	font-style: var(--shiki-light-font-style) !important;
-	font-weight: var(--shiki-light-font-weight) !important;
-}
-
 @media (prefers-color-scheme: dark) {
-	.astro-code,
-	.astro-code span {
-		color: var(--shiki-dark) !important;
-		background-color: var(--shiki-dark-bg) !important;
-		font-style: var(--shiki-dark-font-style) !important;
-		font-weight: var(--shiki-dark-font-weight) !important;
+	.astro-code {
+		--astro-code-token-string: var(--accent);
 	}
 }
