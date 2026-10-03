@@ -23,6 +23,8 @@ const projects = defineCollection({
 	schema: ({ image }) =>
 		z.object({
 			title: z.string(),
+			/* Search title; the project name stays short in headings and the rail. */
+			seoTitle: z.string().optional(),
 			/* One line: the meta description, and the rail's sub-label. */
 			description: z.string(),
 			group: z.enum(projectGroups),
