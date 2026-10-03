@@ -51,6 +51,30 @@ pick the ones you want or take them all, and the whole thing is undoable
 afterwards anyway. It opens with the word under your cursor or your visual
 selection already filled in, so the common case is a keystroke away.
 
+## Getting started
+
+You'll need Neovim 0.8 or later and [ripgrep](https://github.com/BurntSushi/ripgrep)
+installed as `rg`. Add this to your [lazy.nvim](https://github.com/folke/lazy.nvim)
+plugin specifications:
+
+```lua
+{
+  "mihaicristianfarcas/nvim-search-and-replace",
+  cmd = { "SearchAndReplaceOpen", "SearchAndReplaceVisual", "SearchAndReplaceUndo", "SearchAndReplaceRedo" },
+  opts = {},
+}
+```
+
+Open Neovim in your project and run `:SearchAndReplaceOpen`. Enter a search
+pattern and replacement, then review the before-and-after preview. In the
+results, use visual mode to select matches and press Enter to replace them,
+or Ctrl-a to replace everything. Use `:SearchAndReplaceUndo` to undo a
+replacement and `:SearchAndReplaceRedo` to redo it.
+
+Run `:checkhealth nvim-search-and-replace` to check your setup. The
+[README](https://github.com/mihaicristianfarcas/nvim-search-and-replace#installation)
+has the full configuration and keybindings.
+
 ## Being careful with your files
 
 A tool that edits forty files at once has to be paranoid, so most of the work
