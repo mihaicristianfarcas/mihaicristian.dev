@@ -13,7 +13,7 @@ const writing = defineCollection({
 });
 
 /* The rail's groups, ordered as listed here. */
-export const projectGroups = ["Products", "Tools", "Systems"] as const;
+export const projectGroups = ["Systems", "Products", "Tools"] as const;
 
 const projects = defineCollection({
 	loader: glob({ base: "./src/content/projects", pattern: "**/*.{md,mdx}" }),
