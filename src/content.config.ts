@@ -73,7 +73,9 @@ const projects = defineCollection({
 						}),
 				)
 				.optional(),
-			featured: z.boolean().optional(),
+			/* Rank among the home page's selected projects, from 1; omit to
+			   leave the project off it. */
+			featured: z.number().int().positive().optional(),
 			draft: z.boolean().optional(),
 		}),
 });

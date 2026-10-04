@@ -1,0 +1,110 @@
+---
+title: pingpong
+seoTitle: "pingpong: desktop and game streaming"
+description: Streams a computer's desktop, games included, to another computer with the latency of Moonlight, and every packet inside a post-quantum WireGuard tunnel.
+group: Systems
+order: 1
+years: "2026–present"
+role: Solo build
+status: Open source · in daily use
+tech: Rust · GPUI · WireGuard · NVENC · VideoToolbox
+featured: 1
+links:
+  - label: pingpong
+    href: https://ping-pong.sh
+  - label: source
+    href: https://github.com/mihaicristianfarcas/pingpong
+features:
+  - title: Keeps up with Moonlight
+    body: At 3024×1890 and 120 fps over Wi-Fi, on the same two machines, it showed 115.6 frames a second to Moonlight and Apollo's 110, and spent less time on the host and in decoding.
+  - title: Encrypted for the long run
+    body: Picture, sound, input, and the clipboard all travel in one WireGuard tunnel with ML-KEM-768 added, so a recording of a session stays closed even to a future quantum computer. Pairing over a PIN is hybrid too.
+  - title: Reach your host from anywhere
+    body: Hosts publish sealed records on the BitTorrent DHT that only paired devices can read, and both sides punch through their NATs. No relay server, no VPN to run, and usually no port to forward.
+  - title: Your screen's exact mode
+    body: Windows and macOS hosts create a virtual display at your screen's resolution and refresh rate for the session, so nothing is scaled or letterboxed.
+  - title: Holds up on bad Wi-Fi
+    body: Parity sized to the link's own loss rebuilds dropped packets. When it can't, the host repairs the damage with a recovery frame instead of a full keyframe, the way Moonlight does.
+  - title: Everything else at the desk
+    body: Stereo to 7.1 sound, controllers with rumble, and a clipboard shared both ways, files and folders included. Anything a password manager marks as concealed is never sent.
+  - title: Lend a computer to an AI agent
+    body: An agent can use a paired host the way you do, from Ping or from any MCP client. You can watch it, take over, or stop it, and it asks before risky steps like deleting files or typing a password.
+  - title: macOS, Windows, and Linux
+    body: One client and one host, each with a thin native layer per system, from the window and the decoder to screen capture and the encoder.
+shots:
+  - src: ../../assets/projects/pingpong-hero.png
+    alt: "The top of ping-pong.sh: the headline 'Low-latency desktop streaming between your computers', a line on Ping, Pong, 4K at 120 fps and the post-quantum tunnel, and Download and View on GitHub buttons, with Pong's window starting below."
+    caption: The landing page at ping-pong.sh.
+---
+
+import Shot from "../../components/Shot.astro";
+import latencyPoster from "../../assets/projects/pingpong-stream-latency.png";
+import agentSession from "../../assets/projects/pingpong-agent-session.png";
+
+pingpong streams one computer's desktop to another: the picture, the sound, the
+keyboard and mouse, controllers, the clipboard. **Ping** is the client you sit
+at, **Pong** the host you stream from. It started as a replacement for my own
+setup, Apollo on a Windows PC and Moonlight on a MacBook, with one thing they
+couldn't give me: every packet travels inside
+[pq-boringtun](/projects/pq-boringtun/), the post-quantum WireGuard from my
+thesis.
+
+Game streaming leaves nowhere to hide. At 120 frames a second a new frame
+leaves the host every 8.3 milliseconds, and a hiccup anywhere along the way
+shows up as a stutter on the other screen. Moonlight and Apollo have spent years
+getting the details right, so wherever pingpong had to choose how streaming
+should behave, it chose what they do, and the code says so. It's still a
+separate implementation, written from scratch in Rust, and on the same two
+machines it now shows more frames than they do.
+
+<Shot
+  src={latencyPoster}
+  video="../../assets/projects/pingpong-stream-latency.mp4"
+  alt="Two screens side by side, both showing the same running clock and frame counter. The right half, Ping's window, is one frame behind the left half, the host's screen, throughout."
+  caption="A Linux host and client in one container, over loopback. The host's screen on the left, Ping's window on the right, one frame behind: 5.1 ms from capture to screen."
+/>
+
+## How it works
+
+The host gives each session a display of its own, a virtual one at exactly
+the client's resolution and refresh rate, captures it at that rate, and
+encodes it in hardware: NVENC on Windows, VideoToolbox on a Mac. Each frame is
+cut into packets with Reed-Solomon parity added, so the client can rebuild
+what Wi-Fi drops, and the packets leave in small paced groups instead of one
+burst that would overflow a wireless queue. When a frame is lost anyway, the
+client decodes nothing until a frame that doesn't depend on it arrives, and
+asks the host to make the next one a recovery frame. That's Moonlight's rule,
+and until pingpong followed it, every lost frame left smeared blocks behind.
+
+Everything rides one encrypted tunnel on one UDP socket per side, inside the
+apps, with no network adapter to install. pingpong's own 20-byte header
+doubles as the inner IP header WireGuard expects, and encrypting a packet
+takes about 0.6 microseconds on an M4 Pro: half a percent of one core at a
+full stream. Pairing needs no keys copied by hand. Ping shows a PIN, you type
+it into Pong, and the two derive a key from it with SPAKE2 and ML-KEM side by
+side, then trade their tunnel keys under it. Away from home, the host
+publishes its addresses on the BitTorrent DHT, sealed so only its paired
+devices can read them, and both sides punch through their NATs at once.
+There's no server in the middle, mine or anyone else's.
+
+Most of a streaming client is the same on every system, so there's one client
+and one host, each with a thin native layer: Metal, Direct3D 11, or Vulkan to
+put frames on the screen; ScreenCaptureKit, Desktop Duplication, or PipeWire
+to capture them.
+
+The newest part lets an AI agent use a host the way you do. It pairs like any
+other device, sees the screen, and drives the keyboard and mouse over the same
+tunnel, either from Ping's Agents page or from any agent that speaks MCP, like
+Claude Code or Codex. You can watch it work, take over, or stop it, and it
+asks before anything risky: deleting files, spending money, typing a password.
+
+<Shot
+  src={agentSession}
+  alt="Ping's Agents page with a session titled 'Clean up the Downloads folder' on GAMING-PC. The agent reports that Downloads holds 18.4 GB in 212 files, lists the three biggest items in a table, and asks whether to move two of them to the recycle bin; the reply says yes, keep the recordings. A side panel shows the agent's four-step plan, all ticked."
+  caption="An agent session in Ping. The agent looks, answers with what it found, and waits for a yes before moving anything."
+/>
+
+I built it in four phases between July and September 2026, each with a design
+written before the code and measurements taken after it, and all of them are
+kept in the repository: what was tried, what it cost, and what changed because
+of it. Both apps are now in daily use on my own desk.
