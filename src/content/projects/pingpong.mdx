@@ -32,14 +32,14 @@ features:
   - title: macOS, Windows, and Linux
     body: One client and one host, each with a thin native layer per system, from the window and the decoder to screen capture and the encoder.
 shots:
-  - src: ../../assets/projects/pingpong-hero.png
-    alt: "The top of ping-pong.sh: the headline 'Low-latency desktop streaming between your computers', a line on Ping, Pong, 4K at 120 fps and the post-quantum tunnel, and Download and View on GitHub buttons, with Pong's window starting below."
-    caption: The landing page at ping-pong.sh.
+  - src: ../../assets/projects/pingpong-og.jpg
+    alt: "pingpong's logo and the headline 'Low-latency desktop streaming between your computers', beside overlapping windows of Ping's Hosts page and Pong's Overview page."
+    caption: Ping and Pong, the client and host.
 ---
 
 import Shot from "../../components/Shot.astro";
 import latencyPoster from "../../assets/projects/pingpong-stream-latency.png";
-import agentSession from "../../assets/projects/pingpong-agent-session.png";
+import agentSession from "../../assets/projects/pingpong-agent-session.webp";
 
 pingpong streams one computer's desktop to another: the picture, the sound, the
 keyboard and mouse, controllers, the clipboard. **Ping** is the client you sit
@@ -100,8 +100,8 @@ asks before anything risky: deleting files, spending money, typing a password.
 
 <Shot
   src={agentSession}
-  alt="Ping's Agents page with a session titled 'Clean up the Downloads folder' on GAMING-PC. The agent reports that Downloads holds 18.4 GB in 212 files, lists the three biggest items in a table, and asks whether to move two of them to the recycle bin; the reply says yes, keep the recordings. A side panel shows the agent's four-step plan, all ticked."
-  caption="An agent session in Ping. The agent looks, answers with what it found, and waits for a yes before moving anything."
+  alt="An agent session in Ping titled 'Clean up the Downloads folder'. The agent waits for permission to empty the Recycle Bin, with Allow and Don't buttons. A side panel shows the screen after its last action, screenshots of earlier steps, and its plan."
+  caption="An agent session in Ping: the screen after its last action, its plan, and a go-ahead before emptying the Recycle Bin."
 />
 
 I built it in four phases between July and September 2026, each with a design
