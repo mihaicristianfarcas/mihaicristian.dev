@@ -27,7 +27,7 @@ const {
 const description = Astro.props.description ?? site.description;
 const pageTitle = title
   ? `${title} — ${site.name}`
-  : `${site.name} | Systems Software Engineer`;
+  : `${site.name} | Software Engineer`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
 const feed = new URL("/rss.xml", Astro.site);

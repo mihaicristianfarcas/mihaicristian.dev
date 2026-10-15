@@ -9,7 +9,7 @@ export async function feed(context: { site?: URL | undefined }) {
 
 	return rss({
 		title: site.name,
-		description: "Systems software engineer in Cluj-Napoca, Romania.",
+		description: "Software engineer in Cluj-Napoca, Romania.",
 		site: context.site!,
 		customData: "<language>en</language>",
 		items: posts.map((post) => ({
