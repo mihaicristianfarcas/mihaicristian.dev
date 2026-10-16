@@ -18,8 +18,8 @@ const { years, role, status, tech, links, shots } = project.data;
 /* Shots without a src would render placeholder frames; skip them until the
    real screenshots exist. */
 const [cover, ...rest] = (shots ?? []).filter((s) => s.src);
-/* The first link is the page's button; the rest sit beside it. */
-const [primary, ...others] = (links ?? []).map((l) => ({
+/* The links sit in a row under the description, in their listed order. */
+const actions = (links ?? []).map((l) => ({
   ...l,
   newTab: l.newTab || l.href.startsWith("http"),
 }));
@@ -30,28 +30,9 @@ const [primary, ...others] = (links ?? []).map((l) => ({
     <h1>{project.data.title}</h1>
     <p class="lede">{project.data.description}</p>
     {
-      primary && (
+      actions.length > 0 && (
         <div class="cta">
-          <a
-            class="button"
-            href={primary.href}
-            target={primary.newTab ? "_blank" : undefined}
-            rel={primary.newTab ? "noopener" : undefined}
-          >
-            {primary.label}
-            <svg
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M5 11 11 5M6 5h5v5" />
-            </svg>
-          </a>
-          {others.map((l) => (
+          {actions.map((l) => (
             <a
               class="more"
               href={l.href}

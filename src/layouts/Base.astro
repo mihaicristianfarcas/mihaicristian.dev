@@ -9,8 +9,8 @@ interface Props {
   noindex?: boolean;
   publishedTime?: Date;
   structuredData?: Record<string, unknown>;
-  /* The "Go back" link at the top. The homepage leaves it out: there's
-     nowhere further back to go, and its own title is the name. */
+  /* The "Go back" link to the homepage, at the top. The homepage leaves it
+     out. */
   header?: boolean;
 }
 
@@ -27,11 +27,6 @@ const pageTitle = title
   : `${site.name} | Software Engineer`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const path = Astro.url.pathname;
-/* Where "Go back" leads when the visit started on this page: a project or a
-   post goes to its section's index, anything else home. */
-const parent = /^\/(projects|writing)\/[^/]+/.test(path)
-  ? `/${path.split("/")[1]}/`
-  : "/";
 
 const feed = new URL("/rss.xml", Astro.site);
 const websiteId = `${site.url}/#website`;
@@ -178,32 +173,6 @@ const schema = {
   </head>
   <body>
     <script>
-      /* "Go back" goes back when the page before this one is on this site:
-         the router numbers its history entries from 0, on the page a visit
-         lands on. A visit that lands here instead follows the link to the
-         page's parent. A modified click opens the link as usual. Capture, so
-         the router, which leaves handled clicks alone, sees it handled. */
-      document.addEventListener(
-        "click",
-        (event) => {
-          const link = (event.target as Element).closest?.("a[data-back]");
-          if (
-            !link ||
-            event.button !== 0 ||
-            event.metaKey ||
-            event.ctrlKey ||
-            event.shiftKey ||
-            event.altKey ||
-            !((history.state?.index ?? 0) > 0)
-          )
-            return;
-          event.preventDefault();
-          history.back();
-        },
-        true,
-      );
-    </script>
-    <script>
       /* The router's side of the hold in <head>: fetch the next page, then
          decode its images and posters before swapping it in, so a client-side
          navigation arrives whole too. The incoming document is detached and
@@ -254,7 +223,7 @@ const schema = {
     {
       header && (
         <header class="wrap top">
-          <a class="back" href={parent} data-back>
+          <a class="back" href="/">
             ← Go back
           </a>
         </header>

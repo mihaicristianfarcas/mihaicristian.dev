@@ -57,8 +57,10 @@ automatically, newest first.
 ## A few notes on the design
 
 - **One font size.** Everything is set at 17px in the system font; hierarchy
-  comes from weight, color, and space. Pages share one rhythm: a title, its
-  description, and its buttons, each 64px apart, then sections 96px apart.
+  comes from weight, color, and space. Links are plain text, underlined on
+  hover. Pages share one rhythm of 34px lines: every gap is a whole number of
+  them, one between paragraphs, two around a page's title, description, and
+  links, four between sections.
 - **Light and dark** come straight from the system preference. Dark is a warm
   gray with white text, after macOS. Screenshots with a theme of their own
   (a terminal, a chart) ship a version for each.

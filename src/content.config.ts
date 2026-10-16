@@ -37,7 +37,7 @@ const projects = defineCollection({
 			role: z.string(),
 			status: z.string(),
 			tech: z.string(),
-			/* The first link is the project page's button. `newTab` opens a
+			/* The project page's links, in this order. `newTab` opens a
 			   same-origin link in its own tab, the way the CV does, for files
 			   like a paper; external links always do. */
 			links: z
