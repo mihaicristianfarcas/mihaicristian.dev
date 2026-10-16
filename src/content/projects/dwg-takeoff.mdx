@@ -1,0 +1,36 @@
+---
+title: DWG Takeoff
+seoTitle: "DWG Takeoff: quantity takeoff from CAD drawings"
+description: Quantity takeoff from CAD drawings. Ask for quantities in plain words, and every number comes back with its formula and the drawing entities it was measured on.
+summary: Quantities from CAD drawings, checkable to the line.
+group: Products
+order: 4
+years: "2026"
+role: Solo build
+status: Open source · alpha
+tech: Python · ezdxf · shapely · FastAPI · Codex · Claude
+featured: 6
+links:
+  - label: Source on GitHub
+    href: https://github.com/mihaicristianfarcas/dwg-takeoff
+shots:
+  - src: ../../assets/projects/dwg-takeoff-results.png
+    alt: "DWG Takeoff on a demo site plan. The plan fills the left, with the parking area outlined in purple and a legend of eight measured elements. On the right, a request for the building footprint, two kinds of paving, lawn, curbs, trees, lamp posts and parking line paint, a summary of how they were found, and the results: 192 m² of building, 800 m² of vehicle paving, 228 m² of sidewalk paving, 255 m² of lawn and 120 m of curb, each marked measured with high confidence."
+    caption: "A takeoff on the demo site plan: eight quantities asked for in one sentence, each one outlined on the plan where it was measured. The interface is in Romanian, for Romanian cost estimating."
+  - src: ../../assets/projects/dwg-takeoff-catalogue.png
+    alt: "The drawing explorer beside the same plan: the drawing's units, read from its header, then its catalogue. Entries S1 to S4, vehicle pavers, lawn, sidewalk pavers and the building, each with its hatch, layer, colour, the legend label and texts that name it, its category and its measured area. S1 is highlighted on the plan."
+    caption: "The catalogue the AI chooses from: everything measurable in the drawing, numbered and already measured, and named from its legend, layers and texts."
+---
+
+Before a construction job can be priced, someone measures its drawings: square
+metres of paving, metres of curb, how many trees. DWG Takeoff takes that request
+in plain words and returns quantities you can check entity by entity. Every
+number comes with its formula, the AutoCAD handles of what was measured, what
+was counted once instead of twice and why, and the geometry highlighted on the
+plan.
+
+The AI never produces a number. A deterministic step first breaks the drawing
+into a numbered catalogue of everything measurable. The model only picks the
+entries that answer the request and the factors that apply, a geometry engine
+does the measuring, and the model reviews the result before it's shown. On the
+demo drawing, all eight quantities come back exact, in about 40 seconds.
