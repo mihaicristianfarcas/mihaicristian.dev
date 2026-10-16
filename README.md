@@ -27,10 +27,10 @@ Any recent Node works too if you'd rather use `npm`.
 
 ```
 src/
-  components/   ProjectGrid, PostList, Pager, Shot, and pages/ for each page's body
+  components/   ProjectGrid, PostList, Pager, Back, Shot, and pages/ for each page's body
   content/      the projects and the writing, as Markdown/MDX
   data/         site metadata (site.ts), the quote list (quotes.ts), and queries
-  layouts/      Base.astro — the shared <head>, header, footer, and load gate
+  layouts/      Base.astro — the shared <head>, footer, and load gate
   pages/        index, the 404, /projects, /writing, and the RSS feed
   styles/       global.css — colors, type, layout, and the reset
 ```
