@@ -41,6 +41,11 @@
 	--measure: 40em;
 	/* How wide a screenshot gets inside the text. */
 	--figure: 820px;
+	/* The project grid's columns. Two-column lists take their first column
+	   from it too, so every list's second column starts on the same line. */
+	--cols: 3;
+	--col-gap: 32px;
+	--col: calc((100% - (var(--cols) - 1) * var(--col-gap)) / var(--cols));
 }
 
 /* macOS's dark appearance: warm gray, white text. */
@@ -281,8 +286,8 @@ kbd {
 /* Projects and features, three to a row. */
 .grid {
 	display: grid;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: var(--leading) 32px;
+	grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+	gap: var(--leading) var(--col-gap);
 	margin: 0;
 	padding: 0;
 	list-style: none;
@@ -308,13 +313,14 @@ kbd {
 	text-wrap: pretty;
 }
 
-/* Facts in two columns: a name, and what it stands for. */
+/* Facts in two columns: a name, and what it stands for. The names take one
+   grid column, so what they stand for starts where the grid's second column
+   does. */
 .keys {
 	display: grid;
-	grid-template-columns: max-content minmax(0, 1fr);
+	grid-template-columns: var(--col) minmax(0, 1fr);
 	align-items: baseline;
-	column-gap: 32px;
-	max-width: var(--figure);
+	column-gap: var(--col-gap);
 }
 
 .keys dt {
@@ -326,13 +332,13 @@ kbd {
 	text-wrap: pretty;
 }
 
-/* Posts: the title, then the date, the dates in one column down the list,
-   right after the longest title. */
+/* Posts: the title, then the date. The titles take one grid column, like
+   the names in .keys, so the dates line up with every other list's second
+   column. */
 .posts {
 	display: grid;
-	grid-template-columns: minmax(0, max-content) max-content;
-	column-gap: 32px;
-	max-width: var(--figure);
+	grid-template-columns: var(--col) minmax(0, 1fr);
+	column-gap: var(--col-gap);
 	margin: 0;
 	padding: 0;
 	list-style: none;
@@ -343,6 +349,7 @@ kbd {
 .posts.described {
 	grid-template-columns: minmax(0, 1fr) max-content;
 	row-gap: var(--leading);
+	max-width: var(--figure);
 }
 
 .post {
@@ -603,8 +610,8 @@ figcaption {
 /* ---- smaller screens ---- */
 
 @media (max-width: 900px) {
-	.grid {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
+	:root {
+		--cols: 2;
 	}
 }
 
