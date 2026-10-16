@@ -34,27 +34,13 @@ const actions = (links ?? []).map((l) => ({
     </div>
   </section>
 
-  {
-    cover && (
-      <section class="wrap cover-shot" aria-label="Cover">
-        <Shot {...cover} cover />
-      </section>
-    )
-  }
-
-  <article class="wrap prose">
-    <Content />
+  <article class="wrap entry">
+    {cover && <Shot {...cover} cover />}
+    <div class="prose">
+      <Content />
+    </div>
+    {rest.map((s) => <Shot {...s} />)}
   </article>
-
-  {
-    rest.length > 0 && (
-      <section class="wrap section shots" aria-label="Screenshots">
-        {rest.map((s) => (
-          <Shot {...s} />
-        ))}
-      </section>
-    )
-  }
 
   <section class="wrap section" aria-labelledby="details">
     <h2 id="details">Details</h2>
@@ -92,15 +78,3 @@ const actions = (links ?? []).map((l) => ({
   />
 </Base>
 
-<style>
-  /* From the description down to the last screenshot, the media and the
-     text between them are all two lines apart. */
-  .cover-shot {
-    padding-top: var(--hero-gap);
-  }
-
-  .shots {
-    gap: var(--hero-gap);
-    padding-top: var(--hero-gap);
-  }
-</style>

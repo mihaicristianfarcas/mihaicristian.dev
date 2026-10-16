@@ -31,8 +31,10 @@ const { newer, older } = await getPostNeighbours(post.id);
     </div>
   </section>
 
-  <article class="wrap prose">
-    <Content />
+  <article class="wrap entry">
+    <div class="prose">
+      <Content />
+    </div>
   </article>
 
   <Back />
@@ -44,10 +46,3 @@ const { newer, older } = await getPostNeighbours(post.id);
   />
 </Base>
 
-<style>
-  /* The text starts one empty line under the date, the same as every gap
-     inside it. */
-  .prose {
-    padding-top: var(--gap);
-  }
-</style>

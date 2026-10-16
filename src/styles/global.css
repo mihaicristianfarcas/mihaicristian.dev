@@ -30,9 +30,9 @@
 	--leading: calc(var(--size) * var(--line-height));
 	/* Between blocks inside a section: one empty line. */
 	--gap: var(--leading);
-	/* The space between a page's title, with its description, and what
-	   comes after it. */
-	--hero-gap: calc(var(--leading) * 2);
+	/* Between the blocks of a project's or a post's content, its text and
+	   its media: two empty lines. */
+	--block: calc(var(--leading) * 2);
 	/* The space above every section. */
 	--section: calc(var(--leading) * 4);
 	/* The project grid's columns. Two-column lists take their first column
@@ -185,10 +185,6 @@ kbd {
 /* Every page opens on its title, as far from the top as it is from the side
    (see --corner). */
 .hero {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: var(--hero-gap);
 	padding-top: var(--corner);
 }
 
@@ -382,16 +378,25 @@ kbd {
 	text-align: right;
 }
 
-/* ---- running text: project write-ups and posts ---- */
+/* ---- a project's or a post's content ---- */
 
-/* Text spans the page, as wide as the screenshots above it. Every block in
+/* The page's one section under its title: the text and the media in one
+   column, two lines apart. The column sets the spacing; nothing in it has a
+   margin of its own. */
+.entry {
+	display: flex;
+	flex-direction: column;
+	gap: var(--block);
+	padding-top: var(--section);
+}
+
+/* Running text spans the page, as wide as the screenshots. Every block in
    it, a paragraph, a heading, a quote's lines, a list's items, sits one empty
-   line from the next, so the spacing never changes down the page. */
+   line from the next. */
 .prose {
 	display: flex;
 	flex-direction: column;
 	gap: var(--gap);
-	padding-top: var(--hero-gap);
 }
 
 .prose p,
@@ -457,6 +462,13 @@ kbd {
 
 /* ---- a screenshot or a recording ---- */
 
+/* The frame, then its caption one empty line under it. */
+.shot {
+	display: flex;
+	flex-direction: column;
+	gap: var(--gap);
+}
+
 .frame {
 	position: relative;
 	overflow: hidden;
@@ -484,7 +496,6 @@ kbd {
 }
 
 figcaption {
-	margin-top: 12px;
 	color: var(--muted);
 	text-wrap: pretty;
 }
@@ -630,7 +641,8 @@ html[data-astro-transition-scope] {
    compositing layer; they share a start, so they read as one fade. The
    footer doesn't change between pages, so a navigation leaves it be and
    only a fresh load fades it in. */
-main > :not(.prose),
+main > :not(.entry),
+.entry > :not(.prose),
 .prose > * {
 	animation: enter 400ms var(--ease-out) both;
 }
@@ -642,7 +654,8 @@ main > :not(.prose),
 /* Held until Base.astro drops the attribute, once every image has decoded.
    Client-side navigations never see it: Astro rewrites the <html> attributes
    from the incoming page, which has none. */
-:root[data-loading] main > :not(.prose),
+:root[data-loading] main > :not(.entry),
+:root[data-loading] .entry > :not(.prose),
 :root[data-loading] .prose > * {
 	animation-play-state: paused;
 }
@@ -652,7 +665,8 @@ main > :not(.prose),
 }
 
 @media (prefers-reduced-motion: reduce) {
-	main > :not(.prose),
+	main > :not(.entry),
+	.entry > :not(.prose),
 	.prose > * {
 		animation: none;
 	}
@@ -662,7 +676,8 @@ main > :not(.prose),
 	}
 
 	/* No animation left to hold, so hold the content itself. */
-	:root[data-loading] main > :not(.prose),
+	:root[data-loading] main > :not(.entry),
+	:root[data-loading] .entry > :not(.prose),
 	:root[data-loading] .prose > * {
 		opacity: 0;
 	}
