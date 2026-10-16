@@ -31,3 +31,6 @@ dist-ssr
 
 # Superpowers session artifacts
 .superpowers/
+
+# Local worktrees
+.worktrees/
