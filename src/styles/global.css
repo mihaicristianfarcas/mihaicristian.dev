@@ -30,8 +30,8 @@
 	--leading: calc(var(--size) * var(--line-height));
 	/* Between blocks inside a section: one empty line. */
 	--gap: var(--leading);
-	/* The space between a page's title, with its description, its links,
-	   and what comes after them. */
+	/* The space between a page's title, with its description, and what
+	   comes after it. */
 	--hero-gap: calc(var(--leading) * 2);
 	/* The space above every section. */
 	--section: calc(var(--leading) * 4);
@@ -182,7 +182,7 @@ kbd {
 
 /* ---- header ---- */
 
-/* "Go back", as far from the top as it is from the side (see --corner). */
+/* "Back to /", as far from the top as it is from the side (see --corner). */
 .top {
 	display: flex;
 	padding-top: var(--corner);

@@ -18,35 +18,24 @@ const { years, role, status, tech, links, shots } = project.data;
 /* Shots without a src would render placeholder frames; skip them until the
    real screenshots exist. */
 const [cover, ...rest] = (shots ?? []).filter((s) => s.src);
-/* The links sit in a row under the description, in their listed order. */
+/* The links sit in a row under the details, in their listed order, with
+   the way home last. */
 const actions = (links ?? []).map((l) => ({
   ...l,
   newTab: l.newTab || l.href.startsWith("http"),
 }));
 ---
 
-<Base title={project.data.title} description={project.data.description}>
+<Base
+  title={project.data.title}
+  description={project.data.description}
+  header={false}
+>
   <section class="wrap hero">
     <div class="title">
       <h1>{project.data.title}</h1>
       <p class="lede">{project.data.description}</p>
     </div>
-    {
-      actions.length > 0 && (
-        <div class="cta">
-          {actions.map((l) => (
-            <a
-              class="more"
-              href={l.href}
-              target={l.newTab ? "_blank" : undefined}
-              rel={l.newTab ? "noopener" : undefined}
-            >
-              {l.label}
-            </a>
-          ))}
-        </div>
-      )
-    }
   </section>
 
   {
@@ -83,6 +72,21 @@ const actions = (links ?? []).map((l) => ({
       <dt>Built with</dt>
       <dd>{tech}</dd>
     </dl>
+    <div class="cta">
+      {
+        actions.map((l) => (
+          <a
+            class="more"
+            href={l.href}
+            target={l.newTab ? "_blank" : undefined}
+            rel={l.newTab ? "noopener" : undefined}
+          >
+            {l.label}
+          </a>
+        ))
+      }
+      <a class="more" href="/">Back to /</a>
+    </div>
   </section>
 
   <Pager
@@ -93,6 +97,12 @@ const actions = (links ?? []).map((l) => ({
 </Base>
 
 <style>
+  /* With no header above it, the title is the page's first line, so it
+     takes the header's room from the top (see --corner). */
+  .hero {
+    padding-top: var(--corner);
+  }
+
   .cover-shot {
     padding-top: var(--hero-gap);
   }

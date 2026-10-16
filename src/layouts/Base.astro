@@ -9,8 +9,8 @@ interface Props {
   noindex?: boolean;
   publishedTime?: Date;
   structuredData?: Record<string, unknown>;
-  /* The "Go back" link to the homepage, at the top. The homepage leaves it
-     out. */
+  /* The "Back to /" link to the homepage, at the top. The homepage leaves
+     it out, and a project page has its own under the details. */
   header?: boolean;
 }
 
@@ -224,7 +224,7 @@ const schema = {
       header && (
         <header class="wrap top">
           <a class="back" href="/">
-            Go back
+            Back to /
           </a>
         </header>
       )
