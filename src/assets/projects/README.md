@@ -69,9 +69,9 @@ shots:
 - The video is matched by file name and emitted under a content hash in
   `/_astro/`, so it's cached like every other asset. A missing file fails the
   build too.
-- It preloads with the page, then plays muted and looped while it's on screen
-  and pauses when it scrolls away. Under reduced motion nothing starts on its
-  own; the play button does.
+- It preloads with the page, then plays muted and looped, with no controls,
+  while it's on screen, and pauses when it scrolls away. Under reduced motion
+  it stays on its first frame.
 - Unlike images, videos aren't re-encoded. Encode them before dropping them in:
   H.264 in an `.mp4` (the one format every browser plays), no audio track, and
   the index at the front so playback starts before the download finishes:

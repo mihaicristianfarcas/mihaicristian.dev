@@ -79,32 +79,24 @@ const imageDark =
   <div class:list={["frame", { empty: !src }]}>
     {
       videoUrl && poster && src ? (
-        <>
-          {/* Native controls until the script below takes over, so it still
-              plays with JavaScript off. */}
-          <video
-            poster={posterDark ? undefined : poster.src}
-            data-poster={posterDark ? poster.src : undefined}
-            data-poster-dark={posterDark?.src}
-            width={src.width}
-            height={src.height}
-            aria-label={alt ?? caption}
-            preload="auto"
-            muted
-            loop
-            playsinline
-            controls
-            data-shot-video
-          >
-            {videoDarkUrl && (
-              <source src={videoDarkUrl} type="video/mp4" media={dark} />
-            )}
-            <source src={videoUrl} type="video/mp4" />
-          </video>
-          <button type="button" class="toggle" hidden>
-            Play
-          </button>
-        </>
+        <video
+          poster={posterDark ? undefined : poster.src}
+          data-poster={posterDark ? poster.src : undefined}
+          data-poster-dark={posterDark?.src}
+          width={src.width}
+          height={src.height}
+          aria-label={alt ?? caption}
+          preload="auto"
+          muted
+          loop
+          playsinline
+          data-shot-video
+        >
+          {videoDarkUrl && (
+            <source src={videoDarkUrl} type="video/mp4" media={dark} />
+          )}
+          <source src={videoUrl} type="video/mp4" />
+        </video>
       ) : src ? (
         <picture>
           {imageDark && (
@@ -136,10 +128,9 @@ const imageDark =
 </figure>
 
 <script>
-  /* Recordings play while they're on screen and pause once they leave, so a
-     page of them decodes one at a time. Under reduced motion nothing starts
-     on its own; the button still plays it. A video the reader paused stays
-     paused until they play it again. */
+  /* Recordings play on a loop, with no controls, while they're on screen,
+     and pause once they leave, so a page of them decodes one at a time.
+     Under reduced motion they stay on their first frame. */
   const still = matchMedia("(prefers-reduced-motion: reduce)");
   const dark = matchMedia("(prefers-color-scheme: dark)");
   let observer: IntersectionObserver | undefined;
@@ -158,11 +149,6 @@ const imageDark =
     }
   });
 
-  function label(video: HTMLVideoElement, button: HTMLButtonElement) {
-    button.textContent = video.paused ? "Play" : "Pause";
-    button.setAttribute("aria-label", video.paused ? "Play video" : "Pause video");
-  }
-
   document.addEventListener("astro:page-load", () => {
     observer?.disconnect();
     observer = new IntersectionObserver(
@@ -170,8 +156,7 @@ const imageDark =
         for (const { target, isIntersecting } of entries) {
           const video = target as HTMLVideoElement;
           if (!isIntersecting) video.pause();
-          else if (!still.matches && !("held" in video.dataset))
-            video.play().catch(() => {});
+          else if (!still.matches) video.play().catch(() => {});
         }
       },
       { threshold: 0.4 },
@@ -180,26 +165,11 @@ const imageDark =
     for (const video of document.querySelectorAll<HTMLVideoElement>(
       "video[data-shot-video]",
     )) {
-      const button = video.nextElementSibling as HTMLButtonElement;
       /* After a client-side navigation the element was parsed into a detached
          document, where picking a source fails, and moving it into this one
          doesn't retry. Start it over. */
       if (video.error || video.networkState === video.NETWORK_NO_SOURCE)
         video.load();
-      video.controls = false;
-      button.hidden = false;
-      video.addEventListener("play", () => label(video, button));
-      video.addEventListener("pause", () => label(video, button));
-      button.addEventListener("click", () => {
-        if (video.paused) {
-          delete video.dataset.held;
-          video.play().catch(() => {});
-        } else {
-          video.dataset.held = "";
-          video.pause();
-        }
-      });
-      label(video, button);
       observer.observe(video);
     }
   });

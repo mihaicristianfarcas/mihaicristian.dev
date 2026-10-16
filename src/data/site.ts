@@ -1,8 +1,6 @@
 /* Site metadata and links. */
 
-/* `newTab` forces target=_blank for same-origin links the http check misses —
-   the CV opens in its own tab so it doesn't navigate away from the page. */
-type SiteLink = { label: string; href: string; newTab?: boolean };
+type SiteLink = { label: string; href: string };
 
 export const site = {
 	name: "Mihai-Cristian Farcaș",
@@ -23,11 +21,6 @@ export const site = {
 		{
 			label: "Email",
 			href: "mailto:mihaicristianfarcas@gmail.com",
-		},
-		{
-			label: "CV",
-			href: "/Mihai-Cristian-Farcas-CV.pdf",
-			newTab: true,
 		},
 	] satisfies SiteLink[],
 };

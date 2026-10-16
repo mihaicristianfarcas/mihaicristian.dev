@@ -38,8 +38,8 @@ const projects = defineCollection({
 			status: z.string(),
 			tech: z.string(),
 			/* The project page's links, in this order. `newTab` opens a
-			   same-origin link in its own tab, the way the CV does, for files
-			   like a paper; external links always do. */
+			   same-origin link, like a paper, in its own tab; external links
+			   always do. */
 			links: z
 				.array(
 					z.object({

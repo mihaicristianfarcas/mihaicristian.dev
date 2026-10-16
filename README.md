@@ -70,4 +70,4 @@ automatically, newest first.
   navigation decodes the next page's media before swapping it in.
 
 Everything degrades gracefully: with JavaScript off, the pages render as
-normal and the recordings keep their native controls.
+normal and the recordings show their first frame.

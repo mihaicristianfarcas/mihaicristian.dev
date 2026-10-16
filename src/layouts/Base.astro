@@ -224,7 +224,7 @@ const schema = {
         <nav aria-label="Elsewhere">
           {
             site.links.map((l) => {
-              const newTab = l.newTab || l.href.startsWith("http");
+              const newTab = l.href.startsWith("http");
               return (
                 <a
                   href={l.href}
