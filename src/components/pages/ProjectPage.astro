@@ -27,8 +27,10 @@ const actions = (links ?? []).map((l) => ({
 
 <Base title={project.data.title} description={project.data.description}>
   <section class="wrap hero">
-    <h1>{project.data.title}</h1>
-    <p class="lede">{project.data.description}</p>
+    <div class="title">
+      <h1>{project.data.title}</h1>
+      <p class="lede">{project.data.description}</p>
+    </div>
     {
       actions.length > 0 && (
         <div class="cta">

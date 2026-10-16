@@ -30,8 +30,8 @@
 	--leading: calc(var(--size) * var(--line-height));
 	/* Between blocks inside a section: one empty line. */
 	--gap: var(--leading);
-	/* The space between a page's title, its description, its links, and
-	   what comes after them. */
+	/* The space between a page's title, with its description, its links,
+	   and what comes after them. */
 	--hero-gap: calc(var(--leading) * 2);
 	/* The space above every section. */
 	--section: calc(var(--leading) * 4);
@@ -193,7 +193,7 @@ kbd {
 	text-decoration: none;
 }
 
-/* ---- hero: a page's title, its description, and its links ---- */
+/* ---- hero: a page's title and description, and its links ---- */
 
 .hero {
 	display: flex;
@@ -203,14 +203,16 @@ kbd {
 	padding-top: calc(var(--leading) * 3);
 }
 
-.lede {
-	color: var(--body);
-	text-wrap: pretty;
-}
-
-/* A title with lines under it: a post and its date. */
+/* A title with its lines right under it, as one group: a page and its
+   description, a post and its date. */
 .title p {
 	color: var(--muted);
+}
+
+/* A page's description, in the text's color rather than the date's. */
+.title .lede {
+	color: var(--body);
+	text-wrap: pretty;
 }
 
 /* A row of links, one line tall, and one line per row when they wrap. */

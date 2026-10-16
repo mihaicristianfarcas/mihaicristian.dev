@@ -21,14 +21,16 @@ const notes: Record<(typeof projectGroups)[number], string> = {
   description="Explore software projects by Mihai-Cristian Farcaș, from networking, cryptography, and systems research to AI products and developer tools."
 >
   <section class="wrap hero">
-    <h1>Projects</h1>
-    <p class="lede">
-      {
-        groups.length > 0
-          ? "Things I've built, and what each one actually does."
-          : "Nothing here yet."
-      }
-    </p>
+    <div class="title">
+      <h1>Projects</h1>
+      <p class="lede">
+        {
+          groups.length > 0
+            ? "Things I've built, and what each one actually does."
+            : "Nothing here yet."
+        }
+      </p>
+    </div>
   </section>
 
   {

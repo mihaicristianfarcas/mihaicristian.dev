@@ -11,12 +11,14 @@ const years = await getPostsByYear();
   description="Essays and notes by Mihai-Cristian Farcaș on software engineering, coding with AI, study, and life beyond the screen."
 >
   <section class="wrap hero">
-    <h1>Writing</h1>
-    <p class="lede">
-      {years.length > 0 ? "Notes on software and life." : "Nothing here yet."}
-      There's an <a href="/rss.xml">RSS feed</a>
-      {years.length > 0 ? "for new posts." : "to catch the first post."}
-    </p>
+    <div class="title">
+      <h1>Writing</h1>
+      <p class="lede">
+        {years.length > 0 ? "Notes on software and life." : "Nothing here yet."}
+        There's an <a href="/rss.xml">RSS feed</a>
+        {years.length > 0 ? "for new posts." : "to catch the first post."}
+      </p>
+    </div>
   </section>
 
   {
