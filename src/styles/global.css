@@ -28,7 +28,7 @@
 	   in a group sit right under each other, and anything that needs setting
 	   apart is set apart by whole empty lines, so the page keeps one rhythm
 	   from top to bottom. */
-	--line-height: 1.8;
+	--line-height: 2;
 	--leading: calc(var(--size) * var(--line-height));
 	/* Between blocks inside a section: one empty line. */
 	--gap: var(--leading);
@@ -483,7 +483,7 @@ kbd {
 .prose blockquote {
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
+	gap: var(--gap);
 	padding-left: 20px;
 	border-left: 2px solid var(--line);
 }
