@@ -170,30 +170,12 @@ kbd {
 .top {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	gap: 24px;
 	height: 72px;
 }
 
 .mark {
 	font-weight: 600;
 	text-decoration: none;
-	white-space: nowrap;
-}
-
-.top nav {
-	display: flex;
-	gap: 24px;
-}
-
-.nav {
-	color: var(--muted);
-	text-decoration: none;
-	transition: color 150ms ease;
-}
-
-.nav[aria-current] {
-	color: var(--ink);
 }
 
 /* ---- hero: a page's title, its description, and its buttons ---- */
@@ -339,12 +321,11 @@ kbd {
 	text-wrap: pretty;
 }
 
-/* Posts: the date, then the title, the dates in one column down the list. */
+/* Posts: the title, then the date, the dates in one column down the list,
+   right after the longest title. */
 .posts {
 	display: grid;
-	/* At least as wide as the longest day ("September 30"), so the titles
-	   line up from one year's list to the next. */
-	grid-template-columns: minmax(7em, max-content) minmax(0, 1fr);
+	grid-template-columns: minmax(0, max-content) max-content;
 	gap: 14px 32px;
 	max-width: var(--figure);
 	margin: 0;
@@ -352,7 +333,10 @@ kbd {
 	list-style: none;
 }
 
+/* With descriptions, the titles take the full width, so the dates line up
+   from one year's list to the next. */
 .posts.described {
+	grid-template-columns: minmax(0, 1fr) max-content;
 	row-gap: 24px;
 }
 
@@ -571,20 +555,18 @@ figcaption {
 
 /* ---- footer ---- */
 
+/* Only the links, at the right. */
 .foot {
 	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-between;
-	gap: 8px 24px;
+	justify-content: flex-end;
 	margin-top: var(--section);
-	padding: 24px 0 48px;
-	color: var(--muted);
-	border-top: 1px solid var(--line);
+	padding-bottom: 48px;
 }
 
 .foot nav {
 	display: flex;
 	flex-wrap: wrap;
+	justify-content: flex-end;
 	gap: 8px 24px;
 }
 
@@ -596,10 +578,6 @@ figcaption {
 /* ---- hover, only where there's a pointer to hover with ---- */
 
 @media (hover: hover) and (pointer: fine) {
-	.nav:hover {
-		color: var(--ink);
-	}
-
 	.button:hover {
 		background: var(--ink-soft);
 	}
@@ -660,8 +638,9 @@ figcaption {
 		margin-top: 16px;
 	}
 
-	/* The date over the title. */
-	.posts {
+	/* The date under the title. */
+	.posts,
+	.posts.described {
 		grid-template-columns: minmax(0, 1fr);
 	}
 
@@ -681,16 +660,6 @@ figcaption {
 		height: 30px;
 		padding: 0 10px;
 		font-size: 0.88em;
-	}
-}
-
-/* Too narrow for the name and the links side by side: the links go under it. */
-@media (max-width: 359px) {
-	.top {
-		flex-wrap: wrap;
-		row-gap: 4px;
-		height: auto;
-		padding-block: 16px;
 	}
 }
 

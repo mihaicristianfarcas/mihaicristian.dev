@@ -13,38 +13,19 @@ const projects = (await getProjects())
   .filter((p) => p.data.featured !== undefined)
   .sort((a, b) => a.data.featured! - b.data.featured!);
 
-const email = site.links.find((l) => l.label === "Email")!;
-const cv = site.links.find((l) => l.label === "CV")!;
 const ubb = "https://www.ubbcluj.ro/ro/";
 ---
 
-<Base>
-  <section class="wrap hero">
-    <h1>I build tools for technical work, from network software to AI products.</h1>
-    <p class="lede">
-      Based in Cluj-Napoca, Romania, and studying for an MSc in cloud and
-      network systems at <a href={ubb} target="_blank" rel="noopener"
-        >Babeș-Bolyai University</a
-      >. Open to work.
-    </p>
-    <div class="cta">
-      <a class="button" href={email.href}>
-        <svg
-          viewBox="0 0 16 16"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.6"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          ><rect x="1.75" y="3.25" width="12.5" height="9.5" rx="2"></rect><path
-            d="m2.5 4.5 5.5 4.25 5.5-4.25"></path></svg
-        >
-        Email me
-      </a>
-      <a class="more" href={cv.href} target="_blank" rel="noopener">
-        Read my CV
-      </a>
+<Base header={false}>
+  {
+    /* Who, what, and where, read at a glance: no header above it, and no
+      buttons under it. The links are in the footer. */
+  }
+  <section class="wrap hero intro">
+    <div class="title">
+      <h1>{site.name}</h1>
+      <p class="subtitle">I’m building agentic tools and apps for the agentic era.</p>
+      <p>Based in Cluj-Napoca, Romania.</p>
     </div>
   </section>
 
@@ -114,6 +95,21 @@ const ubb = "https://www.ubbcluj.ro/ro/";
 </Base>
 
 <style>
+  /* Where the title would sit under the header the other pages have. */
+  .intro {
+    padding-top: 152px;
+  }
+
+  .intro .subtitle {
+    color: var(--ink);
+  }
+
+  @media (max-width: 640px) {
+    .intro {
+      padding-top: 108px;
+    }
+  }
+
   .quote blockquote {
     max-width: 36em;
     text-wrap: pretty;

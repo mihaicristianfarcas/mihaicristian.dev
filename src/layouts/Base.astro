@@ -9,29 +9,24 @@ interface Props {
   noindex?: boolean;
   publishedTime?: Date;
   structuredData?: Record<string, unknown>;
+  /* The name at the top, linking home. The homepage leaves it out: its own
+     title is the name. */
+  header?: boolean;
 }
 
-const { title, noindex = false, publishedTime, structuredData } = Astro.props;
+const {
+  title,
+  noindex = false,
+  publishedTime,
+  structuredData,
+  header = true,
+} = Astro.props;
 const description = Astro.props.description ?? site.description;
 const pageTitle = title
   ? `${title} — ${site.name}`
   : `${site.name} | Software Engineer`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const path = Astro.url.pathname;
-
-/* The header's links. The section being read stays lit on every page in it. */
-const sections = [
-  { href: "/projects/", label: "Projects" },
-  { href: "/writing/", label: "Writing" },
-].map((s) => ({
-  ...s,
-  current:
-    path.replace(/\/?$/, "/") === s.href
-      ? ("page" as const)
-      : path.startsWith(s.href)
-        ? ("true" as const)
-        : undefined,
-}));
 
 const feed = new URL("/rss.xml", Astro.site);
 const websiteId = `${site.url}/#website`;
@@ -225,30 +220,20 @@ const schema = {
         };
       });
     </script>
-    <header class="wrap top">
-      <a
-        class="mark"
-        href="/"
-        aria-current={path === "/" ? "page" : undefined}
-      >
-        {site.name}
-      </a>
-      <nav aria-label="Site">
-        {
-          sections.map((s) => (
-            <a class="nav" href={s.href} aria-current={s.current}>
-              {s.label}
-            </a>
-          ))
-        }
-      </nav>
-    </header>
+    {
+      header && (
+        <header class="wrap top">
+          <a class="mark" href="/">
+            {site.name}
+          </a>
+        </header>
+      )
+    }
     <main>
       <slot />
     </main>
     <footer class="wrap">
       <div class="foot">
-        <span>© {new Date().getFullYear()} {site.name}</span>
         <nav aria-label="Elsewhere">
           {
             site.links.map((l) => {

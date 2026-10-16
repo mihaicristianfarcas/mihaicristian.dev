@@ -1,5 +1,5 @@
 ---
-/* Posts, one to a row: the date, then the title. `described` adds each
+/* Posts, one to a row: the title, then the date. `described` adds each
    post's description under its title; `day` drops the year from the date,
    for a list already under its year's heading. */
 import type { CollectionEntry } from "astro:content";
@@ -19,13 +19,13 @@ const fmt = day ? postDayFmt : postDateFmt;
   {
     posts.map((post) => (
       <li class="post">
-        <time datetime={post.data.date.toISOString().slice(0, 10)}>
-          {fmt.format(post.data.date)}
-        </time>
         <div>
           <a href={postPath(post.id)}>{post.data.title}</a>
           {described && <p>{post.data.description}</p>}
         </div>
+        <time datetime={post.data.date.toISOString().slice(0, 10)}>
+          {fmt.format(post.data.date)}
+        </time>
       </li>
     ))
   }
