@@ -95,19 +95,21 @@ const ubb = "https://www.ubbcluj.ro/ro/";
 </Base>
 
 <style>
-  /* Where the title would sit under the header the other pages have. */
+  /* As far from the top of the page as the text is from its side, so the
+     page opens on a square corner: the side margin is half of what the
+     viewport has past the 1040px column, plus the column's own 24px. Never
+     under four lines, so a phone still gets room above it, and never over
+     twelve, so a wide display doesn't push it down the screen. */
   .intro {
-    padding-top: calc(var(--leading) * 6);
+    padding-top: clamp(
+      calc(var(--leading) * 4),
+      calc((100vw - 1040px) / 2 + 24px),
+      calc(var(--leading) * 12)
+    );
   }
 
   .intro .subtitle {
     color: var(--ink);
-  }
-
-  @media (max-width: 640px) {
-    .intro {
-      padding-top: calc(var(--leading) * 4);
-    }
   }
 
   .quote blockquote {
