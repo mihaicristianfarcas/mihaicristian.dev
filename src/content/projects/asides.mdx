@@ -1,0 +1,37 @@
+---
+title: asides
+seoTitle: "asides: talk through bugs while you test"
+description: A Mac menu-bar app that turns what you say while you test into a Markdown note in your repo, screenshots inline, and hands it to your coding agent.
+summary: Spoken bug notes, straight to your coding agent.
+group: Tools
+order: 1
+years: "2026"
+role: Solo build
+status: Open source · in daily use
+tech: Rust · whisper.cpp · Metal · MCP
+links:
+  - label: Visit the site
+    href: https://asides.mihaicristian.dev
+  - label: Source on GitHub
+    href: https://github.com/mihaicristianfarcas/asides
+shots:
+  - src: ../../assets/projects/asides-recording.png
+    video: ../../assets/projects/asides-recording.mp4
+    alt: "A Mac desktop with a checkout page open in Safari. The recording shortcut flashes on screen and a red timer starts in the menu bar while the spoken words appear as subtitles: 'The summary card needs more padding under the sticky header.' A screenshot of the order summary is taken mid-sentence, then 'And the Pay button text wraps.' The menu bar shows a check and #5, the menu opens, Open Note is chosen, and notes.md opens in TextEdit with the new entry at the end."
+    caption: "The demo from the asides site: say what's wrong, copy a screenshot mid-sentence, and a few seconds later it's entry #5 in the note."
+  - src: ../../assets/projects/asides-note.png
+    alt: "notes.md open in TextEdit over the checkout page, with numbered, timed entries from '## 2 · 14:33' to '## 5 · 14:38'. The last holds the spoken sentence, a link to the screenshot, and the sentence said after it."
+    caption: "The note: one numbered entry per aside, and the screenshot where it was taken."
+---
+
+Testing is when you notice things, and stopping to type them up is what breaks
+the flow. With asides you say them instead: press <kbd>⌃⌥Space</kbd>, say what's
+wrong, and keep testing. A few seconds later Whisper has transcribed it on your
+Mac, word for word, and appended it to a Markdown note in the repo, with any
+screenshot you copied right where you said it. There's no account, and no audio
+leaves the machine.
+
+The note is also where a coding agent picks it up. asides runs an MCP server,
+so Claude Code, Codex, or OpenCode can listen while you test and take each aside
+as a prompt as soon as it's transcribed. A good part of this site's redesign was
+asked for that way.
