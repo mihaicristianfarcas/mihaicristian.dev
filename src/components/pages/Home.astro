@@ -16,10 +16,10 @@ const projects = (await getProjects())
 const ubb = "https://www.ubbcluj.ro/ro/";
 ---
 
-<Base header={false}>
+<Base>
   {
-    /* Who, what, and where, read at a glance: no header above it, and no
-      links under it. Those are in the footer. */
+    /* Who, what, and where, read at a glance, with no links under it.
+      Those are in the footer. */
   }
   <section class="wrap hero intro">
     <div class="title">
@@ -95,12 +95,6 @@ const ubb = "https://www.ubbcluj.ro/ro/";
 </Base>
 
 <style>
-  /* With no header above it, the intro is the page's first line, so it
-     takes the header's room from the top (see --corner). */
-  .intro {
-    padding-top: var(--corner);
-  }
-
   .intro .subtitle {
     color: var(--ink);
   }

@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import Back from "../Back.astro";
 import PostList from "../PostList.astro";
 import { getPostsByYear } from "../../data/writing";
 
@@ -29,4 +30,6 @@ const years = await getPostsByYear();
       </section>
     ))
   }
+
+  <Back />
 </Base>

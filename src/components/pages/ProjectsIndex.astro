@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import Back from "../Back.astro";
 import ProjectGrid from "../ProjectGrid.astro";
 import { getProjectGroups } from "../../data/projects";
 import type { projectGroups } from "../../content.config";
@@ -47,4 +48,6 @@ const notes: Record<(typeof projectGroups)[number], string> = {
       </section>
     ))
   }
+
+  <Back />
 </Base>

@@ -9,9 +9,6 @@ interface Props {
   noindex?: boolean;
   publishedTime?: Date;
   structuredData?: Record<string, unknown>;
-  /* The "Back to /" link to the homepage, at the top. The homepage leaves
-     it out, and a project page has its own under the details. */
-  header?: boolean;
 }
 
 const {
@@ -19,7 +16,6 @@ const {
   noindex = false,
   publishedTime,
   structuredData,
-  header = true,
 } = Astro.props;
 const description = Astro.props.description ?? site.description;
 const pageTitle = title
@@ -220,15 +216,6 @@ const schema = {
         };
       });
     </script>
-    {
-      header && (
-        <header class="wrap top">
-          <a class="back" href="/">
-            Back to /
-          </a>
-        </header>
-      )
-    }
     <main>
       <slot />
     </main>

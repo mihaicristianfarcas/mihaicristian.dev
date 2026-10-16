@@ -180,27 +180,16 @@ kbd {
 	padding-inline: 24px;
 }
 
-/* ---- header ---- */
+/* ---- hero: a page's title and description ---- */
 
-/* "Back to /", as far from the top as it is from the side (see --corner). */
-.top {
-	display: flex;
-	padding-top: var(--corner);
-}
-
-.back {
-	font-weight: 500;
-	text-decoration: none;
-}
-
-/* ---- hero: a page's title and description, and its links ---- */
-
+/* Every page opens on its title, as far from the top as it is from the side
+   (see --corner). */
 .hero {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 	gap: var(--hero-gap);
-	padding-top: calc(var(--leading) * 3);
+	padding-top: var(--corner);
 }
 
 /* A title with its lines right under it, as one group: a page and its
@@ -255,6 +244,12 @@ kbd {
 /* A section's last word, an "All projects" link, as wide as its text. */
 .section > .more {
 	align-self: flex-start;
+}
+
+/* "Back to /", one empty line under the page's last block. */
+.back {
+	display: flex;
+	padding-top: var(--gap);
 }
 
 /* Projects, three to a row. */
@@ -547,7 +542,6 @@ figcaption {
 		border-color: var(--muted);
 	}
 
-	.back:hover,
 	.more:hover,
 	.grid h3 a:hover,
 	.grid li:hover h3 a,
@@ -573,10 +567,6 @@ figcaption {
 
 	.wrap {
 		padding-inline: 20px;
-	}
-
-	.hero {
-		padding-top: calc(var(--leading) * 2);
 	}
 
 	.grid {
@@ -638,14 +628,13 @@ html[data-astro-transition-scope] {
 /* A page's content fades in once it's all there. Its blocks fade rather than
    the whole of <main>, so a page-tall post never becomes one page-tall
    compositing layer; they share a start, so they read as one fade. The
-   header and footer don't change between pages, so a navigation leaves them
-   be and only a fresh load fades them in. */
+   footer doesn't change between pages, so a navigation leaves it be and
+   only a fresh load fades it in. */
 main > :not(.prose),
 .prose > * {
 	animation: enter 400ms var(--ease-out) both;
 }
 
-.top,
 .foot {
 	transition: opacity 400ms var(--ease-out);
 }
@@ -658,7 +647,6 @@ main > :not(.prose),
 	animation-play-state: paused;
 }
 
-:root[data-loading] .top,
 :root[data-loading] .foot {
 	opacity: 0;
 }
@@ -669,7 +657,6 @@ main > :not(.prose),
 		animation: none;
 	}
 
-	.top,
 	.foot {
 		transition: none;
 	}

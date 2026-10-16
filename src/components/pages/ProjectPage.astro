@@ -26,11 +26,7 @@ const actions = (links ?? []).map((l) => ({
 }));
 ---
 
-<Base
-  title={project.data.title}
-  description={project.data.description}
-  header={false}
->
+<Base title={project.data.title} description={project.data.description}>
   <section class="wrap hero">
     <div class="title">
       <h1>{project.data.title}</h1>
@@ -97,12 +93,6 @@ const actions = (links ?? []).map((l) => ({
 </Base>
 
 <style>
-  /* With no header above it, the title is the page's first line, so it
-     takes the header's room from the top (see --corner). */
-  .hero {
-    padding-top: var(--corner);
-  }
-
   .cover-shot {
     padding-top: var(--hero-gap);
   }
