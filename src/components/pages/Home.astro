@@ -95,14 +95,10 @@ const ubb = "https://www.ubbcluj.ro/ro/";
 </Base>
 
 <style>
-  /* The page opens and closes on square corners: as much room above the
-     first line and below the last as there is beside them (see --corner). */
+  /* With no header above it, the intro is the page's first line, so it
+     takes the header's room from the top (see --corner). */
   .intro {
     padding-top: var(--corner);
-  }
-
-  :global(.foot) {
-    padding-bottom: var(--corner);
   }
 
   .intro .subtitle {

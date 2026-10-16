@@ -46,8 +46,8 @@
 	--cols: 3;
 	--col-gap: 32px;
 	--col: calc((100% - (var(--cols) - 1) * var(--col-gap)) / var(--cols));
-	/* The homepage's margin above its first line and below its last: as far
-	   as the text is from the side of the page, so its corners are square.
+	/* Every page's margin above its first line and below its last: as far as
+	   the text is from the side of the page, so its corners are square.
 	   The side margin is half of what the viewport has past the 1040px
 	   column, plus the column's own 24px. Never under four lines, so a phone
 	   still gets room, and never over twelve, so a wide display doesn't push
@@ -189,10 +189,10 @@ kbd {
 
 /* ---- header ---- */
 
+/* The name, as far from the top as it is from the side (see --corner). */
 .top {
 	display: flex;
-	align-items: center;
-	height: 72px;
+	padding-top: var(--corner);
 }
 
 .mark {
@@ -577,12 +577,13 @@ figcaption {
 
 /* ---- footer ---- */
 
-/* Only the links, at the right. */
+/* Only the links, at the right, as far from the bottom as they are from the
+   side (see --corner). */
 .foot {
 	display: flex;
 	justify-content: flex-end;
 	margin-top: var(--section);
-	padding-bottom: calc(var(--leading) * 2);
+	padding-bottom: var(--corner);
 }
 
 .foot nav {
@@ -633,10 +634,6 @@ figcaption {
 
 	.wrap {
 		padding-inline: 20px;
-	}
-
-	.top {
-		height: 60px;
 	}
 
 	.hero {
