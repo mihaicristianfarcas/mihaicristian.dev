@@ -26,10 +26,11 @@ interface Props {
 	videoDark?: string;
 	alt?: string;
 	caption: string;
-	/* The cover sits above the fold, so it goes first in the queue. Nothing
-	   waits to be scrolled to: Base.astro holds the page until every shot has
-	   decoded, so the article fades in whole. */
-	eager?: boolean;
+	/* The cover sits above the fold, so it goes first in the queue, and it
+	   spans the page rather than the text. Nothing waits to be scrolled to:
+	   Base.astro holds the page until every shot has decoded, so the article
+	   fades in whole. */
+	cover?: boolean;
 }
 
 const {
@@ -39,11 +40,15 @@ const {
 	videoDark,
 	alt,
 	caption,
-	eager = false,
+	cover = false,
 } = Astro.props;
 
-const widths = [480, 800, 1200];
-const sizes = "(max-width: 900px) 100vw, 65ch";
+/* The cover spans the page; every other shot the text's figure width (see
+   --figure in global.css). Neither grows past its own pixels. */
+const widths = [640, 1024, 1440, 2000];
+const sizes = cover
+	? "(max-width: 1040px) calc(100vw - 40px), 992px"
+	: "(max-width: 868px) calc(100vw - 40px), 820px";
 const dark = "(prefers-color-scheme: dark)";
 
 const videos = import.meta.glob<string>("../assets/projects/*.mp4", {
@@ -71,8 +76,11 @@ const imageDark =
 		: undefined;
 ---
 
-<figure>
-  <div class:list={['frame', { empty: !src }]}>
+<figure
+  class:list={["shot", { cover }]}
+  style={src ? `--w: ${src.width}px` : undefined}
+>
+  <div class:list={["frame", { empty: !src }]}>
     {
       videoUrl && poster && src ? (
         <>
@@ -97,8 +105,8 @@ const imageDark =
             )}
             <source src={videoUrl} type="video/mp4" />
           </video>
-          <button type="button" class="mono toggle" hidden>
-            play
+          <button type="button" class="toggle" hidden>
+            Play
           </button>
         </>
       ) : src ? (
@@ -117,18 +125,18 @@ const imageDark =
             widths={widths}
             sizes={sizes}
             loading="eager"
-            fetchpriority={eager ? 'high' : undefined}
+            fetchpriority={cover ? "high" : undefined}
             decoding="async"
           />
         </picture>
       ) : (
-        <span class="mono ph" aria-hidden="true">
-          screenshot
+        <span class="ph" aria-hidden="true">
+          Screenshot
         </span>
       )
     }
   </div>
-  <figcaption class="mono">{caption}</figcaption>
+  <figcaption>{caption}</figcaption>
 </figure>
 
 <script>
@@ -155,7 +163,7 @@ const imageDark =
   });
 
   function label(video: HTMLVideoElement, button: HTMLButtonElement) {
-    button.textContent = video.paused ? "play" : "pause";
+    button.textContent = video.paused ? "Play" : "Pause";
     button.setAttribute("aria-label", video.paused ? "Play video" : "Pause video");
   }
 
@@ -202,32 +210,14 @@ const imageDark =
 </script>
 
 <style>
-  figure {
-    margin-top: 1.75rem;
+  /* A shot never grows past its own pixels; the cover is held to that alone,
+     the rest to the text's figure width too, by .prose in global.css. */
+  .cover {
+    max-width: var(--w, 100%);
   }
 
-  .frame {
-    position: relative;
-    border: 1px solid var(--hairline);
-    border-radius: 6px;
-    overflow: hidden;
-    background: var(--faint);
-  }
-
-  .frame picture,
-  .frame img,
-  .frame video {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  .frame picture {
-    pointer-events: none;
-  }
-
-  /* Placeholder: the frame at a 16:10 plate, hatched like unetched copper
-     so it reads as deliberately blank rather than as a broken image. */
+  /* Placeholder: a 16:10 plate, hatched so it reads as deliberately blank
+     rather than as a broken image. */
   .frame.empty {
     aspect-ratio: 16 / 10;
     display: flex;
@@ -236,44 +226,16 @@ const imageDark =
     background-image: repeating-linear-gradient(
       -45deg,
       transparent 0 7px,
-      var(--hairline) 7px 8px
+      var(--line) 7px 8px
     );
   }
 
-  /* The placeholder's label and the video toggle are the same small chip. */
-  .ph,
-  .toggle {
-    background: var(--bg);
-    border: 1px solid var(--hairline);
-    border-radius: 4px;
-    padding: 0.25rem 0.625rem;
-    letter-spacing: 0.06em;
-  }
-
-  .toggle {
-    position: absolute;
-    right: 0.625rem;
-    bottom: 0.625rem;
-    font-size: 0.6875rem;
-    line-height: 1.4;
-    opacity: 0.85;
-    transition:
-      opacity 150ms ease,
-      color 150ms ease;
-  }
-
-  .toggle:hover {
-    opacity: 1;
-    color: var(--accent);
-  }
-
-  .toggle:focus-visible {
-    opacity: 1;
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-
-  figcaption {
-    margin-top: 0.625rem;
+  .ph {
+    padding: 0 12px;
+    line-height: 34px;
+    color: var(--muted);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
   }
 </style>

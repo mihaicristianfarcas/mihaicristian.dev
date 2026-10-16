@@ -1,82 +1,48 @@
 ---
 import Base from "../../layouts/Base.astro";
-import PassionPattern from "../PassionPattern.astro";
-import PageNav from "../PageNav.astro";
-import Rail from "../Rail.astro";
-import { getProjectRail } from "../../data/projects";
+import ProjectGrid from "../ProjectGrid.astro";
+import { getProjectGroups } from "../../data/projects";
+import type { projectGroups } from "../../content.config";
 
-const groups = await getProjectRail();
+const groups = await getProjectGroups();
+
+/* A line under each group's heading, saying what goes in it. */
+const notes: Record<(typeof projectGroups)[number], string> = {
+  Systems:
+    "The low-level work where most of my research sits: networking, cryptography, and the kernel.",
+  Products:
+    "Things people use: apps built for a client or for a problem I had. If you're weighing up working together, these are the closest thing to what that looks like.",
+  Tools: "For other developers, and I use them daily myself.",
+};
 ---
 
 <Base
   title="Projects"
   description="Explore software projects by Mihai-Cristian Farcaș, from networking, cryptography, and systems research to AI products and developer tools."
-  wide
-  router
 >
-  <PageNav href="/" label="← home" />
+  <section class="wrap hero">
+    <h1>Projects</h1>
+    <p class="lede">
+      {
+        groups.length > 0
+          ? "Things I've built, and what each one actually does."
+          : "Nothing here yet."
+      }
+    </p>
+  </section>
+
   {
-    groups.length > 0 ? (
-      <div class="layout">
-        <aside transition:name="rail" transition:persist="rail">
-          <Rail groups={groups} label="All projects" />
-        </aside>
-        <div class="blurb s" style="--i: 1">
-          <h1>Projects</h1>
-          <p>
-            Things I've built, and what each one actually does. Pick one from
-            the rail to read about it.
-          </p>
-          <p>
-            They fall into three kinds. <strong>Systems</strong> are the
-            low-level work where most of my research sits: networking,
-            cryptography, and the kernel. <strong>Products</strong> are things
-            people use: apps built for a client or for a problem I had.{" "}
-            <strong>Tools</strong> are for other developers, and I use them
-            daily myself.
-          </p>
-          <p class="hire">
-            If you're weighing up working together, the Products are the closest
-            thing to what that looks like.
-          </p>
+    groups.map((g) => (
+      <section
+        class="wrap section"
+        aria-labelledby={g.name.toLowerCase()}
+      >
+        <div class="head">
+          <h2 id={g.name.toLowerCase()}>{g.name}</h2>
+          <p>{notes[g.name]}</p>
         </div>
-      </div>
-    ) : (
-      <p class="empty s" style="--i: 0">
-        Nothing here yet.
-      </p>
-    )
+        <ProjectGrid projects={g.projects} />
+      </section>
+    ))
   }
-  <PassionPattern wide />
 </Base>
-
-<style>
-  .layout {
-    display: grid;
-    grid-template-columns: 15rem minmax(0, 65ch);
-    gap: 3.5rem;
-    align-items: start;
-  }
-
-  .blurb p {
-    margin-top: 0.875rem;
-    color: var(--muted);
-  }
-
-  .empty {
-    color: var(--muted);
-  }
-
-  @media (max-width: 900px) {
-    .layout {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 2.5rem;
-    }
-
-    /* The aside is transition:persist, so select it through the fresh
-       .layout parent — it carries the previous page's scope after navigation. */
-    .layout > :global(aside) {
-      order: 2;
-    }
-  }
-</style>

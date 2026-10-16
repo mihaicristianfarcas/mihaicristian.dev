@@ -12,7 +12,7 @@ const writing = defineCollection({
 	}),
 });
 
-/* The rail's groups, ordered as listed here. */
+/* The projects page's groups, ordered as listed here. */
 export const projectGroups = ["Systems", "Products", "Tools"] as const;
 
 const projects = defineCollection({
@@ -23,9 +23,9 @@ const projects = defineCollection({
 	schema: ({ image }) =>
 		z.object({
 			title: z.string(),
-			/* Search title; the project name stays short in headings and the rail. */
+			/* Search title; the project name stays short in headings and lists. */
 			seoTitle: z.string().optional(),
-			/* One line: the meta description, and the rail's sub-label. */
+			/* One line: the meta description, the page's lede, and its line in lists. */
 			description: z.string(),
 			group: z.enum(projectGroups),
 			/* Rank within the group; ties fall back to title. */
@@ -34,8 +34,9 @@ const projects = defineCollection({
 			role: z.string(),
 			status: z.string(),
 			tech: z.string(),
-			/* `newTab` opens a same-origin link in its own tab, the way the CV
-			   does, for files like a paper; external links always do. */
+			/* The first link is the project page's button. `newTab` opens a
+			   same-origin link in its own tab, the way the CV does, for files
+			   like a paper; external links always do. */
 			links: z
 				.array(
 					z.object({

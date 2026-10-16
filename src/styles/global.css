@@ -5,162 +5,701 @@
 :root {
 	color-scheme: light dark;
 
-	--bg: #fbfaf8;
-	--text: #1d1c1a;
-	--muted: #6b6863;
-	--faint: #eceae4;
-	--hairline: #e4e1da;
-	--accent: #d97757;
+	--ink: #000;
+	--body: #424245;
+	--muted: #6e6e73;
+	--line: #e5e5ea;
+	--wash: #f5f5f7;
+	--paper: #fff;
+	/* The button's hover, a step off --ink. */
+	--ink-soft: #2c2c2e;
+	/* The hairline drawn over a screenshot's edge, so a white page in a
+	   screenshot still reads as a picture on a white page. */
+	--edge: rgba(0, 0, 0, 0.08);
 
-	/* Astro builds these: the family followed by metric-matched fallback
-	   faces, so text occupies identical space before and after the swap.
-	   Don't append fallbacks here — that would append them after the
-	   generic that terminates the chain, where they'd never be reached. */
-	--font-sans: var(--font-inter);
-	--font-mono: var(--font-meslo);
+	--sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue",
+		"Segoe UI", Roboto, Arial, sans-serif;
+	--mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+	--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+
+	/* The site uses one font size; hierarchy comes from weight, color and space. */
+	--size: 17px;
+	/* The rhythm inside a section: every block sits one --gap from the next. */
+	--gap: 24px;
+	/* The space between a page's title, its description, its buttons, and
+	   what comes after them. */
+	--hero-gap: 64px;
+	/* The space above every section. */
+	--section: 96px;
+	/* The reading width of running text. */
+	--measure: 40em;
+	/* How wide a screenshot gets inside the text. */
+	--figure: 820px;
 }
 
+/* macOS's dark appearance: warm gray, white text. */
 @media (prefers-color-scheme: dark) {
 	:root {
-		--bg: #151413;
-		--text: #e7e5e0;
-		--muted: #8f8c85;
-		--faint: #24221e;
-		--hairline: #2c2a25;
-		--accent: #56c2a8;
+		--ink: #fff;
+		--body: #dbd9d5;
+		--muted: #a19e99;
+		--line: #43413e;
+		--wash: #32312e;
+		--paper: #282725;
+		--ink-soft: #e3e1dd;
+		--edge: rgba(255, 255, 255, 0.08);
 	}
 }
 
-/* ---- reset ---- */
+/* ---- base ---- */
 
-*,
-*::before,
-*::after {
+* {
 	box-sizing: border-box;
-	margin: 0;
 }
 
 html {
-	/* On the root element so navigation snapshots never composite
-     against the browser's default white canvas. */
-	background: var(--bg);
+	/* On the root element so navigation snapshots never composite against
+	   the browser's default canvas. */
+	background: var(--paper);
 	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
 	scrollbar-gutter: stable;
 }
 
 body {
-	background: var(--bg);
-	color: var(--text);
-	font-family: var(--font-sans);
-	font-size: 1rem;
-	line-height: 1.75;
-	font-feature-settings:
-		"ss03" 1,
-		"cv05" 1; /* Inter: rounded quotes, open l */
+	margin: 0;
+	background: var(--paper);
+	color: var(--ink);
+	font: var(--size) / 1.5 var(--sans);
 	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
 }
 
-img,
-video {
-	max-width: 100%;
-	height: auto;
+::selection {
+	background: var(--ink);
+	color: var(--paper);
 }
 
-/* ---- the column: anchored left of center ---- */
-
-main {
-	max-width: 65ch;
-	margin-left: clamp(1.5rem, 16vw, 18rem);
-	margin-right: 1.5rem;
-	padding-block: clamp(3.5rem, 9vh, 6.5rem) 5rem;
+a {
+	color: inherit;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
 }
 
-/* Writing pages: room for the timeline rail beside the post column. */
-main.wide {
-	max-width: calc(15rem + 3.5rem + 65ch);
+a:focus-visible,
+button:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 3px;
+	border-radius: 6px;
 }
 
-@media (max-width: 900px) {
-	main {
-		margin-inline: 2.5rem;
-	}
+h1,
+h2,
+h3,
+p,
+figure,
+blockquote,
+dl,
+dd {
+	margin: 0;
+	font-size: inherit;
 }
 
-/* ---- type ---- */
+h1,
+h2,
+h3 {
+	font-weight: 600;
+}
 
 h1 {
-	font-size: 1.0625rem;
-	font-weight: 600;
-	letter-spacing: -0.011em;
-}
-
-h2 {
-	font-size: 1rem;
-	font-weight: 600;
-	letter-spacing: -0.011em;
-}
-
-h3 {
-	font-size: 1rem;
-	font-weight: 550;
-}
-
-p {
-	letter-spacing: -0.006em;
+	letter-spacing: -0.01em;
 }
 
 strong {
 	font-weight: 600;
 }
 
-.mono {
-	font-family: var(--font-mono);
-	font-size: 0.8125rem;
-	letter-spacing: 0;
+code,
+pre,
+kbd,
+button {
+	font-size: inherit;
+}
+
+code,
+pre {
+	font-family: var(--mono);
+}
+
+img,
+video {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+/* Key caps and inline code share one quiet badge, a little smaller than the
+   text around it. */
+kbd,
+:not(pre) > code {
+	display: inline-block;
+	padding: 0 0.3em;
+	font-size: 0.88em;
+	line-height: 1.35;
+	color: var(--ink);
+	background: var(--paper);
+	border: 1px solid var(--line);
+	border-radius: 5px;
+	white-space: nowrap;
+}
+
+kbd {
+	font-family: var(--sans);
+}
+
+/* Only the sides: sections set their own top padding. */
+.wrap {
+	width: 100%;
+	max-width: 1040px;
+	margin: 0 auto;
+	padding-inline: 24px;
+}
+
+/* ---- header ---- */
+
+.top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 24px;
+	height: 72px;
+}
+
+.mark {
+	font-weight: 600;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.top nav {
+	display: flex;
+	gap: 24px;
+}
+
+.nav {
+	color: var(--muted);
+	text-decoration: none;
+	transition: color 150ms ease;
+}
+
+.nav[aria-current] {
+	color: var(--ink);
+}
+
+/* ---- hero: a page's title, its description, and its buttons ---- */
+
+.hero {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--hero-gap);
+	padding-top: 80px;
+}
+
+.lede {
+	max-width: 36em;
+	color: var(--body);
+	text-wrap: pretty;
+}
+
+/* A title with a line under it, set tight: a post and its date. */
+.title p {
+	margin-top: 4px;
 	color: var(--muted);
 }
 
-/* Inter draws no ← or →, so arrows in sans text borrow the mono. Its x-height
-   is within 0.2% of Inter's, so only the glyph changes. */
-.arrow {
-	font-family: var(--font-mono);
+.cta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 4px 32px;
 }
 
-/* ---- links ---- */
-
-a {
-	color: var(--text);
-	text-decoration: underline;
-	text-decoration-thickness: 1px;
-	text-underline-offset: 3px;
-	text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+.button {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	height: 48px;
+	padding: 0 22px;
+	font-weight: 500;
+	color: var(--paper);
+	background: var(--ink);
+	border-radius: 999px;
+	text-decoration: none;
 	transition:
-		text-decoration-color 150ms ease,
-		color 150ms ease;
+		transform 160ms ease-out,
+		background-color 150ms ease;
 }
 
-a:hover {
-	color: var(--accent);
-	text-decoration-color: var(--accent);
+.button svg {
+	width: 16px;
+	height: 16px;
 }
 
-a:focus-visible {
-	outline: 2px solid var(--accent);
-	outline-offset: 3px;
-	border-radius: 2px;
+.button:active {
+	transform: scale(0.97);
 }
 
-::selection {
-	background: color-mix(in srgb, var(--accent) 22%, transparent);
+/* As tall as the button beside it, so it's as easy to tap and lines up when
+   they wrap. */
+.more {
+	display: inline-flex;
+	align-items: center;
+	min-height: 48px;
+	font-weight: 500;
+	text-decoration: none;
 }
 
-/* ---- view transitions (writing pages use Astro's ClientRouter) ---- */
+/* ---- sections ---- */
+
+.section {
+	display: flex;
+	flex-direction: column;
+	gap: var(--gap);
+	padding-top: var(--section);
+}
+
+.section > p {
+	max-width: var(--measure);
+	color: var(--body);
+	text-wrap: pretty;
+}
+
+/* A section's heading with a line of its own under it. */
+.head p {
+	max-width: var(--measure);
+	margin-top: 4px;
+	color: var(--body);
+	text-wrap: pretty;
+}
+
+/* A section's last word, an "All projects →" link. It shares the section's
+   gap, so it pulls back the extra height that makes it easy to tap. */
+.section > .more {
+	align-self: flex-start;
+	margin-block: -12px;
+}
+
+/* Projects and features, three to a row. */
+.grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 40px 32px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.grid li {
+	position: relative;
+}
+
+.grid h3 a {
+	text-decoration: none;
+}
+
+/* The whole entry is the link's target, not just its title. */
+.grid h3 a::after {
+	content: "";
+	position: absolute;
+	inset: -8px;
+}
+
+.grid p {
+	margin-top: 4px;
+	color: var(--body);
+	text-wrap: pretty;
+}
+
+/* Facts in two columns: a name, and what it stands for. */
+.keys {
+	display: grid;
+	grid-template-columns: max-content minmax(0, 1fr);
+	align-items: baseline;
+	gap: 14px 32px;
+	max-width: var(--figure);
+}
+
+.keys dt {
+	font-weight: 500;
+}
+
+.keys dd {
+	color: var(--body);
+	text-wrap: pretty;
+}
+
+/* Posts: the date, then the title, the dates in one column down the list. */
+.posts {
+	display: grid;
+	/* At least as wide as the longest day ("September 30"), so the titles
+	   line up from one year's list to the next. */
+	grid-template-columns: minmax(7em, max-content) minmax(0, 1fr);
+	gap: 14px 32px;
+	max-width: var(--figure);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.posts.described {
+	row-gap: 24px;
+}
+
+.post {
+	position: relative;
+	display: grid;
+	grid-column: 1 / -1;
+	grid-template-columns: subgrid;
+	align-items: baseline;
+	row-gap: 2px;
+}
+
+.post a {
+	text-decoration: none;
+}
+
+/* The whole row is the link's target, not just its title. */
+.post a::after {
+	content: "";
+	position: absolute;
+	inset: -6px -8px;
+}
+
+.described .post a {
+	font-weight: 600;
+}
+
+.post time {
+	color: var(--muted);
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+.post p {
+	margin-top: 4px;
+	color: var(--body);
+	text-wrap: pretty;
+}
+
+/* The way on to the next entry, at the foot of a project or a post. */
+.pager {
+	display: flex;
+	justify-content: space-between;
+	gap: 24px;
+	padding-top: var(--section);
+}
+
+.pager a {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	font-weight: 500;
+	text-decoration: none;
+}
+
+.pager span {
+	color: var(--muted);
+	font-weight: 400;
+}
+
+.pager [rel="next"] {
+	margin-left: auto;
+	align-items: flex-end;
+	text-align: right;
+}
+
+/* ---- running text: project write-ups and posts ---- */
+
+.prose {
+	display: flex;
+	flex-direction: column;
+	gap: var(--gap);
+	padding-top: var(--hero-gap);
+}
+
+.prose > * {
+	max-width: var(--measure);
+}
+
+.prose > figure {
+	max-width: min(var(--w, 100%), var(--figure));
+	/* With the gap, a screenshot sits further from the text than paragraphs
+	   do from each other. */
+	margin-block: 16px;
+}
+
+.prose > pre {
+	max-width: var(--figure);
+}
+
+.prose p,
+.prose li {
+	color: var(--body);
+	text-wrap: pretty;
+}
+
+.prose a,
+.prose strong {
+	color: var(--ink);
+}
+
+/* With the gap, a heading sits twice as far from the text above it as from
+   the text it starts. */
+.prose h2,
+.prose h3 {
+	margin-top: var(--gap);
+}
+
+.prose ul,
+.prose ol {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin: 0;
+	padding-left: 1.4em;
+}
+
+.prose li::marker {
+	color: var(--muted);
+}
+
+.prose blockquote {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	padding-left: 20px;
+	border-left: 2px solid var(--line);
+}
+
+.prose hr {
+	width: 100%;
+	margin: var(--gap) 0;
+	border: 0;
+	border-top: 1px solid var(--line);
+}
+
+/* ---- code ---- */
+
+.astro-code {
+	--astro-code-foreground: var(--ink);
+	--astro-code-background: var(--wash);
+	--astro-code-token-constant: var(--ink);
+	--astro-code-token-string: var(--ink);
+	--astro-code-token-comment: var(--muted);
+	--astro-code-token-keyword: var(--muted);
+	--astro-code-token-parameter: var(--ink);
+	--astro-code-token-function: var(--ink);
+	--astro-code-token-string-expression: var(--ink);
+	--astro-code-token-punctuation: var(--muted);
+	--astro-code-token-link: var(--ink);
+
+	margin: 0;
+	padding: 16px 18px;
+	overflow-x: auto;
+	line-height: 1.6;
+	border-radius: 10px;
+}
+
+/* ---- a screenshot or a recording ---- */
+
+.frame {
+	position: relative;
+	overflow: hidden;
+	border-radius: 12px;
+	background: var(--wash);
+}
+
+.frame::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	box-shadow: inset 0 0 0 1px var(--edge);
+	pointer-events: none;
+}
+
+.frame picture,
+.frame img,
+.frame video {
+	width: 100%;
+}
+
+.frame picture {
+	pointer-events: none;
+}
+
+figcaption {
+	max-width: var(--measure);
+	margin-top: 12px;
+	color: var(--muted);
+	text-wrap: pretty;
+}
+
+/* The play and pause control, a quiet chip in the corner. */
+.toggle {
+	position: absolute;
+	right: 12px;
+	bottom: 12px;
+	z-index: 1;
+	height: 34px;
+	padding: 0 12px;
+	font: 500 var(--size) / 1 var(--sans);
+	color: var(--ink);
+	background: var(--paper);
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	cursor: pointer;
+	transition:
+		transform 160ms ease-out,
+		border-color 150ms ease;
+}
+
+.toggle:active {
+	transform: scale(0.97);
+}
+
+/* ---- footer ---- */
+
+.foot {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: 8px 24px;
+	margin-top: var(--section);
+	padding: 24px 0 48px;
+	color: var(--muted);
+	border-top: 1px solid var(--line);
+}
+
+.foot nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 24px;
+}
+
+.foot a {
+	color: var(--ink);
+	text-decoration: none;
+}
+
+/* ---- hover, only where there's a pointer to hover with ---- */
+
+@media (hover: hover) and (pointer: fine) {
+	.nav:hover {
+		color: var(--ink);
+	}
+
+	.button:hover {
+		background: var(--ink-soft);
+	}
+
+	.toggle:hover {
+		border-color: var(--muted);
+	}
+
+	.more:hover,
+	.grid h3 a:hover,
+	.grid li:hover h3 a,
+	.post:hover a,
+	.pager a:hover,
+	.foot a:hover {
+		text-decoration: underline;
+	}
+}
+
+/* ---- smaller screens ---- */
+
+@media (max-width: 900px) {
+	.grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 640px) {
+	:root {
+		--gap: 20px;
+		--hero-gap: 48px;
+		--section: 72px;
+	}
+
+	.wrap {
+		padding-inline: 20px;
+	}
+
+	.top {
+		height: 60px;
+	}
+
+	.hero {
+		padding-top: 48px;
+	}
+
+	.grid {
+		grid-template-columns: 1fr;
+		gap: 28px;
+	}
+
+	/* The name over what it stands for. */
+	.keys {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 2px;
+	}
+
+	.keys dd + dt {
+		margin-top: 16px;
+	}
+
+	/* The date over the title. */
+	.posts {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	/* Long lines scroll sideways here, at the badges' size. */
+	.astro-code {
+		padding: 14px 16px;
+		font-size: 0.88em;
+	}
+
+	.frame {
+		border-radius: 8px;
+	}
+
+	.toggle {
+		right: 8px;
+		bottom: 8px;
+		height: 30px;
+		padding: 0 10px;
+		font-size: 0.88em;
+	}
+}
+
+/* Too narrow for the name and the links side by side: the links go under it. */
+@media (max-width: 359px) {
+	.top {
+		flex-wrap: wrap;
+		row-gap: 4px;
+		height: auto;
+		padding-block: 16px;
+	}
+}
+
+/* ---- arriving ---- */
 
 /* One stable name for the root on every page. Astro's scope id differs
    between pages, and unpaired old/new root groups fall back to the UA's
-   250ms crossfade — the compounding flash transition:animate="none" was
-   meant to prevent. Paired and de-animated, the swap is truly instant and
-   the entrance stagger below is the whole transition. */
+   crossfade. Paired and de-animated, the swap is instant and the fade below
+   is the whole transition. */
 html[data-astro-transition-scope] {
 	view-transition-name: page;
 }
@@ -171,199 +710,54 @@ html[data-astro-transition-scope] {
 	animation: none;
 }
 
-/* Below 900px the rail sits under the article, so its named group would
-   streak off-screen on long posts — let it crossfade with the page. */
-@media (max-width: 900px) {
-	aside[data-astro-transition-scope] {
-		view-transition-name: none !important;
-	}
-}
-
-/* The rail, timeline, and back-link groups are de-animated wholesale. Any
-   animation here would hold the transition open for its whole run, and
-   while it is open every frame renders through the snapshot tree instead
-   of the page — the entrance stagger visibly hitches mid-fade. A rail or
-   back-link row arriving on a page still enters like any other block, but
-   on its real element: Base.astro marks it `entering` (see below). */
-::view-transition-group(rail),
-::view-transition-old(rail),
-::view-transition-new(rail),
-::view-transition-group(timeline),
-::view-transition-old(timeline),
-::view-transition-new(timeline),
-::view-transition-group(nav),
-::view-transition-old(nav),
-::view-transition-new(nav) {
-	animation: none;
-}
-
-/* The pseudo tree still paints for the frame or two before the transition
-   finishes, and these elements have no background of their own — an
-   outgoing back-link label ("acasă") would show through behind the
-   incoming one ("home"). Hide the old snapshots outright: only the new
-   state is ever painted, and the swap reads as truly instant. */
-::view-transition-old(rail),
-::view-transition-old(timeline),
-::view-transition-old(nav) {
-	opacity: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-	::view-transition-group(*),
-	::view-transition-old(*),
-	::view-transition-new(*) {
-		animation: none !important;
-	}
-}
-
-/* ---- entrance stagger (once, fast, subtle) ---- */
-
 @keyframes enter {
 	from {
 		opacity: 0;
-		transform: translateY(8px);
-	}
-	to {
-		opacity: 1;
-		transform: none;
 	}
 }
 
-/* `.s` fades one element; `.s-blocks` fades an element's blocks, so a page-tall
-   article never becomes one page-tall compositing layer. Children inherit --i,
-   so they share a delay and still read as a single fade. `.prose` gives way to
-   its own children — on a long post the prose is the whole article. */
-.s,
-.s-blocks > *:not(.prose),
-.s-blocks > .prose > * {
-	animation: enter 0.5s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
-	animation-delay: calc(var(--i, 0) * 70ms);
+/* A page's content fades in once it's all there. Its blocks fade rather than
+   the whole of <main>, so a page-tall post never becomes one page-tall
+   compositing layer; they share a start, so they read as one fade. The
+   header and footer don't change between pages, so a navigation leaves them
+   be and only a fresh load fades them in. */
+main > :not(.prose),
+.prose > * {
+	animation: enter 400ms var(--ease-out) both;
 }
 
-/* Article pages stagger their blocks by DOM position, so a conditional
-   block (a project without a cover, say) never leaves a hole in the
-   cascade. Blocks start at 1, leaving slot 0 under the back-link row
-   (which fades on its own — see `.nav` below); blocks past the sixth
-   share a delay — that far down is below the fold. */
-.s-blocks > :nth-child(1) {
-	--i: 1;
-}
-.s-blocks > :nth-child(2) {
-	--i: 2;
-}
-.s-blocks > :nth-child(3) {
-	--i: 3;
-}
-.s-blocks > :nth-child(4) {
-	--i: 4;
-}
-.s-blocks > :nth-child(5) {
-	--i: 5;
-}
-.s-blocks > :nth-child(n + 6) {
-	--i: 6;
+.top,
+.foot {
+	transition: opacity 400ms var(--ease-out);
 }
 
-/* Held at the first frame until Base.astro drops the attribute. `both` covers
-   the delay, so this reads as opacity 0 rather than as a pause. Client-side
-   navigations never see it: Astro rewrites the <html> attributes from the
-   incoming page, which has none. */
-:root[data-loading] .s,
-:root[data-loading] .s-blocks > *:not(.prose),
-:root[data-loading] .s-blocks > .prose > * {
+/* Held until Base.astro drops the attribute, once every image has decoded.
+   Client-side navigations never see it: Astro rewrites the <html> attributes
+   from the incoming page, which has none. */
+:root[data-loading] main > :not(.prose),
+:root[data-loading] .prose > * {
 	animation-play-state: paused;
 }
 
-/* The rail is transition:persist, so it takes a transition rather than `.s`:
-   an animation would re-run whenever a swap re-inserts the node. This only
-   plays when opacity changes, which is once, on first load. The back-link
-   row takes the same route for the same reason — an `.s` animation would
-   re-fade it on every swap. */
-aside[data-astro-transition-persist],
-.nav {
-	transition: opacity 0.5s cubic-bezier(0.21, 0.47, 0.32, 0.98);
-}
-
-:root[data-loading] aside[data-astro-transition-persist],
-:root[data-loading] .nav {
+:root[data-loading] .top,
+:root[data-loading] .foot {
 	opacity: 0;
 }
 
-/* A rail or back-link row arriving via the client router (entry from a
-   page without one) enters like any other block — same keyframes, same
-   curve. Base.astro sets the class on arrival and strips it before the
-   next swap, so re-inserting a persisted node never replays the fade. */
-aside[data-astro-transition-persist].entering,
-.nav.entering {
-	animation: enter 0.5s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
-}
-
 @media (prefers-reduced-motion: reduce) {
-	.s,
-	.s-blocks > *:not(.prose),
-	.s-blocks > .prose > * {
+	main > :not(.prose),
+	.prose > * {
 		animation: none;
 	}
 
-	aside[data-astro-transition-persist],
-	.nav {
+	.top,
+	.foot {
 		transition: none;
 	}
 
-	aside[data-astro-transition-persist].entering,
-	.nav.entering {
-		animation: none;
-	}
-
-	/* No animation left to hold, so hold the content itself — otherwise
-	   reduced motion opts out of the font gate and back into the flash. */
-	:root[data-loading] .s,
-	:root[data-loading] .s-blocks > *:not(.prose),
-	:root[data-loading] .s-blocks > .prose > *,
-	:root[data-loading] aside[data-astro-transition-persist],
-	:root[data-loading] .nav {
+	/* No animation left to hold, so hold the content itself. */
+	:root[data-loading] main > :not(.prose),
+	:root[data-loading] .prose > * {
 		opacity: 0;
-	}
-}
-
-/* ---- code ---- */
-
-code {
-	font-family: var(--font-mono);
-	font-size: 0.85em;
-}
-
-:not(pre) > code {
-	background: var(--faint);
-	padding: 0.1em 0.35em;
-	border-radius: 4px;
-}
-
-.astro-code {
-	--astro-code-foreground: var(--text);
-	--astro-code-background: var(--faint);
-	--astro-code-token-constant: var(--text);
-	/* A deeper terracotta keeps small code text readable on the light surface. */
-	--astro-code-token-string: #9f513b;
-	--astro-code-token-comment: var(--muted);
-	--astro-code-token-keyword: var(--muted);
-	--astro-code-token-parameter: var(--text);
-	--astro-code-token-function: var(--text);
-	--astro-code-token-string-expression: var(--astro-code-token-string);
-	--astro-code-token-punctuation: var(--muted);
-	--astro-code-token-link: var(--text);
-
-	padding: 1rem 1.25rem;
-	border-radius: 6px;
-	border: 1px solid var(--hairline);
-	overflow-x: auto;
-	line-height: 1.6;
-	font-size: 0.8125rem;
-	background: var(--faint);
-}
-
-@media (prefers-color-scheme: dark) {
-	.astro-code {
-		--astro-code-token-string: var(--accent);
 	}
 }

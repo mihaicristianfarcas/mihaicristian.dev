@@ -1,7 +1,7 @@
 # mihaicristian.dev
 
-My personal site — a single left-anchored column of text, a bit of writing, and
-a procedural pattern drifting in the margin. Built with [Astro](https://astro.build),
+My personal site — projects, a bit of writing, and not much else. White paper,
+black ink, the system font at a single size. Built with [Astro](https://astro.build),
 hand-written CSS, and no component libraries.
 
 ![The home page in dark mode](docs/preview.png)
@@ -27,12 +27,12 @@ Any recent Node works too if you'd rather use `npm`.
 
 ```
 src/
-  components/   CustomCursor, PassionPattern, WritingTimeline
-  content/      the writing, as Markdown/MDX
-  data/         site metadata (site.ts) and the quote list (quotes.ts)
-  layouts/      Base.astro — the shared <head>, fonts, and shell
-  pages/        index, the 404, /writing, and the RSS feed
-  styles/       global.css — colors, type, and the reset
+  components/   ProjectGrid, PostList, Pager, Shot, and pages/ for each page's body
+  content/      the projects and the writing, as Markdown/MDX
+  data/         site metadata (site.ts), the quote list (quotes.ts), and queries
+  layouts/      Base.astro — the shared <head>, header, footer, and load gate
+  pages/        index, the 404, /projects, /writing, and the RSS feed
+  styles/       global.css — colors, type, layout, and the reset
 ```
 
 ## Writing a post
@@ -56,13 +56,15 @@ automatically, newest first.
 
 ## A few notes on the design
 
-- **One column, anchored left.** No header, no footer, no theme toggle. Light and
-  dark come straight from the system preference.
-- **The margin pattern.** Every load draws one of five procedural motifs — one per
-  thing I care about (circuits, a labyrinth, a map grid, a helix, a star field).
-  Force one with `?pattern=0..4` if you want to see a specific one.
-- **The cursor** is a small accent-colored dot that lags the pointer and becomes a
-  crosshair over links. It steps aside for touch and reduced-motion.
+- **One font size.** Everything is set at 17px in the system font; hierarchy
+  comes from weight, color, and space. Pages share one rhythm: a title, its
+  description, and its buttons, each 64px apart, then sections 96px apart.
+- **Light and dark** come straight from the system preference. Dark is a warm
+  gray with white text, after macOS. Screenshots with a theme of their own
+  (a terminal, a chart) ship a version for each.
+- **Pages arrive whole.** Nothing loads lazily: every page holds until its
+  images and video posters have decoded, then fades in once. Client-side
+  navigation decodes the next page's media before swapping it in.
 
-Everything degrades gracefully: the ornament is decorative, hidden from screen
-readers and on narrow screens, and the site reads fine without any of it.
+Everything degrades gracefully: with JavaScript off, the pages render as
+normal and the recordings keep their native controls.

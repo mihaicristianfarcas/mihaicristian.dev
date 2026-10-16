@@ -1,0 +1,24 @@
+---
+/* Projects three to a row, each its title over its one-line description. */
+import type { CollectionEntry } from "astro:content";
+import { projectPath } from "../data/projects";
+
+interface Props {
+	projects: CollectionEntry<"projects">[];
+}
+
+const { projects } = Astro.props;
+---
+
+<ul class="grid" role="list">
+  {
+    projects.map((p) => (
+      <li>
+        <h3>
+          <a href={projectPath(p.id)}>{p.data.title}</a>
+        </h3>
+        <p>{p.data.description}</p>
+      </li>
+    ))
+  }
+</ul>

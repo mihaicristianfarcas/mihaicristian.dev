@@ -16,21 +16,31 @@ export const postDateFmt = new Intl.DateTimeFormat("en", {
 	year: "numeric",
 });
 
-/* The rail's shape: posts under the year they were published, newest first.
-   Posts are already sorted by date, so the years come out ordered too. */
-export async function getWritingRail() {
+/* For a date under its year's heading, where the year would repeat it. */
+export const postDayFmt = new Intl.DateTimeFormat("en", {
+	month: "long",
+	day: "numeric",
+});
+
+/* The writing page's sections: posts under the year they were published,
+   newest first. Posts are already sorted by date, so the years come out
+   ordered too. */
+export async function getPostsByYear() {
 	const posts = await getPosts();
-	const groups: {
-		name: string;
-		items: { href: string; title: string }[];
-	}[] = [];
+	const years: { year: string; posts: typeof posts }[] = [];
 	for (const post of posts) {
-		const name = String(post.data.date.getFullYear());
-		if (groups.at(-1)?.name !== name) groups.push({ name, items: [] });
-		groups.at(-1)?.items.push({
-			href: postPath(post.id),
-			title: post.data.title,
-		});
+		const year = String(post.data.date.getFullYear());
+		if (years.at(-1)?.year !== year) years.push({ year, posts: [] });
+		years.at(-1)?.posts.push(post);
 	}
-	return groups;
+	return years;
+}
+
+/* The posts either side of this one: the newer one first. */
+export async function getPostNeighbours(id: string) {
+	const posts = await getPosts();
+	const i = posts.findIndex((p) => p.id === id);
+	const link = (i: number) =>
+		posts[i] && { href: postPath(posts[i].id), title: posts[i].data.title };
+	return { newer: link(i - 1), older: link(i + 1) };
 }

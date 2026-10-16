@@ -1,0 +1,34 @@
+---
+/* The way on from a project or a post: the entries either side of it. */
+interface Link {
+	href: string;
+	title: string;
+}
+
+interface Props {
+	label: string;
+	prev?: Link & { word: string };
+	next?: Link & { word: string };
+}
+
+const { label, prev, next } = Astro.props;
+---
+
+{
+  (prev || next) && (
+    <nav class="wrap pager" aria-label={label}>
+      {prev && (
+        <a href={prev.href} rel="prev">
+          <span>{prev.word}</span>
+          {prev.title}
+        </a>
+      )}
+      {next && (
+        <a href={next.href} rel="next">
+          <span>{next.word}</span>
+          {next.title}
+        </a>
+      )}
+    </nav>
+  )
+}

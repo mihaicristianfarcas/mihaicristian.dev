@@ -2,11 +2,9 @@
 import type { CollectionEntry } from "astro:content";
 import { render } from "astro:content";
 import Base from "../../layouts/Base.astro";
-import PassionPattern from "../PassionPattern.astro";
-import PageNav from "../PageNav.astro";
-import Rail from "../Rail.astro";
+import Pager from "../Pager.astro";
 import Shot from "../Shot.astro";
-import { getProjectRail, projectPath } from "../../data/projects";
+import { getProjectNeighbours } from "../../data/projects";
 
 interface Props {
 	project: CollectionEntry<"projects">;
@@ -14,257 +12,128 @@ interface Props {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
-const groups = await getProjectRail();
+const { prev, next } = await getProjectNeighbours(project.id);
 
 const { years, role, status, tech, links, features, shots } = project.data;
 /* Shots without a src would render placeholder frames; skip them until the
    real screenshots exist. */
 const [cover, ...rest] = (shots ?? []).filter((s) => s.src);
+/* The first link is the page's button; the rest sit beside it. */
+const [primary, ...others] = (links ?? []).map((l) => ({
+  ...l,
+  newTab: l.newTab || l.href.startsWith("http"),
+}));
 ---
 
-<Base
-  title={project.data.title}
-  description={project.data.description}
-  wide
-  router
->
-  <PageNav href="/" label="← home" />
-  <div class="layout">
-    <article class="s-blocks">
-      <header>
-        <h1>{project.data.title}</h1>
-        <p class="lede">{project.data.description}</p>
-        <dl class="meta mono">
-          <div><dt>Years</dt><dd>{years}</dd></div>
-          <div><dt>Role</dt><dd>{role}</dd></div>
-          <div><dt>Status</dt><dd>{status}</dd></div>
-        </dl>
-      </header>
+<Base title={project.data.title} description={project.data.description}>
+  <section class="wrap hero">
+    <h1>{project.data.title}</h1>
+    <p class="lede">{project.data.description}</p>
+    {
+      primary && (
+        <div class="cta">
+          <a
+            class="button"
+            href={primary.href}
+            target={primary.newTab ? "_blank" : undefined}
+            rel={primary.newTab ? "noopener" : undefined}
+          >
+            {primary.label}
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M5 11 11 5M6 5h5v5" />
+            </svg>
+          </a>
+          {others.map((l) => (
+            <a
+              class="more"
+              href={l.href}
+              target={l.newTab ? "_blank" : undefined}
+              rel={l.newTab ? "noopener" : undefined}
+            >
+              {l.label}
+            </a>
+          ))}
+        </div>
+      )
+    }
+  </section>
 
-      {cover && <Shot {...cover} eager />}
-
-      <div class="prose">
-        <Content />
-      </div>
-
-      <section class="features">
-        <h2>What it does</h2>
-        <ul role="list">
-          {
-            features.map((f) => (
-              <li>
-                <strong>{f.title}</strong>
-                <span>{f.body}</span>
-              </li>
-            ))
-          }
-        </ul>
+  {
+    cover && (
+      <section class="wrap cover-shot" aria-label="Cover">
+        <Shot {...cover} cover />
       </section>
+    )
+  }
 
+  <article class="wrap prose">
+    <Content />
+  </article>
+
+  <section class="wrap section" aria-labelledby="features">
+    <h2 id="features">What it does</h2>
+    <ul class="grid" role="list">
       {
-        rest.length > 0 && (
-          <section class="shots">
-            {rest.map((s) => (
-              <Shot {...s} />
-            ))}
-          </section>
-        )
+        features.map((f) => (
+          <li>
+            <h3>{f.title}</h3>
+            <p>{f.body}</p>
+          </li>
+        ))
       }
+    </ul>
+  </section>
 
-      <section class="built">
-        <h2>Built with</h2>
-        <p class="mono">{tech}</p>
-        {
-          links && links.length > 0 && (
-            <ul class="links mono" role="list">
-              {links.map((l) => {
-                const newTab = l.newTab || l.href.startsWith("http");
-                return (
-                  <li>
-                    <a
-                      href={l.href}
-                      target={newTab ? "_blank" : undefined}
-                      rel={newTab ? "noopener" : undefined}
-                    >
-                      {l.label}
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-          )
-        }
+  {
+    rest.length > 0 && (
+      <section class="wrap section shots" aria-label="Screenshots">
+        {rest.map((s) => (
+          <Shot {...s} />
+        ))}
       </section>
-    </article>
-    <aside transition:name="rail" transition:persist="rail">
-      <Rail
-        groups={groups}
-        current={projectPath(project.id)}
-        label="All projects"
-      />
-    </aside>
-  </div>
-  <PassionPattern wide />
+    )
+  }
+
+  <section class="wrap section" aria-labelledby="details">
+    <h2 id="details">Details</h2>
+    <dl class="keys">
+      <dt>Years</dt>
+      <dd>{years}</dd>
+      <dt>Role</dt>
+      <dd>{role}</dd>
+      <dt>Status</dt>
+      <dd>{status}</dd>
+      <dt>Built with</dt>
+      <dd>{tech}</dd>
+    </dl>
+  </section>
+
+  <Pager
+    label="More projects"
+    prev={prev && { ...prev, word: "Previous" }}
+    next={next && { ...next, word: "Next" }}
+  />
 </Base>
 
 <style>
-  /* Article first in the DOM so keyboard users reach it before the rail;
-     the grid places the rail to its left. The aside is transition:persist,
-     so select it through the fresh .layout parent — after a navigation it
-     carries the previous page's scope attribute. */
-  .layout {
-    display: grid;
-    grid-template-columns: 15rem minmax(0, 65ch);
-    gap: 3.5rem;
-    align-items: start;
+  .cover-shot {
+    padding-top: var(--hero-gap);
   }
 
-  article {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  .layout > :global(aside) {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  @media (max-width: 900px) {
-    .layout {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 2.5rem;
-    }
-
-    article {
-      grid-column: 1;
-    }
-
-    .layout > :global(aside) {
-      grid-row: 2;
-    }
-  }
-
-  article h1 {
-    font-size: 1.25rem;
-    letter-spacing: -0.014em;
-  }
-
-  .lede {
-    margin-top: 0.5rem;
-    color: var(--muted);
-  }
-
-  /* The facts a client checks first, as a spec strip under the title. */
-  .meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1.75rem;
-    margin-top: 1.125rem;
-  }
-
-  .meta dt {
-    color: var(--muted);
-    opacity: 0.7;
-    font-size: 0.6875rem;
-    letter-spacing: 0.08em;
-    text-transform: lowercase;
-  }
-
-  .meta dd {
-    margin: 0;
-    color: var(--text);
-  }
-
-  .prose {
-    margin-top: 1.75rem;
-  }
-
-  .prose :global(p),
-  .prose :global(ul),
-  .prose :global(ol),
-  .prose :global(pre),
-  .prose :global(blockquote) {
-    margin-top: 1.125rem;
-  }
-
-  .prose :global(h2),
-  .prose :global(h3) {
-    margin-top: 2rem;
-  }
-
-  .prose :global(blockquote) {
-    border-left: 2px solid var(--hairline);
-    padding-left: 1.125rem;
-    color: var(--muted);
-  }
-
-  section {
-    margin-top: 2.75rem;
-  }
-
-  section ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  /* Each feature taps off the section the way a pad taps off the rail. */
-  .features ul {
-    margin-top: 1rem;
-  }
-
-  .features li {
-    padding-left: 1.125rem;
-    position: relative;
-  }
-
-  .features li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0.8125em;
-    width: 7px;
-    height: 1px;
-    background: var(--accent);
-    opacity: 0.6;
-  }
-
-  .features li + li {
-    margin-top: 0.875rem;
-  }
-
-  /* Title over body, the way the rail stacks a title over its meta. */
-  .features strong {
-    display: block;
-    font-weight: 600;
-  }
-
-  .features span {
-    display: block;
-    margin-top: 0.125rem;
-    color: var(--muted);
-  }
-
+  /* Screenshots sit further apart than the blocks of a section do. */
   .shots {
-    /* Shot brings its own top margin; don't double it. */
-    margin-top: 1rem;
+    gap: calc(var(--gap) * 2);
   }
 
-  .built p {
-    margin-top: 0.75rem;
-  }
-
-  .links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    margin-top: 0.875rem;
-  }
-
-  .links a {
-    color: var(--muted);
-  }
-
-  .links a:hover {
-    color: var(--accent);
+  .shots :global(figure) {
+    max-width: min(var(--w, 100%), var(--figure));
   }
 </style>

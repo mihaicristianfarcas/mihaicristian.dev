@@ -1,34 +1,37 @@
 ---
 import { ClientRouter } from "astro:transitions";
-import { Font } from "astro:assets";
-import "lenis/dist/lenis.css";
 import "../styles/global.css";
 import { site, person } from "../data/site";
-import CustomCursor from "../components/CustomCursor.astro";
 
 interface Props {
   title?: string;
   description?: string;
-  wide?: boolean;
-  router?: boolean;
   noindex?: boolean;
   publishedTime?: Date;
   structuredData?: Record<string, unknown>;
 }
 
-const {
-  title,
-  wide = false,
-  router = false,
-  noindex = false,
-  publishedTime,
-  structuredData,
-} = Astro.props;
+const { title, noindex = false, publishedTime, structuredData } = Astro.props;
 const description = Astro.props.description ?? site.description;
 const pageTitle = title
   ? `${title} — ${site.name}`
   : `${site.name} | Software Engineer`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const path = Astro.url.pathname;
+
+/* The header's links. The section being read stays lit on every page in it. */
+const sections = [
+  { href: "/projects/", label: "Projects" },
+  { href: "/writing/", label: "Writing" },
+].map((s) => ({
+  ...s,
+  current:
+    path.replace(/\/?$/, "/") === s.href
+      ? ("page" as const)
+      : path.startsWith(s.href)
+        ? ("true" as const)
+        : undefined,
+}));
 
 const feed = new URL("/rss.xml", Astro.site);
 const websiteId = `${site.url}/#website`;
@@ -45,14 +48,14 @@ const schema = {
       publisher: { "@id": person["@id"] },
     },
     {
-      "@type": Astro.url.pathname === "/" ? "ProfilePage" : "WebPage",
+      "@type": path === "/" ? "ProfilePage" : "WebPage",
       "@id": `${canonical.href}#webpage`,
       url: canonical.href,
       name: pageTitle,
       description,
       inLanguage: "en",
       isPartOf: { "@id": websiteId },
-      ...(Astro.url.pathname === "/" && {
+      ...(path === "/" && {
         mainEntity: { "@id": person["@id"] },
       }),
     },
@@ -63,25 +66,27 @@ const schema = {
 
 <!doctype html>
 {
-  /* No root crossfade: it would compound with the entrance stagger below —
-    the old page washing out over content still at opacity 0 reads as a
-    flash. Instead the swap is instant and the entrance is the transition,
-    so client navigations and hard loads look the same. */
+  /* No root crossfade: the swap is instant and the fade in global.css is the
+    transition, so client navigations and hard loads look the same. */
 }
 <html lang="en" transition:animate="none">
   <head>
     <meta charset="utf-8" />
     <meta name="color-scheme" content="light dark" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    {
-      /* Every glyph on the site is in one of these two, so nothing loads on
-        demand and both are worth preloading. */
-    }
-    <Font cssVariable="--font-inter" preload />
-    <Font cssVariable="--font-meslo" preload />
+    <meta
+      name="theme-color"
+      content="#ffffff"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#282725"
+      media="(prefers-color-scheme: dark)"
+    />
     <script is:inline>
-      /* Holds the page until the fonts and the DOM are ready, then lets the
-         entrance in global.css run — see `[data-loading]` there. Inline and
+      /* Holds the page until the DOM and its media are ready, then lets the
+         fade in global.css run — see `[data-loading]` there. Inline and
          above the stylesheet so the attribute is set before the first paint.
          With JS off it is never set and the page renders as normal. */
       (() => {
@@ -96,27 +101,10 @@ const schema = {
             document.addEventListener("DOMContentLoaded", done, { once: true });
         });
 
-        /* Start the faces loading rather than awaiting document.fonts.ready
-           alone: nothing is pending until layout asks for a font, so `ready`
-           on its own can resolve before the fonts exist. Once these are
-           pending it is the real settled signal, and it covers any face
-           registered after this ran. Relies on the @font-face rules above
-           being registered by now. */
-        const fontsLoaded = (async () => {
-          if (!document.fonts) return;
-          const loads = [];
-          // Also the local() fallbacks, which reject when the font isn't installed.
-          document.fonts.forEach((face) =>
-            loads.push(face.load().catch(() => {})),
-          );
-          await Promise.all(loads);
-          return document.fonts.ready;
-        })();
-
-        /* Nothing loads lazily, so the page holds for its media as well:
-           every image, and every video's poster, decoded before the fade.
-           A recording's poster is its first frame, so the page arrives
-           whole and the video takes over from there. */
+        /* Nothing loads lazily, so the page holds for its media: every
+           image, and every video's poster, decoded before the fade. A
+           recording's poster is its first frame, so the page arrives whole
+           and the video takes over from there. */
         const decoded = async (image) => {
           try {
             await image.decode();
@@ -141,7 +129,7 @@ const schema = {
         });
 
         /* Both handlers: a rejection here should still show the page. */
-        Promise.all([mediaLoaded, fontsLoaded]).then(reveal, reveal);
+        mediaLoaded.then(reveal, reveal);
       })();
     </script>
     <title>{pageTitle}</title>
@@ -186,76 +174,13 @@ const schema = {
       )
     }
     <meta name="generator" content={Astro.generator} />
-    {router && <ClientRouter />}
+    <ClientRouter />
   </head>
   <body>
     <script>
-      import Lenis from "lenis";
-
-      /* Keep wheel smoothing, but only request frames while a scroll is
-         moving. The default autoRaf loop also runs on an idle page. */
-      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        const lenis = new Lenis({ lerp: 0.5, anchors: { onStart: schedule } });
-        let frame = 0;
-
-        function tick(time: number) {
-          frame = 0;
-          lenis.raf(time);
-          if (lenis.isScrolling === "smooth")
-            frame = requestAnimationFrame(tick);
-        }
-
-        function schedule() {
-          if (frame || document.hidden) return;
-          // An idle interval must not become the first animation's delta.
-          lenis.time = performance.now();
-          frame = requestAnimationFrame(tick);
-        }
-
-        lenis.on("virtual-scroll", schedule);
-        document.addEventListener("visibilitychange", () => {
-          cancelAnimationFrame(frame);
-          frame = 0;
-          if (!document.hidden && lenis.isScrolling === "smooth") schedule();
-        });
-        document.addEventListener("astro:before-swap", () => {
-          lenis.scrollTo(window.scrollY, { immediate: true, force: true });
-          cancelAnimationFrame(frame);
-          frame = 0;
-        });
-        document.addEventListener("astro:page-load", () => lenis.resize());
-      }
-    </script>
-    <script>
-      /* The rail/timeline and the back-link row enter in the real DOM, not
-         as view-transition pseudo-elements: a pseudo animation holds the
-         transition open for its whole run, and while it is open the page
-         renders through the snapshot tree — the entrance stagger visibly
-         hitches. So every group is de-animated in global.css and this marks
-         the freshly arrived elements `entering` instead. Entry means the
-         outgoing page had no counterpart; the class is stripped before the
-         next swap so re-inserting a persisted node never replays the fade. */
-      const persistKeys = () =>
-        new Set(
-          [...document.querySelectorAll("[data-astro-transition-persist]")].map(
-            (el) => el.getAttribute("data-astro-transition-persist"),
-          ),
-        );
-
-      let hadNav = true;
-      let hadAsides = persistKeys();
-
-      document.addEventListener("astro:before-swap", () => {
-        hadNav = !!document.querySelector(".nav");
-        hadAsides = persistKeys();
-        document
-          .querySelectorAll(".entering")
-          .forEach((el) => el.classList.remove("entering"));
-      });
-
       /* The router's side of the hold in <head>: fetch the next page, then
          decode its images and posters before swapping it in, so a client-side
-         navigation fades in whole too. The incoming document is detached and
+         navigation arrives whole too. The incoming document is detached and
          loads nothing itself; these warm the cache its elements then hit. */
       async function warm(src: string, srcset = "", sizes = "") {
         const image = new Image();
@@ -299,22 +224,48 @@ const schema = {
           ]);
         };
       });
-
-      document.addEventListener("astro:after-swap", () => {
-        if (!hadNav) document.querySelector(".nav")?.classList.add("entering");
-        document
-          .querySelectorAll("[data-astro-transition-persist]")
-          .forEach((el) => {
-            if (
-              !hadAsides.has(el.getAttribute("data-astro-transition-persist"))
-            )
-              el.classList.add("entering");
-          });
-      });
     </script>
-    <CustomCursor />
-    <main class:list={[{ wide }]}>
+    <header class="wrap top">
+      <a
+        class="mark"
+        href="/"
+        aria-current={path === "/" ? "page" : undefined}
+      >
+        {site.name}
+      </a>
+      <nav aria-label="Site">
+        {
+          sections.map((s) => (
+            <a class="nav" href={s.href} aria-current={s.current}>
+              {s.label}
+            </a>
+          ))
+        }
+      </nav>
+    </header>
+    <main>
       <slot />
     </main>
+    <footer class="wrap">
+      <div class="foot">
+        <span>© {new Date().getFullYear()} {site.name}</span>
+        <nav aria-label="Elsewhere">
+          {
+            site.links.map((l) => {
+              const newTab = l.newTab || l.href.startsWith("http");
+              return (
+                <a
+                  href={l.href}
+                  target={newTab ? "_blank" : undefined}
+                  rel={newTab ? "noopener" : undefined}
+                >
+                  {l.label}
+                </a>
+              );
+            })
+          }
+        </nav>
+      </div>
+    </footer>
   </body>
 </html>
