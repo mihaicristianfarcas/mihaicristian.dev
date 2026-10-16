@@ -25,8 +25,11 @@ const projects = defineCollection({
 			title: z.string(),
 			/* Search title; the project name stays short in headings and lists. */
 			seoTitle: z.string().optional(),
-			/* One line: the meta description, the page's lede, and its line in lists. */
+			/* One sentence: the meta description and the project page's lede. */
 			description: z.string(),
+			/* A few words, for the project grids: read at a glance, where the
+			   description would take a paragraph. */
+			summary: z.string(),
 			group: z.enum(projectGroups),
 			/* Rank within the group; ties fall back to title. */
 			order: z.number(),

@@ -1,5 +1,5 @@
 ---
-/* Projects three to a row, each its title over its one-line description. */
+/* Projects three to a row, each its title over its summary. */
 import type { CollectionEntry } from "astro:content";
 import { projectPath } from "../data/projects";
 
@@ -17,7 +17,7 @@ const { projects } = Astro.props;
         <h3>
           <a href={projectPath(p.id)}>{p.data.title}</a>
         </h3>
-        <p>{p.data.description}</p>
+        <p>{p.data.summary}</p>
       </li>
     ))
   }
