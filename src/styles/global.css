@@ -28,12 +28,10 @@
 	   from top to bottom. */
 	--line-height: 2;
 	--leading: calc(var(--size) * var(--line-height));
-	/* Between blocks inside a section: one empty line. */
+	/* Between blocks: one empty line. A project or a post keeps to it from
+	   its title to its last link. */
 	--gap: var(--leading);
-	/* The space between a page's title, with its description, and what
-	   comes after it. */
-	--hero-gap: calc(var(--leading) * 2);
-	/* The space above every section. */
+	/* The space above every section of a page made of sections. */
 	--section: calc(var(--leading) * 4);
 	/* The project grid's columns. Two-column lists take their first column
 	   from it too, so every list's second column starts on the same line. */
@@ -185,10 +183,6 @@ kbd {
 /* Every page opens on its title, as far from the top as it is from the side
    (see --corner). */
 .hero {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: var(--hero-gap);
 	padding-top: var(--corner);
 }
 
@@ -355,12 +349,12 @@ kbd {
 	text-wrap: pretty;
 }
 
-/* The way on to the next entry, at the foot of a project or a post. */
+/* The way on to the next entry, one empty line under a project or a post. */
 .pager {
 	display: flex;
 	justify-content: space-between;
 	gap: 24px;
-	padding-top: var(--section);
+	padding-top: var(--gap);
 }
 
 .pager a {
@@ -384,14 +378,15 @@ kbd {
 
 /* ---- running text: project write-ups and posts ---- */
 
-/* Text spans the page, as wide as the screenshots above it. Every block in
-   it, a paragraph, a heading, a quote's lines, a list's items, sits one empty
-   line from the next, so the spacing never changes down the page. */
+/* Text spans the page, as wide as the screenshots above it. It starts one
+   empty line under what's above it, and every block in it, a paragraph, a
+   heading, a quote's lines, a list's items, sits one empty line from the
+   next, so the spacing never changes down the page. */
 .prose {
 	display: flex;
 	flex-direction: column;
 	gap: var(--gap);
-	padding-top: var(--hero-gap);
+	padding-top: var(--gap);
 }
 
 .prose p,

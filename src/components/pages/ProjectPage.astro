@@ -93,12 +93,11 @@ const actions = (links ?? []).map((l) => ({
 </Base>
 
 <style>
-  .cover-shot {
-    padding-top: var(--hero-gap);
-  }
-
-  /* Screenshots sit further apart than the blocks of a section do. */
-  .shots {
-    gap: calc(var(--gap) * 2);
+  /* One empty line between every block, like a post: the title, the cover,
+     the text, each screenshot, the details, and the links. A caption stays
+     right under its screenshot. */
+  .cover-shot,
+  .section {
+    padding-top: var(--gap);
   }
 </style>

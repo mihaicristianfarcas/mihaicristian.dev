@@ -43,11 +43,3 @@ const { newer, older } = await getPostNeighbours(post.id);
     next={older && { ...older, word: "Older" }}
   />
 </Base>
-
-<style>
-  /* The text starts one empty line under the date, the same as every gap
-     inside it. */
-  .prose {
-    padding-top: var(--gap);
-  }
-</style>

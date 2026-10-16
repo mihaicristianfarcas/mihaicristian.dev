@@ -59,8 +59,9 @@ automatically, newest first.
 - **One font size.** Everything is set at 17px in the system font; hierarchy
   comes from weight, color, and space. Links are plain text, underlined on
   hover. Pages share one rhythm of 34px lines: every gap is a whole number of
-  them, one between paragraphs, two around a page's title, description, and
-  links, four between sections.
+  them. A project or a post keeps one empty line between every block, from
+  its title to its last link; the homepage and the indexes put four between
+  sections.
 - **Light and dark** come straight from the system preference. Dark is a warm
   gray with white text, after macOS. Screenshots with a theme of their own
   (a terminal, a chart) ship a version for each.
