@@ -189,14 +189,14 @@ kbd {
 
 /* ---- header ---- */
 
-/* The name, as far from the top as it is from the side (see --corner). */
+/* "Go back", as far from the top as it is from the side (see --corner). */
 .top {
 	display: flex;
 	padding-top: var(--corner);
 }
 
-.mark {
-	font-weight: 600;
+.back {
+	font-weight: 500;
 	text-decoration: none;
 }
 
@@ -609,6 +609,7 @@ figcaption {
 		border-color: var(--muted);
 	}
 
+	.back:hover,
 	.more:hover,
 	.grid h3 a:hover,
 	.grid li:hover h3 a,
