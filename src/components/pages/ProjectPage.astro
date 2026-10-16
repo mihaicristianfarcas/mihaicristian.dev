@@ -93,11 +93,14 @@ const actions = (links ?? []).map((l) => ({
 </Base>
 
 <style>
-  /* One empty line between every block, like a post: the title, the cover,
-     the text, each screenshot, the details, and the links. A caption stays
-     right under its screenshot. */
-  .cover-shot,
-  .section {
-    padding-top: var(--gap);
+  /* From the description down to the last screenshot, the media and the
+     text between them are all two lines apart. */
+  .cover-shot {
+    padding-top: var(--hero-gap);
+  }
+
+  .shots {
+    gap: var(--hero-gap);
+    padding-top: var(--hero-gap);
   }
 </style>
