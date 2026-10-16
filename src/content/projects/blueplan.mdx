@@ -13,19 +13,6 @@ featured: 3
 links:
   - label: Visit the site
     href: https://blueplan.vercel.app
-features:
-  - title: A house built by scrolling
-    body: Seven stages take a house from its column grid to the foundations, the structure, the building services, the envelope, and a walk through the rooms. Scrolling is the only clock, so it moves exactly as fast as you do.
-  - title: Drawn in code, rendered live
-    body: Every footing, pipe, and stair is generated in three.js on the page, with no model files to download, and the camera follows a smooth path through the house.
-  - title: The services in x-ray
-    body: Power, water, drainage, and heating and ventilation appear colour-coded inside the frame, with the heat pump and the underfloor heating labelled, before the walls close over them.
-  - title: The brand in every detail
-    body: The studio's mark draws itself as the page opens, headings are plotted in behind a scan bar, labels decode like a CAD readout, and the cursor is the mark's own corner.
-  - title: Fast where it counts
-    body: The 3D scene is built and its shaders compiled while the browser is idle, before you scroll to it, and Lighthouse scores the page 98 on mobile and 100 on desktop.
-  - title: Works without the show
-    body: With reduced motion, with the page's own button that turns animation off, or without WebGL or JavaScript, everything still reads in full. The walkthrough's stages can be stepped through from the keyboard.
 shots:
   - src: ../../assets/projects/blueplan-walkthrough.png
     video: ../../assets/projects/blueplan-walkthrough.mp4
@@ -39,47 +26,11 @@ shots:
     caption: The building services in x-ray, each system in its own colour, before the walls go up.
 ---
 
-BluePlan is the architecture and engineering studio in Cluj-Napoca I freelance
-with, and this is their new website, which I'm still building. Most studio
-websites are a gallery of finished buildings. BluePlan's pitch is about how a
-building gets there: architecture and structure designed together, from the
-first sketch to the drawings a builder works from. So rather than say that, the
-site shows it.
+BluePlan, the studio I freelance with, designs architecture and structure
+together, from the first sketch to the drawings a builder works from. So rather
+than say that, the site shows it: a house that builds itself as you scroll, from
+the column grid and the footings to the services in x-ray and a walk through
+the finished rooms. It's all generated in three.js, with no model files, and
+the page still scores 98 on mobile Lighthouse.
 
-Its centrepiece is a house that builds itself as you scroll. It opens on a
-column grid with its axes and dimensions, the way every drawing starts. Then
-the ground is dug for the footings and the buried services come in from the
-street, the rebar, columns, slabs, and beams go up, and the building services
-appear in x-ray, colour-coded so you can tell the power from the water from
-the drainage. The blueprint turns into a white maquette with walls, glazing,
-and solar panels on the roof, the camera drops to eye level and walks inside,
-and the rooms assemble around you as you go. It ends back in the air, over the
-finished house. The house is illustrative, not one of theirs, and the page
-says so in the corner.
-
-## How it works
-
-The house is generated in three.js when the page loads: there are no model
-files, only code that lays out every footing, pipe, and stair. The scroll
-position, from 0 to 1, drives both the camera, which follows a Catmull-Rom
-spline through the house, and every step of the build. Nothing runs on a
-timer, so if you stop scrolling the house stops, and if you scroll back it
-comes apart.
-
-A scene like that is easy to make stutter, especially in Safari, so a good
-part of the work went into keeping it smooth. With smooth
-scrolling, a busy main thread freezes the scroll itself, so the scene is built
-and its shaders compiled while the browser is idle after load, not when you
-reach it. Shadows wait until the model turns solid, the canvas resolution is
-capped, and the effects everywhere else on the page animate only what the
-browser can composite without repainting.
-
-Around it is a page in the studio's own brand: Geist type, their blue, and
-their mark, a corner drawn into a square grid. The mark draws itself as the
-page opens, headings are plotted in behind a scan bar, labels decode like a
-CAD readout, and the cursor is the mark's own corner. None of it is needed to
-read the page. With reduced motion, without WebGL, or without JavaScript at
-all, everything is still there, only still.
-
-It's still a work in progress, so what's here may change before it launches at
-blueplan.ro. Until then, the preview link below shows where it stands.
+It's still a work in progress, ahead of its launch at blueplan.ro.

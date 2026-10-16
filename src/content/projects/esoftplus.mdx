@@ -14,17 +14,6 @@ links:
     href: https://esoftplus-landing.vercel.app
   - label: Source on GitHub
     href: https://github.com/mihaicristianfarcas/esoftplus-landing
-features:
-  - title: The scroll is the demo
-    body: The hero's dashboard unfolds as you move down the page. The frame opens, the view crops down to the mobile app, and tooltips surface one by one, so you've seen the product work before you reach the pricing.
-  - title: No animation library underneath
-    body: Scroll position is interpolated into a handful of CSS custom properties and the browser composites the rest, so the sequence stays smooth even mid-flick.
-  - title: Everything a landing page owes you
-    body: Features, pricing, team, FAQ, and a contact form, each with its own section on one long page.
-  - title: Reads well on a phone
-    body: The scroll story collapses gracefully on small screens, landscape phones get their own layouts, and the menu becomes a drawer.
-  - title: Respects reduced motion
-    body: With reduced motion on, smooth scrolling steps aside and transitions resolve instantly, so the page still reads without the choreography.
 shots:
   - src: ../../assets/projects/esoftplus-hero-scroll.png
     video: ../../assets/projects/esoftplus-hero-scroll.mp4
@@ -35,27 +24,8 @@ shots:
     caption: The pricing tiers.
 ---
 
-Most landing pages tell you the product is polished and then ask you to book a
-demo to see it. This one shows you instead: as you scroll, the dashboard in
-the hero unfolds out of its oval frame, crops down to the mobile view, and
-tooltips surface one by one, so the pitch and the demonstration are the same
-gesture.
-
-The sequence runs in two acts over three screens of scrolling. In the first,
-the oval grows until the dashboard fills the view. Because the oval scales
-more in height than in width, the screenshot inside is counter-scaled so it
-never stretches, and the crop narrows until only the phone-sized sidebar is
-left. In the second, the sidebar scrolls inside its frame while five tooltips
-draw in on a stagger, each pointing at the part of the product it describes.
-
-There's no animation library underneath. The hero reduces scroll position to a
-single number between 0 and 1 and interpolates it into about twenty CSS custom
-properties: the oval's scale, the crop, the parallax, each tooltip's reveal.
-Updates are batched to one per frame and skipped when nothing has changed, and
-the browser composites everything else, which is why it stays smooth even when
-you throw the page. Lenis paces the scrolling so the story reads at any speed.
-
-Below the hero it's everything a landing page owes you: a features carousel,
-pricing, the team, an FAQ, and a contact form. Built freelance for ESoftPlus,
-an analytics platform for businesses: profit, inventory, a daily summary. One
-long page, one idea, and most of the work in how it moves.
+Most landing pages say the product is polished, then ask you to book a demo.
+This one shows you: as you scroll, the dashboard unfolds out of its oval, crops
+down to the mobile app, and tooltips point out what each part does. There's no
+animation library underneath, only scroll position mapped onto CSS custom
+properties, which is why it stays smooth even when you throw the page.

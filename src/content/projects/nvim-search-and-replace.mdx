@@ -13,21 +13,6 @@ featured: 6
 links:
   - label: Source on GitHub
     href: https://github.com/mihaicristianfarcas/nvim-search-and-replace
-features:
-  - title: See the change before you make it
-    body: A before and after for every match, so renaming something across a codebase stops being an act of faith.
-  - title: Results as fast as you type
-    body: Matches stream in as they're found, with a running count, so a search across a large project stays usable from the first keystroke.
-  - title: Pick and choose
-    body: Select a range of matches in visual mode and replace just those, or replace everything at once.
-  - title: Undo it, even tomorrow
-    body: Its own undo and redo history for replacements, kept across sessions, so a bad search across forty files is one keystroke from being over.
-  - title: Won't write a stale match
-    body: Before it touches a file it checks the text still matches exactly, and it leaves alone any file you have unsaved changes in.
-  - title: Real regular expressions
-    body: "Full regex, powered by ripgrep: the same engine and the same syntax as searching from the terminal, including patterns that span lines."
-  - title: Never freezes the editor
-    body: Search runs asynchronously, edits are computed in small chunks, and files are written off the main thread, so replacing thousands of matches doesn't lock up Neovim.
 shots:
   - src: ../../assets/projects/nvim-search-and-replace-rename.png
     srcDark: ../../assets/projects/nvim-search-and-replace-rename-dark.png
@@ -41,62 +26,12 @@ shots:
     caption: Marking a range of matches in visual mode, with the change previewed on the right.
 ---
 
-Search and replace across a whole project has never had tooling I fully trust.
-You either read a quickfix list like a compiler dump, or you fire a `sed`
-command blind and hope.
-
-So this one shows you the change before you make it. You type a pattern and
-results stream in while the search is still running, with a count that ticks
-up as they arrive. Every match gets a before and after in the preview pane, you
-pick the ones you want or take them all, and the whole thing is undoable
-afterwards anyway. It opens with the word under your cursor or your visual
-selection already filled in, so the common case is a keystroke away.
-
-## Getting started
-
-You'll need Neovim 0.8 or later and [ripgrep](https://github.com/BurntSushi/ripgrep)
-installed as `rg`. Add this to your [lazy.nvim](https://github.com/folke/lazy.nvim)
-plugin specifications:
-
-```lua
-{
-  "mihaicristianfarcas/nvim-search-and-replace",
-  cmd = { "SearchAndReplaceOpen", "SearchAndReplaceVisual", "SearchAndReplaceUndo", "SearchAndReplaceRedo" },
-  opts = {},
-}
-```
-
-Open Neovim in your project and run `:SearchAndReplaceOpen`. Enter a search
-pattern and replacement, then review the before-and-after preview. In the
-results, use visual mode to select matches and press Enter to replace them,
-or Ctrl-a to replace everything. Use `:SearchAndReplaceUndo` to undo a
-replacement and `:SearchAndReplaceRedo` to redo it.
-
-Run `:checkhealth nvim-search-and-replace` to check your setup. The
-[README](https://github.com/mihaicristianfarcas/nvim-search-and-replace#installation)
-has the full configuration and keybindings.
-
-## Being careful with your files
-
-A tool that edits forty files at once has to be paranoid, so most of the work
-went into what happens at write time. Before it touches a file it checks the
-exact text it's about to replace is still there, so a result that went stale
-while you were deciding can't quietly corrupt anything. It keeps each file's
-line endings and trailing newline as they were, skips any file you have open
-with unsaved changes, and asks before replacing everything when the results
-were cut off at the limit.
-
-Undo is held to the same standard. The history persists across sessions, and
-undoing checks each file against what was written, skipping any that changed
-since rather than clobbering your newer edits.
-
-## Staying fast
-
-Search runs through ripgrep and streams its output, so a large tree never
-blocks the editor. Replacements are computed in small chunks between editor
-events and written to disk off the main thread, which is what lets a big
-rename finish without Neovim ever freezing. It has a health check, sensible
-limits on result count and file size, and every keymap can be changed.
+Search and replace across a project never had tooling I fully trusted: read a
+quickfix list like a compiler dump, or fire a `sed` command blind and hope. This
+one shows a before and after for every match while results are still streaming
+in, lets you pick the ones you want, and keeps an undo history that survives a
+restart. Before it writes, it checks each match is still there, so a stale
+result can't corrupt a file.
 
 I built it because I wanted it, and I use it every day. Other people found it
 and use it too.

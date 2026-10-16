@@ -14,7 +14,7 @@ const { project } = Astro.props;
 const { Content } = await render(project);
 const { prev, next } = await getProjectNeighbours(project.id);
 
-const { years, role, status, tech, links, features, shots } = project.data;
+const { years, role, status, tech, links, shots } = project.data;
 /* Shots without a src would render placeholder frames; skip them until the
    real screenshots exist. */
 const [cover, ...rest] = (shots ?? []).filter((s) => s.src);
@@ -78,20 +78,6 @@ const [primary, ...others] = (links ?? []).map((l) => ({
     <Content />
   </article>
 
-  <section class="wrap section" aria-labelledby="features">
-    <h2 id="features">What it does</h2>
-    <ul class="grid" role="list">
-      {
-        features.map((f) => (
-          <li>
-            <h3>{f.title}</h3>
-            <p>{f.body}</p>
-          </li>
-        ))
-      }
-    </ul>
-  </section>
-
   {
     rest.length > 0 && (
       <section class="wrap section shots" aria-label="Screenshots">
@@ -131,9 +117,5 @@ const [primary, ...others] = (links ?? []).map((l) => ({
   /* Screenshots sit further apart than the blocks of a section do. */
   .shots {
     gap: calc(var(--gap) * 2);
-  }
-
-  .shots :global(figure) {
-    max-width: min(var(--w, 100%), var(--figure));
   }
 </style>

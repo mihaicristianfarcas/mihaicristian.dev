@@ -12,19 +12,6 @@ tech: eBPF · C · Rust · Python
 links:
   - label: Source on GitHub
     href: https://github.com/mihaicristianfarcas/ebpf-network-analysis-system
-features:
-  - title: Tells apps apart without decrypting anything
-    body: "The contents are off the table, so it identifies applications from the shape of the traffic: packet sizes, directions, and timing."
-  - title: Recognises over a hundred applications
-    body: Trained on CESNET-QUIC22, a large public dataset of real-world traffic, it picks the right one of 102 applications for 88% of flows it has never seen.
-  - title: Runs where the packets are
-    body: Capture happens inside the kernel at the XDP hook, before the network stack, fast enough to keep up with a live link instead of sampling it. On Wi-Fi, where XDP isn't supported, it falls back to TC.
-  - title: Built for the edge
-    body: About 5.5 ms per flow on a desktop CPU, against a 10 ms budget for the Raspberry Pi 5 it's designed to run on, and cross-compiled for it in one step.
-  - title: Confidence you can trust
-    body: The model's scores are calibrated after training, so the confidence it reports tracks how often it's actually right.
-  - title: Watch it work
-    body: A terminal interface with four views, covering live flows, the applications they belong to, per-stage latency, and how confident each classification is.
 shots:
   - src: ../../assets/projects/ebpf-quic-classifier-pipeline.png
     srcDark: ../../assets/projects/ebpf-quic-classifier-pipeline-dark.png
@@ -32,42 +19,9 @@ shots:
     caption: From packet to prediction. Capture in the kernel, classification in user space.
 ---
 
-Almost all web traffic is encrypted now, and more and more of it is QUIC. Good
-for privacy, awkward for anyone who needs to understand their own network: if
-you can't read the packets, how do you know what's on the wire?
-
-Traffic has a shape, though. You can't see what a video call is saying, but a
-video call *looks* nothing like a file download: different packet sizes,
-different rhythm, different bursts. That's enough to tell them apart without
-decrypting a single byte.
-
-This captures QUIC packets inside the kernel, records the shape of each flow,
-and hands it to a small neural network that sorts it into one of 102
-applications. On flows it never saw in training it gets 88% right. I kept the
-whole thing small enough to sit on the edge device itself, instead of shipping
-everyone's traffic somewhere else first.
-
-## How it works
-
-An eBPF program attached at the XDP hook sees every packet before the kernel's
-network stack does. It picks out QUIC on UDP port 443, and for each flow keeps
-the size, direction, and gap of the first 30 packets, plus four histograms of
-packet sizes and gaps in each direction. That's the same feature layout as the CESNET dataset the
-model was trained on, which is what lets a model trained offline work on live
-traffic. When a flow has enough packets, the kernel hands it to user space over
-a ring buffer.
-
-The user-space side is Rust. It turns each flow into a feature vector and runs
-the model through ONNX Runtime. The model learns an embedding for packet sizes
-and timings instead of taking raw numbers, looks for patterns across the packet
-sequence with convolutions and self-attention, and fuses that with a smaller
-network reading the histograms. It has 2.3 million parameters, and its scores
-are calibrated afterwards so its confidence means something.
-
-## How well it does
-
-On held-out flows it's right 88% of the time across all 102 applications. The
-harder number is the macro F1 of 0.76, which weights every application
-equally: the popular ones are easy, and the long tail of rarely seen apps is
-where it still gets confused. Classifying a flow takes about 5.5 ms on a desktop
-CPU, inside the 10 ms budget set for the Raspberry Pi 5 it's built to run on.
+You can't read encrypted traffic, but it still has a shape: a video call looks
+nothing like a file download. This captures QUIC packets inside the kernel with
+eBPF, records the sizes, directions, and timing of each flow, and hands them to
+a small neural network that names one of 102 applications. It gets 88% of
+flows it has never seen right, in about 5.5 ms each, light enough to run on a
+Raspberry Pi 5 at the edge.

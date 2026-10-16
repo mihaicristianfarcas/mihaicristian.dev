@@ -49,7 +49,6 @@ const projects = defineCollection({
 					}),
 				)
 				.optional(),
-			features: z.array(z.object({ title: z.string(), body: z.string() })),
 			/* Omit `src` and a placeholder frame renders in its place. With a
 			   `video` (an .mp4 in src/assets/projects/), `src` is its poster and
 			   still supplies the frame's dimensions. `srcDark` and `videoDark`

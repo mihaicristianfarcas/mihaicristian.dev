@@ -26,10 +26,9 @@ interface Props {
 	videoDark?: string;
 	alt?: string;
 	caption: string;
-	/* The cover sits above the fold, so it goes first in the queue, and it
-	   spans the page rather than the text. Nothing waits to be scrolled to:
-	   Base.astro holds the page until every shot has decoded, so the article
-	   fades in whole. */
+	/* The cover sits above the fold, so it goes first in the queue. Nothing
+	   waits to be scrolled to: Base.astro holds the page until every shot has
+	   decoded, so the article fades in whole. */
 	cover?: boolean;
 }
 
@@ -43,12 +42,9 @@ const {
 	cover = false,
 } = Astro.props;
 
-/* The cover spans the page; every other shot the text's figure width (see
-   --figure in global.css). Neither grows past its own pixels. */
+/* Every shot spans the page, short of its own pixels. */
 const widths = [640, 1024, 1440, 2000];
-const sizes = cover
-	? "(max-width: 1040px) calc(100vw - 40px), 992px"
-	: "(max-width: 868px) calc(100vw - 40px), 820px";
+const sizes = "(max-width: 1040px) calc(100vw - 40px), 992px";
 const dark = "(prefers-color-scheme: dark)";
 
 const videos = import.meta.glob<string>("../assets/projects/*.mp4", {
@@ -77,7 +73,7 @@ const imageDark =
 ---
 
 <figure
-  class:list={["shot", { cover }]}
+  class="shot"
   style={src ? `--w: ${src.width}px` : undefined}
 >
   <div class:list={["frame", { empty: !src }]}>
@@ -210,9 +206,8 @@ const imageDark =
 </script>
 
 <style>
-  /* A shot never grows past its own pixels; the cover is held to that alone,
-     the rest to the text's figure width too, by .prose in global.css. */
-  .cover {
+  /* A shot never grows past its own pixels. */
+  .shot {
     max-width: var(--w, 100%);
   }
 
