@@ -220,7 +220,7 @@ kbd {
 	gap: 0 32px;
 }
 
-/* A link to act on: "Visit the site", "All projects →". Plain text like
+/* A link to act on: "Visit the site", "All projects". Plain text like
    every other link, underlined on hover. The padding makes it easy to tap
    and the margin takes it back, so it still takes one line. */
 .more {
@@ -250,7 +250,7 @@ kbd {
 	text-wrap: pretty;
 }
 
-/* A section's last word, an "All projects →" link, as wide as its text. */
+/* A section's last word, an "All projects" link, as wide as its text. */
 .section > .more {
 	align-self: flex-start;
 }
