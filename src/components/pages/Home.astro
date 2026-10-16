@@ -95,17 +95,14 @@ const ubb = "https://www.ubbcluj.ro/ro/";
 </Base>
 
 <style>
-  /* As far from the top of the page as the text is from its side, so the
-     page opens on a square corner: the side margin is half of what the
-     viewport has past the 1040px column, plus the column's own 24px. Never
-     under four lines, so a phone still gets room above it, and never over
-     twelve, so a wide display doesn't push it down the screen. */
+  /* The page opens and closes on square corners: as much room above the
+     first line and below the last as there is beside them (see --corner). */
   .intro {
-    padding-top: clamp(
-      calc(var(--leading) * 4),
-      calc((100vw - 1040px) / 2 + 24px),
-      calc(var(--leading) * 12)
-    );
+    padding-top: var(--corner);
+  }
+
+  :global(.foot) {
+    padding-bottom: var(--corner);
   }
 
   .intro .subtitle {

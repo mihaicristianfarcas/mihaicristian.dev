@@ -46,6 +46,17 @@
 	--cols: 3;
 	--col-gap: 32px;
 	--col: calc((100% - (var(--cols) - 1) * var(--col-gap)) / var(--cols));
+	/* The homepage's margin above its first line and below its last: as far
+	   as the text is from the side of the page, so its corners are square.
+	   The side margin is half of what the viewport has past the 1040px
+	   column, plus the column's own 24px. Never under four lines, so a phone
+	   still gets room, and never over twelve, so a wide display doesn't push
+	   the page down the screen. */
+	--corner: clamp(
+		calc(var(--leading) * 4),
+		calc((100vw - 1040px) / 2 + 24px),
+		calc(var(--leading) * 12)
+	);
 }
 
 /* macOS's dark appearance: warm gray, white text. */
