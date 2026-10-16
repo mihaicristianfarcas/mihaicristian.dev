@@ -28,7 +28,8 @@
 	   in a group sit right under each other, and anything that needs setting
 	   apart is set apart by whole empty lines, so the page keeps one rhythm
 	   from top to bottom. */
-	--leading: calc(var(--size) * 1.5);
+	--line-height: 1.8;
+	--leading: calc(var(--size) * var(--line-height));
 	/* Between blocks inside a section: one empty line. */
 	--gap: var(--leading);
 	/* The space between a page's title, its description, its buttons, and
@@ -75,7 +76,7 @@ body {
 	margin: 0;
 	background: var(--paper);
 	color: var(--ink);
-	font: var(--size) / 1.5 var(--sans);
+	font: var(--size) / var(--line-height) var(--sans);
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 }
