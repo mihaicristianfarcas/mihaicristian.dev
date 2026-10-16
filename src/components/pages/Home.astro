@@ -97,7 +97,7 @@ const ubb = "https://www.ubbcluj.ro/ro/";
 <style>
   /* Where the title would sit under the header the other pages have. */
   .intro {
-    padding-top: 152px;
+    padding-top: calc(var(--leading) * 6);
   }
 
   .intro .subtitle {
@@ -106,7 +106,7 @@ const ubb = "https://www.ubbcluj.ro/ro/";
 
   @media (max-width: 640px) {
     .intro {
-      padding-top: 108px;
+      padding-top: calc(var(--leading) * 4);
     }
   }
 
@@ -115,7 +115,9 @@ const ubb = "https://www.ubbcluj.ro/ro/";
     text-wrap: pretty;
   }
 
+  /* Right under the quote, the way every group of lines sits together. */
   .quote figcaption {
-    margin-top: 4px;
+    margin-top: 0;
   }
+
 </style>

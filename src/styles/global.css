@@ -24,13 +24,18 @@
 
 	/* The site uses one font size; hierarchy comes from weight, color and space. */
 	--size: 17px;
-	/* The rhythm inside a section: every block sits one --gap from the next. */
-	--gap: 24px;
+	/* One line of text. The space between lines is the same everywhere: lines
+	   in a group sit right under each other, and anything that needs setting
+	   apart is set apart by whole empty lines, so the page keeps one rhythm
+	   from top to bottom. */
+	--leading: calc(var(--size) * 1.5);
+	/* Between blocks inside a section: one empty line. */
+	--gap: var(--leading);
 	/* The space between a page's title, its description, its buttons, and
 	   what comes after them. */
-	--hero-gap: 64px;
+	--hero-gap: calc(var(--leading) * 2);
 	/* The space above every section. */
-	--section: 96px;
+	--section: calc(var(--leading) * 4);
 	/* The reading width of running text. */
 	--measure: 40em;
 	/* How wide a screenshot gets inside the text. */
@@ -185,7 +190,7 @@ kbd {
 	flex-direction: column;
 	align-items: flex-start;
 	gap: var(--hero-gap);
-	padding-top: 80px;
+	padding-top: calc(var(--leading) * 3);
 }
 
 .lede {
@@ -194,9 +199,8 @@ kbd {
 	text-wrap: pretty;
 }
 
-/* A title with a line under it, set tight: a post and its date. */
+/* A title with lines under it: a post and its date. */
 .title p {
-	margin-top: 4px;
 	color: var(--muted);
 }
 
@@ -260,23 +264,24 @@ kbd {
 /* A section's heading with a line of its own under it. */
 .head p {
 	max-width: var(--measure);
-	margin-top: 4px;
 	color: var(--body);
 	text-wrap: pretty;
 }
 
-/* A section's last word, an "All projects →" link. It shares the section's
-   gap, so it pulls back the extra height that makes it easy to tap. */
+/* A section's last word, an "All projects →" link. It takes one line, like
+   any other, and pulls back the padding that makes it easy to tap. */
 .section > .more {
 	align-self: flex-start;
-	margin-block: -12px;
+	min-height: 0;
+	padding-block: 11px;
+	margin-block: -11px;
 }
 
 /* Projects and features, three to a row. */
 .grid {
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: 40px 32px;
+	gap: var(--leading) 32px;
 	margin: 0;
 	padding: 0;
 	list-style: none;
@@ -298,7 +303,6 @@ kbd {
 }
 
 .grid p {
-	margin-top: 4px;
 	color: var(--body);
 	text-wrap: pretty;
 }
@@ -308,7 +312,7 @@ kbd {
 	display: grid;
 	grid-template-columns: max-content minmax(0, 1fr);
 	align-items: baseline;
-	gap: 14px 32px;
+	column-gap: 32px;
 	max-width: var(--figure);
 }
 
@@ -326,7 +330,7 @@ kbd {
 .posts {
 	display: grid;
 	grid-template-columns: minmax(0, max-content) max-content;
-	gap: 14px 32px;
+	column-gap: 32px;
 	max-width: var(--figure);
 	margin: 0;
 	padding: 0;
@@ -337,7 +341,7 @@ kbd {
    from one year's list to the next. */
 .posts.described {
 	grid-template-columns: minmax(0, 1fr) max-content;
-	row-gap: 24px;
+	row-gap: var(--leading);
 }
 
 .post {
@@ -346,7 +350,7 @@ kbd {
 	grid-column: 1 / -1;
 	grid-template-columns: subgrid;
 	align-items: baseline;
-	row-gap: 2px;
+	row-gap: 0;
 }
 
 .post a {
@@ -357,7 +361,7 @@ kbd {
 .post a::after {
 	content: "";
 	position: absolute;
-	inset: -6px -8px;
+	inset: 0 -8px;
 }
 
 .described .post a {
@@ -371,7 +375,6 @@ kbd {
 }
 
 .post p {
-	margin-top: 4px;
 	color: var(--body);
 	text-wrap: pretty;
 }
@@ -560,14 +563,14 @@ figcaption {
 	display: flex;
 	justify-content: flex-end;
 	margin-top: var(--section);
-	padding-bottom: 48px;
+	padding-bottom: calc(var(--leading) * 2);
 }
 
 .foot nav {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: flex-end;
-	gap: 8px 24px;
+	gap: 0 24px;
 }
 
 .foot a {
@@ -606,9 +609,7 @@ figcaption {
 
 @media (max-width: 640px) {
 	:root {
-		--gap: 20px;
-		--hero-gap: 48px;
-		--section: 72px;
+		--section: calc(var(--leading) * 3);
 	}
 
 	.wrap {
@@ -620,22 +621,16 @@ figcaption {
 	}
 
 	.hero {
-		padding-top: 48px;
+		padding-top: calc(var(--leading) * 2);
 	}
 
 	.grid {
 		grid-template-columns: 1fr;
-		gap: 28px;
 	}
 
 	/* The name over what it stands for. */
 	.keys {
 		grid-template-columns: minmax(0, 1fr);
-		gap: 2px;
-	}
-
-	.keys dd + dt {
-		margin-top: 16px;
 	}
 
 	/* The date under the title. */
