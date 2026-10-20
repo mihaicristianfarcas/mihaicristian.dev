@@ -57,11 +57,11 @@ automatically, newest first.
 ## A few notes on the design
 
 - **One font size.** Everything is set at 17px in the system font; hierarchy
-  comes from weight, color, and space. Links are plain text, underlined on
-  hover. Pages share one rhythm of 34px lines: every gap is a whole number of
-  them. Sections sit four lines apart. A project or a post is its title, then
-  its content as one section: text and pictures two lines apart, a caption
-  one line under its picture, paragraphs one line apart.
+  comes from color and space. Links are the only bold on the site, and
+  underline only on hover. Pages share one rhythm of 34px lines: every gap is
+  a whole number of them. Sections sit four lines apart. A project or a post
+  is its title, then its content as one section: text and pictures two lines
+  apart, a caption one line under its picture, paragraphs one line apart.
 - **Light and dark** come straight from the system preference. Dark is a warm
   gray with white text, after macOS. Screenshots with a theme of their own
   (a terminal, a chart) ship a version for each.

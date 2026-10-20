@@ -20,7 +20,8 @@
 	--mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
 	--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 
-	/* The site uses one font size; hierarchy comes from weight, color and space. */
+	/* The site uses one font size; hierarchy comes from color and space.
+	   Bold is kept for links, so it always means one. */
 	--size: 17px;
 	/* One line of text. The space between lines is the same everywhere: lines
 	   in a group sit right under each other, and anything that needs setting
@@ -95,8 +96,12 @@ body {
 	color: var(--paper);
 }
 
+/* Every link is bold, and the only bold on the page. No underline but on
+   hover (see the end). */
 a {
 	color: inherit;
+	font-weight: 600;
+	text-decoration: none;
 	text-decoration-thickness: 1px;
 	text-underline-offset: 3px;
 }
@@ -120,18 +125,18 @@ dd {
 	font-size: inherit;
 }
 
+/* Headings and emphasis set no weight of their own: a heading stands out by
+   its color and the space around it, emphasis by its color. */
 h1,
 h2,
-h3 {
-	font-weight: 600;
+h3,
+strong,
+b {
+	font-weight: inherit;
 }
 
 h1 {
 	letter-spacing: -0.01em;
-}
-
-strong {
-	font-weight: 600;
 }
 
 code,
@@ -207,14 +212,12 @@ kbd {
 	gap: 0 32px;
 }
 
-/* A link to act on: "Visit the site", "All projects". Plain text like
-   every other link, underlined on hover. The padding makes it easy to tap
+/* A link to act on: "Visit the site", "All projects". Bold like every
+   other link, underlined on hover. The padding makes it easy to tap
    and the margin takes it back, so it still takes one line. */
 .more {
 	padding-block: 11px;
 	margin-block: -11px;
-	font-weight: 500;
-	text-decoration: none;
 }
 
 /* ---- sections ---- */
@@ -262,10 +265,6 @@ kbd {
 	position: relative;
 }
 
-.grid h3 a {
-	text-decoration: none;
-}
-
 /* The whole entry is the link's target, not just its title. */
 .grid h3 a::after {
 	content: "";
@@ -286,10 +285,6 @@ kbd {
 	grid-template-columns: var(--col) minmax(0, 1fr);
 	align-items: baseline;
 	column-gap: var(--col-gap);
-}
-
-.keys dt {
-	font-weight: 500;
 }
 
 .keys dd {
@@ -325,19 +320,11 @@ kbd {
 	row-gap: 0;
 }
 
-.post a {
-	text-decoration: none;
-}
-
 /* The whole row is the link's target, not just its title. */
 .post a::after {
 	content: "";
 	position: absolute;
 	inset: 0 -8px;
-}
-
-.described .post a {
-	font-weight: 600;
 }
 
 .post time {
@@ -363,10 +350,10 @@ kbd {
 	display: flex;
 	flex-direction: column;
 	min-width: 0;
-	font-weight: 500;
-	text-decoration: none;
 }
 
+/* "Previous", "Next": a label on the link, muted and regular, so its title
+   reads as the link. */
 .pager span {
 	color: var(--muted);
 	font-weight: 400;
@@ -520,19 +507,18 @@ figcaption {
 
 .foot a {
 	color: var(--ink);
-	text-decoration: none;
 }
 
 /* ---- hover, only where there's a pointer to hover with ---- */
 
+/* A link underlines under the pointer, and a project or a post underlines
+   its title anywhere over its entry. Only the line changes, so the
+   underline keeps the 1px weight set on `a`. */
 @media (hover: hover) and (pointer: fine) {
-	.more:hover,
-	.grid h3 a:hover,
+	a:hover,
 	.grid li:hover h3 a,
-	.post:hover a,
-	.pager a:hover,
-	.foot a:hover {
-		text-decoration: underline;
+	.post:hover a {
+		text-decoration-line: underline;
 	}
 }
 
