@@ -45,14 +45,22 @@ const actions = (links ?? []).map((l) => ({
   <section class="wrap section" aria-labelledby="details">
     <h2 id="details">Details</h2>
     <dl class="keys">
-      <dt>Years</dt>
-      <dd>{years}</dd>
-      <dt>Role</dt>
-      <dd>{role}</dd>
-      <dt>Status</dt>
-      <dd>{status}</dd>
-      <dt>Built with</dt>
-      <dd>{tech}</dd>
+      <div>
+        <dt>Years</dt>
+        <dd>{years}</dd>
+      </div>
+      <div>
+        <dt>Role</dt>
+        <dd>{role}</dd>
+      </div>
+      <div>
+        <dt>Status</dt>
+        <dd>{status}</dd>
+      </div>
+      <div>
+        <dt>Built with</dt>
+        <dd>{tech}</dd>
+      </div>
     </dl>
     <div class="cta">
       {

@@ -277,14 +277,22 @@ kbd {
 	text-wrap: pretty;
 }
 
-/* Facts in two columns: a name, and what it stands for. The names take one
-   grid column, so what they stand for starts where the grid's second column
-   does. */
+/* Facts in two columns: a name, and what it stands for, one empty line
+   apart like the projects. The names take one grid column, so what they
+   stand for starts where the grid's second column does. */
 .keys {
 	display: grid;
 	grid-template-columns: var(--col) minmax(0, 1fr);
+	gap: var(--leading) var(--col-gap);
+}
+
+/* A name and what it stands for, kept together when the columns stack. */
+.keys > div {
+	display: grid;
+	grid-column: 1 / -1;
+	grid-template-columns: subgrid;
 	align-items: baseline;
-	column-gap: var(--col-gap);
+	row-gap: 0;
 }
 
 .keys dd {
@@ -292,13 +300,13 @@ kbd {
 	text-wrap: pretty;
 }
 
-/* Posts: the title, then the date. The titles take one grid column, like
-   the names in .keys, so the dates line up with every other list's second
-   column. */
+/* Posts: the title, then the date, one empty line apart like the projects.
+   The titles take one grid column, like the names in .keys, so the dates
+   line up with every other list's second column. */
 .posts {
 	display: grid;
 	grid-template-columns: var(--col) minmax(0, 1fr);
-	column-gap: var(--col-gap);
+	gap: var(--leading) var(--col-gap);
 	margin: 0;
 	padding: 0;
 	list-style: none;
@@ -308,7 +316,6 @@ kbd {
    from one year's list to the next. */
 .posts.described {
 	grid-template-columns: minmax(0, 1fr) max-content;
-	row-gap: var(--leading);
 }
 
 .post {
