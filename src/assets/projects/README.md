@@ -23,8 +23,10 @@ shots:
 - `caption` is always shown under the frame.
 
 The first shot in the list is the cover and sits directly under the title, so it
-loads first. Nothing is lazy-loaded: the page holds until every image and video
-poster has decoded, then fades in whole, however large the files are.
+loads first. Nothing is lazy-loaded: the page holds until every image and
+poster has decoded and every recording has downloaded, then fades in whole,
+however large the files are. Keep that in mind when encoding a recording: its
+size is time the whole page waits.
 
 These live in `src/` rather than `public/` because only files Astro resolves get
 dimensions and optimization; anything in `public/` is copied out verbatim.
@@ -69,9 +71,10 @@ shots:
 - The video is matched by file name and emitted under a content hash in
   `/_astro/`, so it's cached like every other asset. A missing file fails the
   build too.
-- It preloads with the page, then plays muted and looped, with no controls,
-  while it's on screen, and pauses when it scrolls away. Under reduced motion
-  it stays on its first frame.
+- It loads in full with the page, then plays muted and looped, with no
+  controls, from its first frame as the page fades in, while it's on screen,
+  and pauses when it scrolls away. Under reduced motion it stays on its first
+  frame.
 - Unlike images, videos aren't re-encoded. Encode them before dropping them in:
   H.264 in an `.mp4` (the one format every browser plays), no audio track, and
   the index at the front so playback starts before the download finishes:

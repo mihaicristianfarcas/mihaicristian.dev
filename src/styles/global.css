@@ -616,9 +616,10 @@ main > :not(.entry),
 	transition: opacity 400ms var(--ease-out);
 }
 
-/* Held until Base.astro drops the attribute, once every image has decoded.
-   Client-side navigations never see it: Astro rewrites the <html> attributes
-   from the incoming page, which has none. */
+/* Held until Base.astro drops the attribute, once everything on the page has
+   loaded. Client-side navigations never see it: Astro rewrites the <html>
+   attributes from the incoming page, which has none, and Base.astro only
+   swaps that page in once it's whole. */
 :root[data-loading] main > :not(.entry),
 :root[data-loading] .entry > :not(.prose),
 :root[data-loading] .prose > * {

@@ -66,8 +66,9 @@ automatically, newest first.
   gray with white text, after macOS. Screenshots with a theme of their own
   (a terminal, a chart) ship a version for each.
 - **Pages arrive whole.** Nothing loads lazily: every page holds until its
-  images and video posters have decoded, then fades in once. Client-side
-  navigation decodes the next page's media before swapping it in.
+  fonts, images, video posters and recordings have all loaded, then fades in
+  once. Client-side navigation loads the next page's media before swapping it
+  in, and the recordings come in as copies already loaded.
 
 Everything degrades gracefully: with JavaScript off, the pages render as
 normal and the recordings show their first frame.

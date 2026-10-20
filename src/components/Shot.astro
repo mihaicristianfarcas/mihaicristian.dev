@@ -28,7 +28,7 @@ interface Props {
 	caption: string;
 	/* The cover sits above the fold, so it goes first in the queue. Nothing
 	   waits to be scrolled to: Base.astro holds the page until every shot has
-	   decoded, so the article fades in whole. */
+	   loaded, a recording to its last byte, so the article fades in whole. */
 	cover?: boolean;
 }
 
@@ -149,9 +149,25 @@ const imageDark =
     }
   });
 
-  document.addEventListener("astro:page-load", () => {
+  /* Resolves once Base.astro lets the page go: right away after a client-side
+     navigation, which swaps in a page already whole, and once everything is
+     in on a fresh load. */
+  function revealed() {
+    const root = document.documentElement;
+    if (!root.hasAttribute("data-loading")) return Promise.resolve();
+    return new Promise<void>((done) => {
+      const watch = new MutationObserver(() => {
+        if (root.hasAttribute("data-loading")) return;
+        watch.disconnect();
+        done();
+      });
+      watch.observe(root, { attributeFilter: ["data-loading"] });
+    });
+  }
+
+  document.addEventListener("astro:page-load", async () => {
     observer?.disconnect();
-    observer = new IntersectionObserver(
+    const current = (observer = new IntersectionObserver(
       (entries) => {
         for (const { target, isIntersecting } of entries) {
           const video = target as HTMLVideoElement;
@@ -160,18 +176,25 @@ const imageDark =
         }
       },
       { threshold: 0.4 },
-    );
+    ));
 
-    for (const video of document.querySelectorAll<HTMLVideoElement>(
+    const videos = document.querySelectorAll<HTMLVideoElement>(
       "video[data-shot-video]",
-    )) {
-      /* After a client-side navigation the element was parsed into a detached
-         document, where picking a source fails, and moving it into this one
-         doesn't retry. Start it over. */
+    );
+    for (const video of videos) {
+      /* Base.astro swaps in copies of a page's recordings, already loaded
+         in this document. One that still arrives parsed in the detached
+         document, where picking a source fails and moving it here doesn't
+         retry, starts over. */
       if (video.error || video.networkState === video.NETWORK_NO_SOURCE)
         video.load();
-      observer.observe(video);
     }
+
+    /* Nothing plays behind the hold, so each recording fades in on its
+       first frame, its poster, and plays from there. */
+    await revealed();
+    if (current !== observer) return;
+    for (const video of videos) current.observe(video);
   });
 </script>
 

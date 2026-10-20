@@ -76,8 +76,9 @@ const schema = {
       media="(prefers-color-scheme: dark)"
     />
     <script is:inline>
-      /* Holds the page until the DOM and its media are ready, then lets the
-         fade in global.css run — see `[data-loading]` there. Inline and
+      /* Holds the page until everything on it has loaded, fonts, images,
+         posters and recordings, then lets the fade in global.css run — see
+         `[data-loading]` there. Nothing on the site loads lazily. Inline and
          above the stylesheet so the attribute is set before the first paint.
          With JS off it is never set and the page renders as normal. */
       (() => {
@@ -85,6 +86,65 @@ const schema = {
         root.dataset.loading = "";
 
         const reveal = () => delete root.dataset.loading;
+        const dark = matchMedia("(prefers-color-scheme: dark)");
+
+        /* An image is in once it has decoded, or failed to. */
+        const decoded = async (image) => {
+          try {
+            await image.decode();
+          } catch {}
+        };
+        const warm = (src, srcset = "", sizes = "") => {
+          const image = new Image();
+          image.sizes = sizes;
+          image.srcset = srcset;
+          if (src) image.src = src;
+          return decoded(image);
+        };
+
+        /* A recording with a poster per theme gets the one that matches,
+           here rather than in the markup, so only that one downloads. */
+        const pickPosters = (doc) => {
+          for (const video of doc.querySelectorAll("video[data-poster]"))
+            video.setAttribute(
+              "poster",
+              (dark.matches && video.dataset.posterDark) ||
+                video.dataset.poster,
+            );
+        };
+
+        /* A recording is in once the browser stops fetching it, which it
+           says with `suspend`. With preload="auto" that comes after the last
+           byte. Where the browser caps preloading (iOS stops at the
+           metadata) it comes sooner, so the page never waits on data that
+           isn't coming. A video whose last source fails is in too, and so
+           is one the browser won't start on without a tap, still
+           NETWORK_EMPTY with its sources in. The listeners go on before any
+           video exists, so no event slips past. */
+        const settled = new WeakSet();
+        const waiting = new WeakMap();
+        const settle = ({ type, target }) => {
+          const video =
+            target.localName === "video"
+              ? target
+              : type === "error" &&
+                  target.matches?.("video > source:last-of-type")
+                ? target.parentElement
+                : undefined;
+          if (!video) return;
+          settled.add(video);
+          waiting.get(video)?.();
+        };
+        const watch = (target) => {
+          for (const type of ["suspend", "error"])
+            target.addEventListener(type, settle, true);
+        };
+        const loaded = (video) =>
+          settled.has(video) || video.networkState === video.NETWORK_EMPTY
+            ? undefined
+            : new Promise((done) => waiting.set(video, done));
+
+        watch(document);
 
         const domReady = new Promise((done) => {
           if (document.readyState !== "loading") done();
@@ -92,35 +152,70 @@ const schema = {
             document.addEventListener("DOMContentLoaded", done, { once: true });
         });
 
-        /* Nothing loads lazily, so the page holds for its media: every
-           image, and every video's poster, decoded before the fade. A
-           recording's poster is its first frame, so the page arrives whole
-           and the video takes over from there. */
-        const decoded = async (image) => {
-          try {
-            await image.decode();
-          } catch {}
-        };
-        const poster = (video) => {
-          const image = new Image();
-          image.src = video.poster;
-          return decoded(image);
-        };
-        const dark = matchMedia("(prefers-color-scheme: dark)").matches;
-        const mediaLoaded = domReady.then(() => {
-          /* A recording with a poster per theme gets the one that matches,
-             here rather than in the markup, so only that one downloads. */
-          for (const video of document.querySelectorAll("video[data-poster]"))
-            video.poster =
-              (dark && video.dataset.posterDark) || video.dataset.poster;
+        const pageLoaded = domReady.then(() => {
+          pickPosters(document);
+          const videos = [...document.querySelectorAll("video")];
           return Promise.all([
+            document.fonts.ready,
             ...[...document.images].map(decoded),
-            ...[...document.querySelectorAll("video[poster]")].map(poster),
+            ...videos.map((video) => video.poster && warm(video.poster)),
+            ...videos.map(loaded),
           ]);
         });
 
         /* Both handlers: a rejection here should still show the page. */
-        mediaLoaded.then(reveal, reveal);
+        pageLoaded.then(reveal, reveal);
+
+        /* The router's side: fetch the next page, then load all of it
+           before swapping it in, so a client-side navigation arrives whole
+           too. The incoming document is detached and loads nothing itself.
+           Its images are warmed into the cache its elements then hit. Its
+           recordings are copied into this document and loaded there, and
+           the copies take their places in the swap. */
+        const copies = new WeakMap();
+
+        document.addEventListener("astro:before-preparation", (event) => {
+          const load = event.loader;
+          event.loader = async () => {
+            await load();
+            const next = event.newDocument;
+            pickPosters(next);
+            const videos = [...next.querySelectorAll("video")].map((video) => {
+              const copy = document.importNode(video, true);
+              watch(copy);
+              return copy;
+            });
+            copies.set(next, videos);
+            await Promise.all([
+              ...[...next.images].map((img) => {
+                /* Inside a <picture>, warm the source the browser will pick
+                   for this theme, not the fallback. */
+                const source = img.parentElement?.matches("picture")
+                  ? [...img.parentElement.querySelectorAll("source")].find(
+                      (s) => !s.media || matchMedia(s.media).matches,
+                    )
+                  : undefined;
+                return source
+                  ? warm("", source.srcset, source.sizes)
+                  : warm(img.src, img.srcset, img.sizes);
+              }),
+              ...videos.map((video) => video.poster && warm(video.poster)),
+              ...videos.map(loaded),
+            ]);
+          };
+        });
+
+        document.addEventListener("astro:before-swap", (event) => {
+          const videos = copies.get(event.newDocument);
+          if (!videos?.length) return;
+          const swap = event.swap;
+          event.swap = () => {
+            swap();
+            document
+              .querySelectorAll("video")
+              .forEach((video, i) => videos[i] && video.replaceWith(videos[i]));
+          };
+        });
       })();
     </script>
     <title>{pageTitle}</title>
@@ -168,54 +263,6 @@ const schema = {
     <ClientRouter />
   </head>
   <body>
-    <script>
-      /* The router's side of the hold in <head>: fetch the next page, then
-         decode its images and posters before swapping it in, so a client-side
-         navigation arrives whole too. The incoming document is detached and
-         loads nothing itself; these warm the cache its elements then hit. */
-      async function warm(src: string, srcset = "", sizes = "") {
-        const image = new Image();
-        image.sizes = sizes;
-        image.srcset = srcset;
-        if (src) image.src = src;
-        try {
-          await image.decode();
-        } catch {}
-      }
-
-      document.addEventListener("astro:before-preparation", (event) => {
-        const load = event.loader;
-        event.loader = async () => {
-          await load();
-          const next = event.newDocument;
-          const dark = matchMedia("(prefers-color-scheme: dark)").matches;
-          for (const video of next.querySelectorAll<HTMLVideoElement>(
-            "video[data-poster]",
-          ))
-            video.setAttribute(
-              "poster",
-              (dark && video.dataset.posterDark) || video.dataset.poster || "",
-            );
-          await Promise.all([
-            ...[...next.images].map((img) => {
-              /* Inside a <picture>, warm the source the browser will pick for
-                 this theme, not the fallback. */
-              const source = img.parentElement?.matches("picture")
-                ? [...img.parentElement.querySelectorAll("source")].find(
-                    (s) => !s.media || matchMedia(s.media).matches,
-                  )
-                : undefined;
-              return source
-                ? warm("", source.srcset, source.sizes)
-                : warm(img.src, img.srcset, img.sizes);
-            }),
-            ...[
-              ...next.querySelectorAll<HTMLVideoElement>("video[poster]"),
-            ].map((video) => warm(video.poster)),
-          ]);
-        };
-      });
-    </script>
     <main>
       <slot />
     </main>
