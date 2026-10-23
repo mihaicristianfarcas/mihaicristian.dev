@@ -356,5 +356,11 @@ const schema = {
         <slot />
       </main>
     </div>
+
+    {
+      /* The page fades out at the screen's top and bottom into a copy of the
+        background, paper and mesh, laid over it and shown only there. */
+    }
+    <div class="edges" aria-hidden="true"><Mesh /></div>
   </body>
 </html>

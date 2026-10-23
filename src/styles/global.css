@@ -252,6 +252,11 @@ main {
 	border-top: 1px solid var(--line);
 }
 
+/* The fade at the screen's top and bottom edges, over what scrolls past. */
+.edges {
+	display: none;
+}
+
 /* Wide screens: the side stays put beside the page, centered top to
    bottom, with a hairline down its right, and only the page scrolls.
    --top centers the side's nine lines, and the page starts level with
@@ -282,6 +287,24 @@ main {
 		margin: 0;
 		padding: var(--top) 0 var(--top) 48px;
 		border: 0;
+	}
+
+	/* The page fades out as it reaches an edge, into the background it
+	   scrolls over: the copy over it holds the same paper and mesh, so the
+	   fade lays no band across the mesh. */
+	.edges {
+		display: block;
+		position: fixed;
+		inset: 0;
+		z-index: 1;
+		pointer-events: none;
+		background: var(--paper);
+		mask-image: linear-gradient(
+			#000,
+			transparent var(--block),
+			transparent calc(100% - var(--block)),
+			#000
+		);
 	}
 }
 
