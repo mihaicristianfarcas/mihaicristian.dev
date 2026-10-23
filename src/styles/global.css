@@ -5,12 +5,14 @@
 :root {
 	color-scheme: light dark;
 
+	/* rauchg.com's palette: the text in one color, and everything secondary,
+	   dates and places, in one gray, the same in both themes. */
 	--ink: #000;
-	--body: #424245;
-	--muted: #6e6e73;
-	--line: #e5e5ea;
-	--wash: #f5f5f7;
-	--paper: #fff;
+	--body: var(--ink);
+	--muted: #737373;
+	--line: #e5e5e5;
+	--wash: #f5f5f5;
+	--paper: #fcfcfc;
 	/* The hairline drawn over a screenshot's edge, so a white page in a
 	   screenshot still reads as a picture on a white page. */
 	--edge: rgba(0, 0, 0, 0.08);
@@ -54,15 +56,13 @@
 	);
 }
 
-/* macOS's dark appearance: warm gray, white text. */
+/* The dark theme: paper close to black, near-white text. */
 @media (prefers-color-scheme: dark) {
 	:root {
-		--ink: #fff;
-		--body: #dbd9d5;
-		--muted: #a19e99;
-		--line: #43413e;
-		--wash: #32312e;
-		--paper: #282725;
+		--ink: #f3f4f6;
+		--line: #2b2b2f;
+		--wash: #151518;
+		--paper: #0a0a0c;
 		--edge: rgba(255, 255, 255, 0.08);
 	}
 }
