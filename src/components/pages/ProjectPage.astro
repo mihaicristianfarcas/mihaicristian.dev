@@ -14,7 +14,12 @@ const { project } = Astro.props;
 const { Content } = await render(project);
 const { prev, next } = await getProjectNeighbours(project.id);
 
-const { years, role, status, tech, links, shots } = project.data;
+const { years, role, links, shots } = project.data;
+/* A list like "Rust · Metal" breaks after a dot, never before one, so a
+   wrapped line doesn't start with it. */
+const keepDots = (list: string) => list.replaceAll(" · ", " · ");
+const status = keepDots(project.data.status);
+const tech = keepDots(project.data.tech);
 /* Shots without a src would render placeholder frames; skip them until the
    real screenshots exist. */
 const [cover, ...rest] = (shots ?? []).filter((s) => s.src);
@@ -45,7 +50,7 @@ const actions = (links ?? []).map((l) => ({
 
   <section class="section" aria-labelledby="details">
     <h2 id="details">Details</h2>
-    <dl class="keys">
+    <dl class="keys details">
       <div>
         <dt>Years</dt>
         <dd>{years}</dd>

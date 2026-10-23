@@ -409,13 +409,13 @@ main {
 	text-wrap: pretty;
 }
 
-/* Facts in two columns: a name, and what it stands for, one empty line
-   apart like the projects. The names take one grid column, so what they
-   stand for starts where the grid's second column does. */
+/* Facts in two columns: a name, and what it stands for, each row right
+   under the last, like a table's. The names take one grid column, so what
+   they stand for starts where the grid's second column does. */
 .keys {
 	display: grid;
 	grid-template-columns: var(--col) minmax(0, 1fr);
-	gap: var(--leading) var(--col-gap);
+	column-gap: var(--col-gap);
 }
 
 /* A name and what it stands for, kept together when the columns stack. */
@@ -659,9 +659,18 @@ figcaption {
 		grid-template-columns: 1fr;
 	}
 
-	/* The name over what it stands for. */
+	/* The name over what it stands for, one empty line from the next name,
+	   so each keeps to its own. */
 	.keys {
 		grid-template-columns: minmax(0, 1fr);
+		row-gap: var(--leading);
+	}
+
+	/* A project's details are short: they keep their two columns, the
+	   names only as wide as the widest of them. */
+	.keys.details {
+		grid-template-columns: max-content minmax(0, 1fr);
+		row-gap: 0;
 	}
 
 	/* The date under the title. */
