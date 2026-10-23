@@ -243,9 +243,8 @@ kbd {
 	padding-top: var(--corner);
 }
 
-/* The name and what I do in the text's color; only the place is gray. */
-.side .name,
-.side .subtitle {
+/* The name, what I do and where, in the text's color. */
+.side .title > * {
 	color: var(--ink);
 }
 
