@@ -230,6 +230,23 @@ const schema = {
               .forEach((video, i) => videos[i] && video.replaceWith(videos[i]));
           };
         });
+
+        /* Between pages the content cross-fades, where the browser can (see
+           "between pages" in global.css). The content on its way out gets a
+           name of its own, so it fades where it stands instead of pairing
+           up with the incoming content and sliding from one scroll position
+           to the other. The incoming page is marked, so it skips the fade-in
+           of a fresh load: the cross-fade brings it in. */
+        if (document.startViewTransition) {
+          document.addEventListener("astro:before-preparation", () =>
+            document
+              .querySelector("main")
+              ?.style.setProperty("view-transition-name", "content-out"),
+          );
+          document.addEventListener("astro:before-swap", (event) => {
+            event.newDocument.documentElement.dataset.navigated = "";
+          });
+        }
       })();
     </script>
     <title>{pageTitle}</title>

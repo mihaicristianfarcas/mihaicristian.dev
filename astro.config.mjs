@@ -10,6 +10,9 @@ const externalLinks = { target: "_blank", rel: ["noopener"] };
 
 export default defineConfig({
 	site: "https://mihaicristian.dev",
+	// Fetch a page when the pointer rests on its link, so the click only
+	// swaps it in.
+	prefetch: { prefetchAll: true, defaultStrategy: "hover" },
 	// MDX doesn't inherit markdown.processor, so pass the plugin directly.
 	integrations: [
 		mdx({ rehypePlugins: [[rehypeExternalLinks, externalLinks]] }),

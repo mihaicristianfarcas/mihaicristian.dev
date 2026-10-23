@@ -632,18 +632,13 @@ figcaption {
 
 /* ---- arriving ---- */
 
-/* One stable name for the root on every page. Astro's scope id differs
-   between pages, and unpaired old/new root groups fall back to the UA's
-   crossfade. Paired and de-animated, the swap is instant and the fade below
-   is the whole transition. */
+/* The root takes no part in a navigation: only the content cross-fades (see
+   "between pages"), over the live page. So the side is never a snapshot of
+   itself, which the browser draws a little off, and it doesn't flicker
+   while the content changes. This overrides the name Astro gives the
+   root. */
 html[data-astro-transition-scope] {
-	view-transition-name: page;
-}
-
-::view-transition-group(page),
-::view-transition-old(page),
-::view-transition-new(page) {
-	animation: none;
+	view-transition-name: none;
 }
 
 @keyframes enter {
@@ -672,10 +667,48 @@ main > :not(.entry),
 	animation-play-state: paused;
 }
 
+/* ---- between pages ---- */
+
+/* A navigation cross-fades the content: the old fades out where it stood
+   as the new fades in where it lands. Base.astro renames the old one
+   `content-out` first, so the two never pair up and slide between scroll
+   positions. */
+main {
+	view-transition-name: content;
+}
+
+@keyframes leave {
+	to {
+		opacity: 0;
+	}
+}
+
+::view-transition-old(content-out) {
+	animation: leave 250ms var(--ease-out) both;
+}
+
+::view-transition-new(content) {
+	animation: enter 400ms var(--ease-out) both;
+}
+
+/* The cross-fade brings the new content in, so it doesn't fade in again. */
+:root[data-navigated] main > :not(.entry),
+:root[data-navigated] .entry > :not(.prose),
+:root[data-navigated] .prose > * {
+	animation: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
 	main > :not(.entry),
 	.entry > :not(.prose),
 	.prose > * {
+		animation: none;
+	}
+
+	/* Apart from the rule above: a browser without view transitions drops
+	   a whole selector list over one pseudo-element it can't parse. */
+	::view-transition-old(content-out),
+	::view-transition-new(content) {
 		animation: none;
 	}
 
