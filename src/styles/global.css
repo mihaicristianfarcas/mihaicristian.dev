@@ -23,7 +23,7 @@
 	--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 
 	/* The site uses one font size; hierarchy comes from color and space.
-	   Bold is kept for links, so it always means one. */
+	   The name is the only bold. */
 	--size: 17px;
 	/* One line of text. The space between lines is the same everywhere: lines
 	   in a group sit right under each other, and anything that needs setting
@@ -96,13 +96,13 @@ body {
 	color: var(--paper);
 }
 
-/* Every link is bold, and the only bold on the page. No underline but on
-   hover (see the end). */
+/* A link is in the text's weight, marked by a faint underline in its own
+   color, which comes up to full strength on hover (see the end). */
 a {
 	color: inherit;
-	font-weight: 600;
-	text-decoration: none;
+	text-decoration-line: underline;
 	text-decoration-thickness: 1px;
+	text-decoration-color: color-mix(in srgb, currentColor 25%, transparent);
 	text-underline-offset: 3px;
 }
 
@@ -139,6 +139,16 @@ b {
 h1,
 .name {
 	letter-spacing: -0.01em;
+}
+
+/* The one bold on the site. It leads home, and as the site's title it
+   shows its underline only on hover. */
+.name {
+	font-weight: 600;
+}
+
+.name a {
+	text-decoration-color: transparent;
 }
 
 code,
@@ -294,9 +304,9 @@ main {
 	gap: 0 32px;
 }
 
-/* A link to act on: "Visit the site", "Read the paper". Bold like every
-   other link, underlined on hover. The padding makes it easy to tap and the
-   margin takes it back, so it still takes one line. */
+/* A link to act on: "Visit the site", "Read the paper". The padding makes
+   it easy to tap and the margin takes it back, so it still takes one
+   line. */
 .more {
 	padding-block: 11px;
 	margin-block: -11px;
@@ -424,20 +434,20 @@ main {
 	padding-top: var(--section);
 }
 
-.pager a {
+.pager p {
 	display: flex;
 	flex-direction: column;
+	align-items: flex-start;
 	min-width: 0;
 }
 
-/* "Previous", "Next": a label on the link, muted and regular, so its title
-   reads as the link. */
+/* "Previous", "Next": a gray label over the link, outside it, so only the
+   title is underlined. */
 .pager span {
 	color: var(--muted);
-	font-weight: 400;
 }
 
-.pager [rel="next"] {
+.pager .next {
 	margin-left: auto;
 	align-items: flex-end;
 	text-align: right;
@@ -567,14 +577,13 @@ figcaption {
 
 /* ---- hover, only where there's a pointer to hover with ---- */
 
-/* A link underlines under the pointer, and a project or a post underlines
-   its title anywhere over its entry. Only the line changes, so the
-   underline keeps the 1px weight set on `a`. */
+/* A link's underline comes up to full strength under the pointer, and a
+   project's or a post's anywhere over its entry. */
 @media (hover: hover) and (pointer: fine) {
 	a:hover,
 	.grid li:hover h3 a,
 	.post:hover a {
-		text-decoration-line: underline;
+		text-decoration-color: currentColor;
 	}
 }
 
