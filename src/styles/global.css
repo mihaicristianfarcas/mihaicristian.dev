@@ -5,9 +5,10 @@
 :root {
 	color-scheme: light dark;
 
-	/* The page sits on a sky, by day a pale blue (see Mesh.astro). The text
-	   is in one color, and everything secondary, dates and places, in one
-	   gray tinted toward the sky, dark enough to read on its blue. */
+	/* The page sits on a sky: by day pale blue with a haze of white clouds
+	   over it (see Mesh.astro). The text is in one color, and everything
+	   secondary, dates and places, in one gray tinted toward the sky, dark
+	   enough to read on its blue. */
 	--ink: #000;
 	--body: var(--ink);
 	--muted: #4f5f71;
@@ -62,7 +63,8 @@
 }
 
 /* The dark theme: a night sky, dark blue and a little lighter toward the
-   bottom (see Mesh.astro), and near-white text. */
+   bottom, with faint clouds of light gray over it (see Mesh.astro), and
+   near-white text. */
 @media (prefers-color-scheme: dark) {
 	:root {
 		--ink: #f3f4f6;

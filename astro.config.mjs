@@ -51,6 +51,14 @@ export default defineConfig({
 			},
 		},
 	],
+	vite: {
+		build: {
+			// The sky's clouds go inside the stylesheet, though they're over
+			// the 4 KB Vite inlines on its own, so they're there from the
+			// first paint. Everything else keeps the default.
+			assetsInlineLimit: (file) => (file.endsWith("/mesh.png") ? true : undefined),
+		},
+	},
 	// MDX doesn't inherit markdown.processor, so pass the plugin directly.
 	integrations: [
 		mdx({ rehypePlugins: [[rehypeExternalLinks, externalLinks]] }),
