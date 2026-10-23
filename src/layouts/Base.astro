@@ -1,6 +1,7 @@
 ---
 import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
+import Mesh from "../components/Mesh.astro";
 import { site, person } from "../data/site";
 
 interface Props {
@@ -300,6 +301,8 @@ const schema = {
     <ClientRouter />
   </head>
   <body>
+    <Mesh />
+
     {
       /* The same side on every page, so a navigation only changes the page
         beside it. */

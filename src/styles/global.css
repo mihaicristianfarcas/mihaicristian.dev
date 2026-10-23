@@ -56,7 +56,8 @@
 	);
 }
 
-/* The dark theme: paper close to black, near-white text. */
+/* The dark theme: paper close to black, near-white text, and a mesh of dark
+   blues toward the screen's edges (see Mesh.astro). */
 @media (prefers-color-scheme: dark) {
 	:root {
 		--ink: #f3f4f6;
@@ -82,9 +83,10 @@ html {
 	scrollbar-gutter: stable;
 }
 
+/* No background of its own: the root's paints the screen, and one here
+   would cover the mesh behind the page. */
 body {
 	margin: 0;
-	background: var(--paper);
 	color: var(--ink);
 	font: var(--size) / var(--line-height) var(--sans);
 	-webkit-font-smoothing: antialiased;
@@ -633,10 +635,10 @@ figcaption {
 /* ---- arriving ---- */
 
 /* The root takes no part in a navigation: only the content cross-fades (see
-   "between pages"), over the live page. So the side is never a snapshot of
-   itself, which the browser draws a little off, and it doesn't flicker
-   while the content changes. This overrides the name Astro gives the
-   root. */
+   "between pages"), over the live page. So the side and the mesh are never
+   snapshots of themselves, which the browser draws a little off, and they
+   don't flicker while the content changes. This overrides the name Astro
+   gives the root. */
 html[data-astro-transition-scope] {
 	view-transition-name: none;
 }
