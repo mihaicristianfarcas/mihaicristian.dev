@@ -17,8 +17,8 @@
 	   screenshot still reads as a picture on a white page. */
 	--edge: rgba(0, 0, 0, 0.08);
 
-	--sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue",
-		"Segoe UI", Roboto, Arial, sans-serif;
+	/* Geist, set up in astro.config.mjs. */
+	--sans: var(--font-geist);
 	--mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
 	--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 
@@ -153,6 +153,14 @@ h1,
 	text-decoration-color: transparent;
 }
 
+/* Until Geist is in, its text is held invisible (see `display` in
+   astro.config.mjs) but not the underlines under it, which would show at
+   the fallback's widths and move when the font came in. They wait with the
+   text; Base.astro drops the attribute. */
+:root[data-font-loading] a {
+	text-decoration-color: transparent;
+}
+
 code,
 pre,
 kbd,
@@ -270,9 +278,14 @@ main {
 		max-width: 1240px;
 	}
 
+	/* A set width, not its text's: until Geist is in, the text is laid out
+	   in the fallback, which runs a little wider, and the hairline would
+	   stand off to the right until the font swapped in. Room for the widest
+	   line, the subtitle, in either. */
 	.side {
 		position: sticky;
 		top: var(--top);
+		width: calc(18.25em + 48px);
 		margin-top: var(--top);
 		padding: 0 48px 0 0;
 		border-right: 1px solid var(--line);

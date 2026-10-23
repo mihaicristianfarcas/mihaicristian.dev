@@ -1,5 +1,6 @@
 ---
 import { ClientRouter } from "astro:transitions";
+import { Font } from "astro:assets";
 import "../styles/global.css";
 import Mesh from "../components/Mesh.astro";
 import { site, person } from "../data/site";
@@ -88,6 +89,11 @@ const schema = {
       content="#0a0a0c"
       media="(prefers-color-scheme: dark)"
     />
+    {
+      /* Preloaded, so the side's text is in Geist from the first paint, and
+        above the script, which loads it. */
+    }
+    <Font cssVariable="--font-geist" preload />
     <script is:inline>
       /* Holds the page's content until everything on it has loaded, fonts,
          images, posters and recordings, then lets the fade in global.css
@@ -99,8 +105,17 @@ const schema = {
       (() => {
         const root = document.documentElement;
         root.dataset.loading = "";
+        root.dataset.fontLoading = "";
 
         const reveal = () => delete root.dataset.loading;
+
+        /* Geist's faces, the only ones declared above. Settled, not all
+           resolved: a fallback face can fail on a system without its font,
+           and that shouldn't hold anything. */
+        const fontLoaded = Promise.allSettled(
+          [...document.fonts].map((face) => face.load()),
+        ).then(() => delete root.dataset.fontLoading);
+
         const dark = matchMedia("(prefers-color-scheme: dark)");
 
         /* An image is in once it has decoded, or failed to. */
@@ -171,6 +186,7 @@ const schema = {
           pickPosters(document);
           const videos = [...document.querySelectorAll("video")];
           return Promise.all([
+            fontLoaded,
             document.fonts.ready,
             ...[...document.images].map(decoded),
             ...videos.map((video) => video.poster && warm(video.poster)),
