@@ -742,6 +742,20 @@ main {
 	animation: enter 400ms var(--ease-out) both;
 }
 
+/* The browser draws the cross-fading content over the whole page, the
+   fade at the screen's edges included (see .edges), so on wide screens it
+   fades out at the edges itself, the same way, until the page is back. */
+@media (min-width: 1100px) {
+	::view-transition {
+		mask-image: linear-gradient(
+			transparent,
+			#000 var(--block),
+			#000 calc(100% - var(--block)),
+			transparent
+		);
+	}
+}
+
 /* The cross-fade brings the new content in, so it doesn't fade in again. */
 :root[data-navigated] main > :not(.entry),
 :root[data-navigated] .entry > :not(.prose),
