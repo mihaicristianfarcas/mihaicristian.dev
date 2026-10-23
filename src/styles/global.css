@@ -5,14 +5,19 @@
 :root {
 	color-scheme: light dark;
 
-	/* rauchg.com's palette: the text in one color, and everything secondary,
-	   dates and places, in one gray, the same in both themes. */
+	/* The page sits on a sky, by day a pale blue (see Mesh.astro). The text
+	   is in one color, and everything secondary, dates and places, in one
+	   gray tinted toward the sky, dark enough to read on its blue. */
 	--ink: #000;
 	--body: var(--ink);
-	--muted: #737373;
-	--line: #e5e5e5;
-	--wash: #f5f5f5;
-	--paper: #fcfcfc;
+	--muted: #4f5f71;
+	/* See-through, so the sky shows through hairlines and washes. */
+	--line: rgba(20, 50, 90, 0.16);
+	--wash: rgba(255, 255, 255, 0.5);
+	/* The sky from top to bottom, and its paler bottom as one color, for
+	   what needs a solid one: badges, selected text. */
+	--sky: linear-gradient(#a7cbee, #deecf9);
+	--paper: #deecf9;
 	/* The hairline drawn over a screenshot's edge, so a white page in a
 	   screenshot still reads as a picture on a white page. */
 	--edge: rgba(0, 0, 0, 0.08);
@@ -56,14 +61,16 @@
 	);
 }
 
-/* The dark theme: paper close to black, near-white text, and a mesh of dark
-   blues toward the screen's edges (see Mesh.astro). */
+/* The dark theme: a night sky, dark blue and a little lighter toward the
+   bottom (see Mesh.astro), and near-white text. */
 @media (prefers-color-scheme: dark) {
 	:root {
 		--ink: #f3f4f6;
-		--line: #2b2b2f;
-		--wash: #151518;
-		--paper: #0a0a0c;
+		--muted: #7c879b;
+		--line: rgba(150, 180, 240, 0.16);
+		--wash: rgba(255, 255, 255, 0.05);
+		--sky: linear-gradient(#050a16, #0d1830);
+		--paper: #0d1830;
 		--edge: rgba(255, 255, 255, 0.08);
 	}
 }
