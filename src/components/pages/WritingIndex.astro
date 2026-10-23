@@ -1,33 +1,23 @@
 ---
+/* Every post, newest first, each with its description. */
 import Base from "../../layouts/Base.astro";
-import Back from "../Back.astro";
 import PostList from "../PostList.astro";
-import { getPostsByYear } from "../../data/writing";
+import { getPosts } from "../../data/writing";
 
-const years = await getPostsByYear();
+const posts = await getPosts();
 ---
 
 <Base
   title="Writing"
   description="Essays and notes by Mihai-Cristian Farcaș on software engineering, coding with AI, study, and life beyond the screen."
+  section="writing"
 >
-  <section class="wrap hero">
-    <div class="title">
-      <h1>Writing</h1>
-      <p class="lede">
-        {years.length > 0 ? "Notes on software and life." : "Nothing here yet."}
-      </p>
-    </div>
-  </section>
-
+  <h1 class="sr-only">Writing</h1>
   {
-    years.map((y) => (
-      <section class="wrap section" aria-labelledby={`y${y.year}`}>
-        <h2 id={`y${y.year}`}>{y.year}</h2>
-        <PostList posts={y.posts} described day />
-      </section>
-    ))
+    posts.length > 0 ? (
+      <PostList posts={posts} described />
+    ) : (
+      <p>Nothing here yet.</p>
+    )
   }
-
-  <Back />
 </Base>

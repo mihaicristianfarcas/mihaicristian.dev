@@ -1,6 +1,9 @@
 import { getCollection } from "astro:content";
 import { projectGroups } from "../content.config";
 
+/* The selected projects first, by rank, then the rest by group. */
+const rank = (featured?: number) => featured ?? Number.MAX_SAFE_INTEGER;
+
 export async function getProjects() {
 	return (
 		await getCollection("projects", ({ data }) =>
@@ -8,6 +11,7 @@ export async function getProjects() {
 		)
 	).sort(
 		(a, b) =>
+			rank(a.data.featured) - rank(b.data.featured) ||
 			projectGroups.indexOf(a.data.group) -
 				projectGroups.indexOf(b.data.group) ||
 			a.data.order - b.data.order ||
@@ -16,17 +20,6 @@ export async function getProjects() {
 }
 
 export const projectPath = (id: string) => `/projects/${id}/`;
-
-/* The projects page's sections: groups in schema order, empty ones dropped. */
-export async function getProjectGroups() {
-	const projects = await getProjects();
-	return projectGroups
-		.map((group) => ({
-			name: group,
-			projects: projects.filter((p) => p.data.group === group),
-		}))
-		.filter((g) => g.projects.length > 0);
-}
 
 /* The projects either side of this one, in the projects page's order. */
 export async function getProjectNeighbours(id: string) {

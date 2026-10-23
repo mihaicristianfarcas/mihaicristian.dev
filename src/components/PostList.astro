@@ -1,18 +1,15 @@
 ---
 /* Posts, one to a row: the title, then the date. `described` adds each
-   post's description under its title; `day` drops the year from the date,
-   for a list already under its year's heading. */
+   post's description under its title. */
 import type { CollectionEntry } from "astro:content";
-import { postDateFmt, postDayFmt, postPath } from "../data/writing";
+import { postDateFmt, postPath } from "../data/writing";
 
 interface Props {
 	posts: CollectionEntry<"writing">[];
 	described?: boolean;
-	day?: boolean;
 }
 
-const { posts, described = false, day = false } = Astro.props;
-const fmt = day ? postDayFmt : postDateFmt;
+const { posts, described = false } = Astro.props;
 ---
 
 <ul class:list={["posts", { described }]} role="list">
@@ -24,7 +21,7 @@ const fmt = day ? postDayFmt : postDateFmt;
           {described && <p>{post.data.description}</p>}
         </div>
         <time datetime={post.data.date.toISOString().slice(0, 10)}>
-          {fmt.format(post.data.date)}
+          {postDateFmt.format(post.data.date)}
         </time>
       </li>
     ))

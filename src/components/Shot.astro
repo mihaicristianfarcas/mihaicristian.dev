@@ -42,9 +42,9 @@ const {
 	cover = false,
 } = Astro.props;
 
-/* Every shot spans the page, short of its own pixels. */
+/* Every shot spans the page beside the side, short of its own pixels. */
 const widths = [640, 1024, 1440, 2000];
-const sizes = "(max-width: 1040px) calc(100vw - 40px), 992px";
+const sizes = "(min-width: 1100px) 800px, calc(100vw - 40px)";
 const dark = "(prefers-color-scheme: dark)";
 
 const videos = import.meta.glob<string>("../assets/projects/*.mp4", {

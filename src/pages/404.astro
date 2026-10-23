@@ -1,6 +1,5 @@
 ---
 import Base from "../layouts/Base.astro";
-import Back from "../components/Back.astro";
 ---
 
 <Base
@@ -8,14 +7,8 @@ import Back from "../components/Back.astro";
   description="This page could not be found. Return to Mihai-Cristian Farcaș’s portfolio to browse projects and writing."
   noindex
 >
-  <section class="wrap hero">
-    <div class="title">
-      <h1>There’s nothing at this address.</h1>
-      <p class="lede">
-        The page may have moved, or the link has a typo in it.
-      </p>
-    </div>
-  </section>
-
-  <Back />
+  <header class="title">
+    <h1>There’s nothing at this address.</h1>
+    <p class="lede">The page may have moved, or the link has a typo in it.</p>
+  </header>
 </Base>

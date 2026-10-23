@@ -2,7 +2,6 @@
 import type { CollectionEntry } from "astro:content";
 import { render } from "astro:content";
 import Base from "../../layouts/Base.astro";
-import Back from "../Back.astro";
 import Pager from "../Pager.astro";
 import { getPostNeighbours, postDateFmt } from "../../data/writing";
 
@@ -19,25 +18,22 @@ const { newer, older } = await getPostNeighbours(post.id);
   title={post.data.title}
   description={post.data.description}
   publishedTime={post.data.date}
+  section="writing"
 >
-  <section class="wrap hero">
-    <div class="title">
-      <h1>{post.data.title}</h1>
-      <p>
-        <time datetime={post.data.date.toISOString().slice(0, 10)}>
-          {postDateFmt.format(post.data.date)}
-        </time>
-      </p>
-    </div>
-  </section>
+  <header class="title">
+    <h1>{post.data.title}</h1>
+    <p>
+      <time datetime={post.data.date.toISOString().slice(0, 10)}>
+        {postDateFmt.format(post.data.date)}
+      </time>
+    </p>
+  </header>
 
-  <article class="wrap entry">
+  <article class="entry">
     <div class="prose">
       <Content />
     </div>
   </article>
-
-  <Back />
 
   <Pager
     label="More writing"
@@ -45,4 +41,3 @@ const { newer, older } = await getPostNeighbours(post.id);
     next={older && { ...older, word: "Older" }}
   />
 </Base>
-

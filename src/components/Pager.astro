@@ -16,7 +16,7 @@ const { label, prev, next } = Astro.props;
 
 {
   (prev || next) && (
-    <nav class="wrap pager" aria-label={label}>
+    <nav class="pager" aria-label={label}>
       {prev && (
         <a href={prev.href} rel="prev">
           <span>{prev.word}</span>

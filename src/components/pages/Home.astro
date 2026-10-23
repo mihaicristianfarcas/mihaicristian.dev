@@ -1,120 +1,39 @@
 ---
-/* The homepage content. */
+/* The homepage: a few lines about me. */
 import Base from "../../layouts/Base.astro";
-import ProjectGrid from "../ProjectGrid.astro";
-import PostList from "../PostList.astro";
-import { site } from "../../data/site";
-import { quotes } from "../../data/quotes";
-import { getProjects, projectPath } from "../../data/projects";
-import { getPosts } from "../../data/writing";
-
-const posts = (await getPosts()).slice(0, 3);
-const projects = (await getProjects())
-  .filter((p) => p.data.featured !== undefined)
-  .sort((a, b) => a.data.featured! - b.data.featured!);
 
 const ubb = "https://www.ubbcluj.ro/ro/";
 ---
 
 <Base>
-  {
-    /* Who, what, and where, read at a glance, with no links under it.
-      Those are in the footer. */
-  }
-  <section class="wrap hero intro">
-    <div class="title">
-      <h1>{site.name}</h1>
-      <p class="subtitle">Software designer, builder, and painter.</p>
-      <p>Based in Cluj-Napoca, Romania.</p>
-    </div>
-  </section>
-
-  <section class="wrap section" aria-labelledby="projects">
-    <h2 id="projects">Selected projects</h2>
-    <ProjectGrid projects={projects} />
-    <a class="more" href="/projects/">All projects</a>
-  </section>
-
-  <section class="wrap section" aria-labelledby="experience">
-    <h2 id="experience">Experience</h2>
-    <dl class="keys">
-      <div>
-        <dt><a href={projectPath("blueplan")}>BluePlan</a></dt>
-        <dd>
-          Created <a href={projectPath("atlas")}>Atlas</a>, a tool for finding
-          and checking answers in technical documents.
-        </dd>
-      </div>
-      <div>
-        <dt>
-          <a href="https://x.com/baseline_co_" target="_blank" rel="noopener"
-            >Baseline Studio</a
-          >
-        </dt>
-        <dd>Built client apps across the stack.</dd>
-      </div>
-      <div>
-        <dt>GeoDraw</dt>
-        <dd>Worked on the AI wireframing canvas.</dd>
-      </div>
-      <div>
-        <dt>
-          <a href="https://www.tvarita.ro" target="_blank" rel="noopener"
-            >Tvarita</a
-          >
-        </dt>
-        <dd>Redesigned a monitoring site for optician clinics.</dd>
-      </div>
-      <div>
-        <dt>
-          <a href={ubb} target="_blank" rel="noopener">Babeș-Bolyai University</a>
-        </dt>
-        <dd>
-          Studied computer science, and now an MSc in cloud and network systems.
-        </dd>
-      </div>
-    </dl>
-  </section>
-
-  {
-    posts.length > 0 && (
-      <section class="wrap section" aria-labelledby="writing">
-        <h2 id="writing">Writing</h2>
-        <PostList posts={posts} />
-        <a class="more" href="/writing/">
-          All writing
-        </a>
-      </section>
-    )
-  }
-
-  <section class="wrap section quote" aria-label="A quote">
-    <figure>
-      <blockquote>
-        <p id="q-text">{quotes[0].text}</p>
-      </blockquote>
-      <figcaption id="q-author">{quotes[0].author}</figcaption>
-    </figure>
-    {
-      /* data-astro-rerun: the router skips inline scripts it has already
-        run, which would pin the quote to the SSR default on return visits. */
-    }
-    <script is:inline data-astro-rerun define:vars={{ quotes }}>
-      const q = quotes[Math.floor(Math.random() * quotes.length)];
-      document.getElementById("q-text").textContent = q.text;
-      document.getElementById("q-author").textContent = q.author;
-    </script>
-  </section>
+  <div class="about">
+    <p>
+      I build tools for technical work, from network software to AI products.
+    </p>
+    <p>
+      Right now I'm studying for an MSc in cloud and network systems at <a
+        href={ubb}
+        target="_blank"
+        rel="noopener">Babeș-Bolyai University</a
+      >.
+    </p>
+    <p>
+      Living life thinking about computers, philosophy, history and legends,
+      with a touch of optimism and introspection.
+    </p>
+  </div>
 </Base>
 
 <style>
-  .intro .subtitle {
-    color: var(--ink);
+  /* One empty line between paragraphs, like every list. */
+  .about {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
   }
 
-  .quote blockquote {
-    max-width: 36em;
+  .about p {
+    color: var(--body);
     text-wrap: pretty;
   }
-
 </style>

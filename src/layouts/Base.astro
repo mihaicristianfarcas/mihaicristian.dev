@@ -9,13 +9,23 @@ interface Props {
   noindex?: boolean;
   publishedTime?: Date;
   structuredData?: Record<string, unknown>;
+  /* The part of the site the page belongs to, lit in the side. */
+  section?: (typeof sections)[number]["id"];
 }
+
+/* The site's three parts, named in the side on every page. */
+const sections = [
+  { id: "projects", href: "/projects/", label: "Projects" },
+  { id: "experience", href: "/experience/", label: "Experience" },
+  { id: "writing", href: "/writing/", label: "Writing" },
+] as const;
 
 const {
   title,
   noindex = false,
   publishedTime,
   structuredData,
+  section,
 } = Astro.props;
 const description = Astro.props.description ?? site.description;
 const pageTitle = title
@@ -23,6 +33,8 @@ const pageTitle = title
   : `${site.name} | Software Engineer`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const path = Astro.url.pathname;
+/* The name heads the homepage; every other page has a title of its own. */
+const Name = path === "/" ? "h1" : "p";
 
 const feed = new URL("/rss.xml", Astro.site);
 const websiteId = `${site.url}/#website`;
@@ -76,11 +88,13 @@ const schema = {
       media="(prefers-color-scheme: dark)"
     />
     <script is:inline>
-      /* Holds the page until everything on it has loaded, fonts, images,
-         posters and recordings, then lets the fade in global.css run — see
-         `[data-loading]` there. Nothing on the site loads lazily. Inline and
-         above the stylesheet so the attribute is set before the first paint.
-         With JS off it is never set and the page renders as normal. */
+      /* Holds the page's content until everything on it has loaded, fonts,
+         images, posters and recordings, then lets the fade in global.css
+         run — see `[data-loading]` there. The side and the background don't
+         wait: they show from the first paint. Nothing on the site loads
+         lazily. Inline and above the stylesheet so the attribute is set
+         before the first paint. With JS off it is never set and the page
+         renders as normal. */
       (() => {
         const root = document.documentElement;
         root.dataset.loading = "";
@@ -269,12 +283,38 @@ const schema = {
     <ClientRouter />
   </head>
   <body>
-    <main>
-      <slot />
-    </main>
-    <footer class="wrap">
-      <div class="foot">
-        <nav aria-label="Elsewhere">
+    {
+      /* The same side on every page, so a navigation only changes the page
+        beside it. */
+    }
+    <div class="wrap shell">
+      <header class="side">
+        <div class="title">
+          <Name class="name">
+            <a href="/" aria-current={path === "/" ? "page" : undefined}
+              >{site.name}</a
+            >
+          </Name>
+          <p class="subtitle">Software designer, builder, and painter.</p>
+          <p>Based in Cluj-Napoca, Romania.</p>
+        </div>
+
+        <nav class="tabs" aria-label="Sections">
+          {
+            sections.map((s) => (
+              <a
+                href={s.href}
+                aria-current={
+                  path === s.href ? "page" : section === s.id ? "true" : undefined
+                }
+              >
+                {s.label}
+              </a>
+            ))
+          }
+        </nav>
+
+        <nav class="cta" aria-label="Elsewhere">
           {
             site.links.map((l) => {
               const newTab = l.href.startsWith("http");
@@ -290,7 +330,11 @@ const schema = {
             })
           }
         </nav>
-      </div>
-    </footer>
+      </header>
+
+      <main>
+        <slot />
+      </main>
+    </div>
   </body>
 </html>

@@ -1,53 +1,17 @@
 ---
+/* Every project, the selected ones first. */
 import Base from "../../layouts/Base.astro";
-import Back from "../Back.astro";
 import ProjectGrid from "../ProjectGrid.astro";
-import { getProjectGroups } from "../../data/projects";
-import type { projectGroups } from "../../content.config";
+import { getProjects } from "../../data/projects";
 
-const groups = await getProjectGroups();
-
-/* A line under each group's heading, saying what goes in it. */
-const notes: Record<(typeof projectGroups)[number], string> = {
-  Systems:
-    "The low-level work where most of my research sits: networking, cryptography, and the kernel.",
-  Products:
-    "Things people use: apps built for a client or for a problem I had. If you're weighing up working together, these are the closest thing to what that looks like.",
-  Tools: "For other developers, and I use them daily myself.",
-};
+const projects = await getProjects();
 ---
 
 <Base
   title="Projects"
   description="Explore software projects by Mihai-Cristian Farcaș, from networking, cryptography, and systems research to AI products and developer tools."
+  section="projects"
 >
-  <section class="wrap hero">
-    <div class="title">
-      <h1>Projects</h1>
-      <p class="lede">
-        {
-          groups.length > 0
-            ? "Things I've built, and what each one actually does."
-            : "Nothing here yet."
-        }
-      </p>
-    </div>
-  </section>
-
-  {
-    groups.map((g) => (
-      <section
-        class="wrap section"
-        aria-labelledby={g.name.toLowerCase()}
-      >
-        <div class="head">
-          <h2 id={g.name.toLowerCase()}>{g.name}</h2>
-          <p>{notes[g.name]}</p>
-        </div>
-        <ProjectGrid projects={g.projects} />
-      </section>
-    ))
-  }
-
-  <Back />
+  <h1 class="sr-only">Projects</h1>
+  <ProjectGrid projects={projects} />
 </Base>

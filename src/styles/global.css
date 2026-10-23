@@ -135,7 +135,9 @@ b {
 	font-weight: inherit;
 }
 
-h1 {
+/* The name keeps its tracking on pages where it isn't the heading. */
+h1,
+.name {
 	letter-spacing: -0.01em;
 }
 
@@ -177,7 +179,7 @@ kbd {
 	font-family: var(--sans);
 }
 
-/* Only the sides: sections set their own top padding. */
+/* Only the sides. */
 .wrap {
 	width: 100%;
 	max-width: 1040px;
@@ -185,13 +187,93 @@ kbd {
 	padding-inline: 24px;
 }
 
-/* ---- hero: a page's title and description ---- */
+/* For a heading the page needs but the side already shows. */
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
 
-/* Every page opens on its title, as far from the top as it is from the side
-   (see --corner). */
-.hero {
+/* ---- the shell: the side and the page ---- */
+
+/* Who, what, and where, the site's parts, and where else to find me, the
+   same on every page. On narrower screens it heads the page, as far from
+   the top as it is from the side (see --corner), and scrolls away with it. */
+.side {
+	display: flex;
+	flex-direction: column;
+	gap: var(--gap);
 	padding-top: var(--corner);
 }
+
+/* The name and what I do in the text's color; only the place is gray. */
+.side .name,
+.side .subtitle {
+	color: var(--ink);
+}
+
+/* The site's parts, in a row here and one to a line beside the page: the
+   one you're in in the text's color, the others in gray. */
+.tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0 32px;
+}
+
+.tabs a {
+	color: var(--muted);
+}
+
+.tabs a[aria-current] {
+	color: var(--ink);
+}
+
+/* The page, under a hairline, as far from the bottom as the side is from
+   the top. */
+main {
+	margin-top: var(--block);
+	padding-block: var(--block) var(--corner);
+	border-top: 1px solid var(--line);
+}
+
+/* Wide screens: the side stays put beside the page, centered top to
+   bottom, with a hairline down its right, and only the page scrolls.
+   --top centers the side's nine lines, and the page starts level with
+   them and ends as far from the bottom. */
+@media (min-width: 1100px) {
+	.shell {
+		--top: max(var(--block), calc((100dvh - var(--leading) * 9) / 2));
+		display: grid;
+		grid-template-columns: max-content minmax(0, 1fr);
+		align-items: start;
+		max-width: 1240px;
+	}
+
+	.side {
+		position: sticky;
+		top: var(--top);
+		margin-top: var(--top);
+		padding: 0 48px 0 0;
+		border-right: 1px solid var(--line);
+	}
+
+	.tabs {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	main {
+		margin: 0;
+		padding: var(--top) 0 var(--top) 48px;
+		border: 0;
+	}
+}
+
+/* ---- a page's title and description ---- */
 
 /* A title with its lines right under it, as one group: a page and its
    description, a post and its date. */
@@ -212,9 +294,9 @@ kbd {
 	gap: 0 32px;
 }
 
-/* A link to act on: "Visit the site", "All projects". Bold like every
-   other link, underlined on hover. The padding makes it easy to tap
-   and the margin takes it back, so it still takes one line. */
+/* A link to act on: "Visit the site", "Read the paper". Bold like every
+   other link, underlined on hover. The padding makes it easy to tap and the
+   margin takes it back, so it still takes one line. */
 .more {
 	padding-block: 11px;
 	margin-block: -11px;
@@ -238,17 +320,6 @@ kbd {
 .head p {
 	color: var(--body);
 	text-wrap: pretty;
-}
-
-/* A section's last word, an "All projects" link, as wide as its text. */
-.section > .more {
-	align-self: flex-start;
-}
-
-/* "Back to /", one empty line under the page's last block. */
-.back {
-	display: flex;
-	padding-top: var(--gap);
 }
 
 /* Projects, three to a row. */
@@ -494,28 +565,6 @@ figcaption {
 	text-wrap: pretty;
 }
 
-/* ---- footer ---- */
-
-/* Only the links, at the right, as far from the bottom as they are from the
-   side (see --corner). */
-.foot {
-	display: flex;
-	justify-content: flex-end;
-	margin-top: var(--section);
-	padding-bottom: var(--corner);
-}
-
-.foot nav {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: flex-end;
-	gap: 0 24px;
-}
-
-.foot a {
-	color: var(--ink);
-}
-
 /* ---- hover, only where there's a pointer to hover with ---- */
 
 /* A link underlines under the pointer, and a project or a post underlines
@@ -597,16 +646,11 @@ html[data-astro-transition-scope] {
 /* A page's content fades in once it's all there. Its blocks fade rather than
    the whole of <main>, so a page-tall post never becomes one page-tall
    compositing layer; they share a start, so they read as one fade. The
-   footer doesn't change between pages, so a navigation leaves it be and
-   only a fresh load fades it in. */
+   side never fades: it's the same on every page, so it shows at once. */
 main > :not(.entry),
 .entry > :not(.prose),
 .prose > * {
 	animation: enter 400ms var(--ease-out) both;
-}
-
-.foot {
-	transition: opacity 400ms var(--ease-out);
 }
 
 /* Held until Base.astro drops the attribute, once everything on the page has
@@ -619,19 +663,11 @@ main > :not(.entry),
 	animation-play-state: paused;
 }
 
-:root[data-loading] .foot {
-	opacity: 0;
-}
-
 @media (prefers-reduced-motion: reduce) {
 	main > :not(.entry),
 	.entry > :not(.prose),
 	.prose > * {
 		animation: none;
-	}
-
-	.foot {
-		transition: none;
 	}
 
 	/* No animation left to hold, so hold the content itself. */

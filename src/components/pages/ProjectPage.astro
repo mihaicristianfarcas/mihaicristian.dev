@@ -18,23 +18,24 @@ const { years, role, status, tech, links, shots } = project.data;
 /* Shots without a src would render placeholder frames; skip them until the
    real screenshots exist. */
 const [cover, ...rest] = (shots ?? []).filter((s) => s.src);
-/* The links sit in a row under the details, in their listed order, with
-   the way home last. */
+/* The links sit in a row under the details, in their listed order. */
 const actions = (links ?? []).map((l) => ({
   ...l,
   newTab: l.newTab || l.href.startsWith("http"),
 }));
 ---
 
-<Base title={project.data.title} description={project.data.description}>
-  <section class="wrap hero">
-    <div class="title">
-      <h1>{project.data.title}</h1>
-      <p class="lede">{project.data.description}</p>
-    </div>
-  </section>
+<Base
+  title={project.data.title}
+  description={project.data.description}
+  section="projects"
+>
+  <header class="title">
+    <h1>{project.data.title}</h1>
+    <p class="lede">{project.data.description}</p>
+  </header>
 
-  <article class="wrap entry">
+  <article class="entry">
     {cover && <Shot {...cover} cover />}
     <div class="prose">
       <Content />
@@ -42,7 +43,7 @@ const actions = (links ?? []).map((l) => ({
     {rest.map((s) => <Shot {...s} />)}
   </article>
 
-  <section class="wrap section" aria-labelledby="details">
+  <section class="section" aria-labelledby="details">
     <h2 id="details">Details</h2>
     <dl class="keys">
       <div>
@@ -62,21 +63,22 @@ const actions = (links ?? []).map((l) => ({
         <dd>{tech}</dd>
       </div>
     </dl>
-    <div class="cta">
-      {
-        actions.map((l) => (
-          <a
-            class="more"
-            href={l.href}
-            target={l.newTab ? "_blank" : undefined}
-            rel={l.newTab ? "noopener" : undefined}
-          >
-            {l.label}
-          </a>
-        ))
-      }
-      <a class="more" href="/">Back to /</a>
-    </div>
+    {
+      actions.length > 0 && (
+        <div class="cta">
+          {actions.map((l) => (
+            <a
+              class="more"
+              href={l.href}
+              target={l.newTab ? "_blank" : undefined}
+              rel={l.newTab ? "noopener" : undefined}
+            >
+              {l.label}
+            </a>
+          ))}
+        </div>
+      )
+    }
   </section>
 
   <Pager
