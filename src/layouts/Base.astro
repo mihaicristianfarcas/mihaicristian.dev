@@ -248,6 +248,18 @@ const schema = {
           };
         });
 
+        /* Back to top glides up, unless motion is turned down, and leaves no
+           #top in the address. The router leaves a handled click alone, and
+           without JS the link still goes there itself. Focus goes to the
+           top too, so the keys carry on from there. */
+        document.addEventListener("click", (event) => {
+          if (!event.target.closest?.('a[href="#top"]')) return;
+          event.preventDefault();
+          const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+          scrollTo({ top: 0, behavior: still ? "instant" : "smooth" });
+          document.querySelector(".side a")?.focus({ preventScroll: true });
+        });
+
         /* Between pages the content cross-fades, where the browser can (see
            "between pages" in global.css). The content on its way out gets a
            name of its own, so it fades where it stands instead of pairing
@@ -370,6 +382,11 @@ const schema = {
 
       <main>
         <slot />
+        {
+          /* Where the side scrolls away with the page, the way back up to it.
+            "#top" is the top of any page, without an element of that name. */
+        }
+        <p class="to-top"><a href="#top">Back to top</a></p>
       </main>
     </div>
 

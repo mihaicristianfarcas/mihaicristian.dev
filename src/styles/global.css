@@ -273,6 +273,11 @@ main {
 	border-top: 1px solid var(--line);
 }
 
+/* The way back up, set apart like a section at the end of the page. */
+.to-top {
+	padding-top: var(--section);
+}
+
 /* The fade at the screen's top and bottom edges, over what scrolls past. */
 .edges {
 	display: none;
@@ -313,6 +318,11 @@ main {
 		margin: 0;
 		padding: var(--top) 0 var(--top) 48px;
 		border: 0;
+	}
+
+	/* The side stays in view here, so there's nothing to go back up to. */
+	.to-top {
+		display: none;
 	}
 
 	/* The page fades out as it reaches an edge, into the background it
