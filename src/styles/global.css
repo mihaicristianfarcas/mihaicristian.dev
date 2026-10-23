@@ -29,8 +29,10 @@
 	--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 
 	/* The site uses one font size; hierarchy comes from color and space.
-	   The name is the only bold. */
-	--size: 17px;
+	   The name is the only bold. Everything is sized a touch small, at 90%
+	   of where it started (17px), which reads cleaner; the fixed sizes
+	   below are 90% too. */
+	--size: 15.3px;
 	/* One line of text. The space between lines is the same everywhere: lines
 	   in a group sit right under each other, and anything that needs setting
 	   apart is set apart by whole empty lines, so the page keeps one rhythm
@@ -47,17 +49,17 @@
 	/* The project grid's columns. Two-column lists take their first column
 	   from it too, so every list's second column starts on the same line. */
 	--cols: 3;
-	--col-gap: 32px;
+	--col-gap: 29px;
 	--col: calc((100% - (var(--cols) - 1) * var(--col-gap)) / var(--cols));
 	/* Every page's margin above its first line and below its last: as far as
 	   the text is from the side of the page, so its corners are square.
-	   The side margin is half of what the viewport has past the 1040px
-	   column, plus the column's own 24px. Never under four lines, so a phone
+	   The side margin is half of what the viewport has past the 936px
+	   column, plus the column's own 22px. Never under four lines, so a phone
 	   still gets room, and never over twelve, so a wide display doesn't push
 	   the page down the screen. */
 	--corner: clamp(
 		calc(var(--leading) * 4),
-		calc((100vw - 1040px) / 2 + 24px),
+		calc((100vw - 936px) / 2 + 22px),
 		calc(var(--leading) * 12)
 	);
 }
@@ -125,7 +127,7 @@ a:focus-visible,
 button:focus-visible {
 	outline: 2px solid var(--ink);
 	outline-offset: 3px;
-	border-radius: 6px;
+	border-radius: 5px;
 }
 
 h1,
@@ -215,9 +217,9 @@ kbd {
 /* Only the sides. */
 .wrap {
 	width: 100%;
-	max-width: 1040px;
+	max-width: 936px;
 	margin: 0 auto;
-	padding-inline: 24px;
+	padding-inline: 22px;
 }
 
 /* For a heading the page needs but the side already shows. */
@@ -253,7 +255,7 @@ kbd {
 .tabs {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0 32px;
+	gap: 0 var(--col-gap);
 }
 
 .tabs a {
@@ -286,13 +288,13 @@ main {
    bottom, with a hairline down its right, and only the page scrolls.
    --top centers the side's nine lines, and the page starts level with
    them and ends as far from the bottom. */
-@media (min-width: 1100px) {
+@media (min-width: 990px) {
 	.shell {
 		--top: max(var(--block), calc((100dvh - var(--leading) * 9) / 2));
 		display: grid;
 		grid-template-columns: max-content minmax(0, 1fr);
 		align-items: start;
-		max-width: 1240px;
+		max-width: 1116px;
 	}
 
 	/* A set width, not its text's: until Geist is in, the text is laid out
@@ -302,9 +304,9 @@ main {
 	.side {
 		position: sticky;
 		top: var(--top);
-		width: calc(18.25em + 48px);
+		width: calc(18.25em + 43px);
 		margin-top: var(--top);
-		padding: 0 48px 0 0;
+		padding: 0 43px 0 0;
 		border-right: 1px solid var(--line);
 	}
 
@@ -315,7 +317,7 @@ main {
 
 	main {
 		margin: 0;
-		padding: var(--top) 0 var(--top) 48px;
+		padding: var(--top) 0 var(--top) 43px;
 		border: 0;
 	}
 
@@ -361,15 +363,15 @@ main {
 .cta {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0 32px;
+	gap: 0 var(--col-gap);
 }
 
 /* A link to act on: "Visit the site", "Read the paper". The padding makes
    it easy to tap and the margin takes it back, so it still takes one
    line. */
 .more {
-	padding-block: 11px;
-	margin-block: -11px;
+	padding-block: 10px;
+	margin-block: -10px;
 }
 
 /* ---- sections ---- */
@@ -410,7 +412,7 @@ main {
 .grid h3 a::after {
 	content: "";
 	position: absolute;
-	inset: -8px;
+	inset: -7px;
 }
 
 .grid p {
@@ -472,7 +474,7 @@ main {
 .post a::after {
 	content: "";
 	position: absolute;
-	inset: 0 -8px;
+	inset: 0 -7px;
 }
 
 .post time {
@@ -490,7 +492,7 @@ main {
 .pager {
 	display: flex;
 	justify-content: space-between;
-	gap: 24px;
+	gap: 22px;
 	padding-top: var(--section);
 }
 
@@ -562,7 +564,7 @@ main {
 	display: flex;
 	flex-direction: column;
 	gap: var(--gap);
-	padding-left: 20px;
+	padding-left: 18px;
 	border-left: 2px solid var(--line);
 }
 
@@ -589,10 +591,10 @@ main {
 	--astro-code-token-link: var(--ink);
 
 	margin: 0;
-	padding: 16px 18px;
+	padding: 14px 16px;
 	overflow-x: auto;
 	line-height: 1.6;
-	border-radius: 10px;
+	border-radius: 9px;
 }
 
 /* ---- a screenshot or a recording ---- */
@@ -607,7 +609,7 @@ main {
 .frame {
 	position: relative;
 	overflow: hidden;
-	border-radius: 12px;
+	border-radius: 11px;
 	background: var(--wash);
 }
 
@@ -649,19 +651,19 @@ figcaption {
 
 /* ---- smaller screens ---- */
 
-@media (max-width: 900px) {
+@media (max-width: 810px) {
 	:root {
 		--cols: 2;
 	}
 }
 
-@media (max-width: 640px) {
+@media (max-width: 576px) {
 	:root {
 		--section: calc(var(--leading) * 3);
 	}
 
 	.wrap {
-		padding-inline: 20px;
+		padding-inline: 18px;
 	}
 
 	.grid {
@@ -690,12 +692,12 @@ figcaption {
 
 	/* Long lines scroll sideways here, at the badges' size. */
 	.astro-code {
-		padding: 14px 16px;
+		padding: 13px 14px;
 		font-size: 0.88em;
 	}
 
 	.frame {
-		border-radius: 8px;
+		border-radius: 7px;
 	}
 }
 
@@ -763,7 +765,7 @@ main {
 /* The browser draws the cross-fading content over the whole page, the
    fade at the screen's edges included (see .edges), so on wide screens it
    fades out at the edges itself, the same way, until the page is back. */
-@media (min-width: 1100px) {
+@media (min-width: 990px) {
 	::view-transition {
 		mask-image: linear-gradient(
 			transparent,

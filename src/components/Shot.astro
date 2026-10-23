@@ -44,7 +44,7 @@ const {
 
 /* Every shot spans the page beside the side, short of its own pixels. */
 const widths = [640, 1024, 1440, 2000];
-const sizes = "(min-width: 1100px) 800px, calc(100vw - 40px)";
+const sizes = "(min-width: 990px) 720px, calc(100vw - 36px)";
 const dark = "(prefers-color-scheme: dark)";
 
 const videos = import.meta.glob<string>("../assets/projects/*.mp4", {
@@ -219,11 +219,11 @@ const imageDark =
   }
 
   .ph {
-    padding: 0 12px;
-    line-height: 34px;
+    padding: 0 11px;
+    line-height: var(--leading);
     color: var(--muted);
     background: var(--paper);
     border: 1px solid var(--line);
-    border-radius: 8px;
+    border-radius: 7px;
   }
 </style>
