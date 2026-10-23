@@ -81,6 +81,10 @@ html {
 	-webkit-text-size-adjust: 100%;
 	text-size-adjust: 100%;
 	scrollbar-gutter: stable;
+	/* The page stops at its ends instead of springing past them: Safari
+	   carries the background along with the spring, which opens a band of
+	   bare paper above or below it. */
+	overscroll-behavior-y: none;
 }
 
 /* No background of its own: the root's paints the screen, and one here
