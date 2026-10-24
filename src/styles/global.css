@@ -90,6 +90,9 @@ html {
 	/* On the root element so navigation snapshots never composite against
 	   the browser's default canvas. */
 	background: var(--paper);
+	/* No gray box over a link under a finger: the press shows the way a
+	   hover does (see the end). */
+	-webkit-tap-highlight-color: transparent;
 	-webkit-text-size-adjust: 100%;
 	text-size-adjust: 100%;
 	scrollbar-gutter: stable;
@@ -683,6 +686,26 @@ figcaption {
 	.grid li:hover h3 a,
 	.post:hover a {
 		text-decoration-color: currentColor;
+	}
+}
+
+/* ---- under a finger ---- */
+
+/* The same while it's pressed, as the finger lands. */
+a:active {
+	text-decoration-color: currentColor;
+}
+
+/* The side's links, the pager's and the way back up take a target wider
+   and taller than their words, about 44px, overlapping nothing: the
+   margin takes back the padding, so they take the same room. The X in
+   the side is otherwise one letter wide. */
+@media (pointer: coarse) {
+	.side a,
+	.pager a,
+	.to-top a {
+		padding: 7px 14px;
+		margin: -7px -14px;
 	}
 }
 
