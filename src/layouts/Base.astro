@@ -78,7 +78,14 @@ const schema = {
   <head>
     <meta charset="utf-8" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {
+      /* `cover`: in landscape the sky runs out under the notch too, and the
+        page keeps clear of it (see .wrap). */
+    }
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
     {
       /* The sky's top, for the bar over the page in Chrome on Android.
         Safari ignores it since 26: see .tint in global.css. */

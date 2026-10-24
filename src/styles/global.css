@@ -215,12 +215,16 @@ kbd {
 	font-family: var(--sans);
 }
 
-/* Only the sides. */
+/* Only the sides. In landscape on a phone the sky runs under the notch
+   (see `cover` in Base.astro), and the page keeps the same distance in
+   from it as from an edge. */
 .wrap {
+	--gutter: 22px;
 	width: 100%;
 	max-width: 936px;
 	margin: 0 auto;
-	padding-inline: 22px;
+	padding-inline: calc(var(--gutter) + env(safe-area-inset-left, 0px))
+		calc(var(--gutter) + env(safe-area-inset-right, 0px));
 }
 
 /* For a heading the page needs but the side already shows. */
@@ -696,7 +700,7 @@ figcaption {
 	}
 
 	.wrap {
-		padding-inline: 18px;
+		--gutter: 18px;
 	}
 
 	.grid {
