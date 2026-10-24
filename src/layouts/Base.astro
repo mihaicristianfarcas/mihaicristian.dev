@@ -79,6 +79,10 @@ const schema = {
     <meta charset="utf-8" />
     <meta name="color-scheme" content="light dark" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {
+      /* The sky's top, for the bar over the page in Chrome on Android.
+        Safari ignores it since 26: see .tint in global.css. */
+    }
     <meta
       name="theme-color"
       content="#a7cbee"
@@ -395,5 +399,17 @@ const schema = {
         background, paper and mesh, laid over it and shown only there. */
     }
     <div class="edges" aria-hidden="true"><Mesh /></div>
+
+    {
+      /* Give Safari the colors for its bars over and under the page (see
+        .tint in global.css). Kept through navigations, so the bars never
+        change. */
+    }
+    <div class="tint top" aria-hidden="true" transition:persist="tint-top"></div>
+    <div
+      class="tint bottom"
+      aria-hidden="true"
+      transition:persist="tint-bottom"
+    ></div>
   </body>
 </html>

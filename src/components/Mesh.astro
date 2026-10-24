@@ -37,6 +37,21 @@
     }
   }
 
+  /* Where the side scrolls away, the phone's bars over and under the page
+     are the sky's two end colors, from theme-color or .tint in global.css.
+     The clouds and the grain fade out toward both, so the sky meets each
+     bar in its own plain color, with no seam. */
+  @media (max-width: 989px) {
+    .mesh::before,
+    .mesh::after {
+      mask-image: linear-gradient(
+        transparent,
+        #000 calc(var(--leading) * 4) calc(100% - var(--leading) * 4),
+        transparent
+      );
+    }
+  }
+
   /* The grain, over the clouds: their texture, and it breaks up the bands
      a gradient this soft would show. */
   .mesh::after {

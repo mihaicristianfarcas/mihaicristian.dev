@@ -15,10 +15,11 @@
 	/* See-through, so the sky shows through hairlines and washes. */
 	--line: rgba(20, 50, 90, 0.16);
 	--wash: rgba(255, 255, 255, 0.5);
-	/* The sky from top to bottom, and its paler bottom as one color, for
-	   what needs a solid one: badges, selected text. */
-	--sky: linear-gradient(#a7cbee, #deecf9);
+	/* The sky from its top to its paler bottom. The bottom is also the one
+	   color for what needs a solid one: badges, selected text. */
+	--sky-top: #a7cbee;
 	--paper: #deecf9;
+	--sky: linear-gradient(var(--sky-top), var(--paper));
 	/* The hairline drawn over a screenshot's edge, so a white page in a
 	   screenshot still reads as a picture on a white page. */
 	--edge: rgba(0, 0, 0, 0.08);
@@ -73,7 +74,7 @@
 		--muted: #7c879b;
 		--line: rgba(150, 180, 240, 0.16);
 		--wash: rgba(255, 255, 255, 0.05);
-		--sky: linear-gradient(#050a16, #0d1830);
+		--sky-top: #050a16;
 		--paper: #0d1830;
 		--edge: rgba(255, 255, 255, 0.08);
 	}
@@ -282,6 +283,35 @@ main {
 /* The fade at the screen's top and bottom edges, over what scrolls past. */
 .edges {
 	display: none;
+}
+
+/* Safari, since 26, ignores theme-color. It paints the bar over the page's
+   top, and the one under its bottom, each in the background color of a
+   fixed element at that edge. With none, it paints both in the root's,
+   and only once the page has loaded does it show the page through the
+   bottom one, a second late on a phone. These strips give each bar its
+   end of the sky, which runs plain where it meets them (see Mesh.astro),
+   from the first paint, so nothing in the bars changes. Safari takes a
+   strip only over the page, as wide as the screen and more than 10px
+   tall. It reads the color, not the pixels, so the mask hides the strip,
+   and it looks past pointer-events, so taps go through. */
+.tint {
+	position: fixed;
+	inset-inline: 0;
+	z-index: 2;
+	height: 16px;
+	pointer-events: none;
+	mask-image: linear-gradient(transparent, transparent);
+}
+
+.tint.top {
+	top: 0;
+	background-color: var(--sky-top);
+}
+
+.tint.bottom {
+	bottom: 0;
+	background-color: var(--paper);
 }
 
 /* Wide screens: the side stays put beside the page, centered top to
