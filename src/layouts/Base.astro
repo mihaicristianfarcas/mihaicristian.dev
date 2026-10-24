@@ -395,10 +395,12 @@ const schema = {
     </div>
 
     {
-      /* The page fades out at the screen's top and bottom into a copy of the
-        background, paper and mesh, laid over it and shown only there. */
+      /* The page fades out at the screen's top and bottom into copies of the
+        background, paper and mesh, laid over it and shown only there, one
+        pinned to each edge (see .edges in global.css). */
     }
-    <div class="edges" aria-hidden="true"><Mesh /></div>
+    <div class="edges top" aria-hidden="true"><Mesh /></div>
+    <div class="edges bottom" aria-hidden="true"><Mesh /></div>
 
     {
       /* Give Safari the colors for its bars over and under the page (see

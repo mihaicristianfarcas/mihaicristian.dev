@@ -280,9 +280,30 @@ main {
 	padding-top: var(--section);
 }
 
-/* The fade at the screen's top and bottom edges, over what scrolls past. */
+/* The page fades out as it reaches the screen's top and bottom edges, or
+   on a phone the bars there, into the background it scrolls over: the
+   copies over it hold the same paper and mesh, so the fade lays no band
+   across the mesh. One for each edge, as tall as the fade and pinned to
+   it: mid-scroll Safari moves what's pinned to the bottom along with its
+   bar as the bar shrinks or grows, but resizes what spans the screen only
+   once the scroll is over, which would open a gap between fade and bar. */
 .edges {
-	display: none;
+	position: fixed;
+	inset-inline: 0;
+	z-index: 1;
+	height: var(--block);
+	pointer-events: none;
+	background: var(--paper);
+}
+
+.edges.top {
+	top: 0;
+	mask-image: linear-gradient(#000, transparent);
+}
+
+.edges.bottom {
+	bottom: 0;
+	mask-image: linear-gradient(transparent, #000);
 }
 
 /* Safari, since 26, ignores theme-color. It paints the bar over the page's
@@ -354,24 +375,6 @@ main {
 	/* The side stays in view here, so there's nothing to go back up to. */
 	.to-top {
 		display: none;
-	}
-
-	/* The page fades out as it reaches an edge, into the background it
-	   scrolls over: the copy over it holds the same paper and mesh, so the
-	   fade lays no band across the mesh. */
-	.edges {
-		display: block;
-		position: fixed;
-		inset: 0;
-		z-index: 1;
-		pointer-events: none;
-		background: var(--paper);
-		mask-image: linear-gradient(
-			#000,
-			transparent var(--block),
-			transparent calc(100% - var(--block)),
-			#000
-		);
 	}
 }
 
@@ -793,17 +796,15 @@ main {
 }
 
 /* The browser draws the cross-fading content over the whole page, the
-   fade at the screen's edges included (see .edges), so on wide screens it
-   fades out at the edges itself, the same way, until the page is back. */
-@media (min-width: 990px) {
-	::view-transition {
-		mask-image: linear-gradient(
-			transparent,
-			#000 var(--block),
-			#000 calc(100% - var(--block)),
-			transparent
-		);
-	}
+   fade at the screen's edges included (see .edges), so it fades out at
+   the edges itself, the same way, until the page is back. */
+::view-transition {
+	mask-image: linear-gradient(
+		transparent,
+		#000 var(--block),
+		#000 calc(100% - var(--block)),
+		transparent
+	);
 }
 
 /* The cross-fade brings the new content in, so it doesn't fade in again. */
