@@ -261,14 +261,17 @@ const schema = {
 
         /* Back to top glides up, unless motion is turned down, and leaves no
            #top in the address. The router leaves a handled click alone, and
-           without JS the link still goes there itself. Focus goes to the
-           top too, so the keys carry on from there. */
+           without JS the link still goes there itself. Pressed from the
+           keys, focus goes to the top too, so they carry on from there; a
+           tap or a click leaves it, or Safari rings the name. A click from
+           the keys is the one with no count. */
         document.addEventListener("click", (event) => {
           if (!event.target.closest?.('a[href="#top"]')) return;
           event.preventDefault();
           const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
           scrollTo({ top: 0, behavior: still ? "instant" : "smooth" });
-          document.querySelector(".side a")?.focus({ preventScroll: true });
+          if (event.detail === 0)
+            document.querySelector(".side a")?.focus({ preventScroll: true });
         });
 
         /* Where the side heads the page and scrolls away with it, a page
