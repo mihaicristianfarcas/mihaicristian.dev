@@ -271,6 +271,30 @@ const schema = {
           document.querySelector(".side a")?.focus({ preventScroll: true });
         });
 
+        /* Where the side heads the page and scrolls away with it, a page
+           with a heading of its own, every page but the homepage, which the
+           side heads, comes in at its content, not under the side, which is
+           one scroll up. The hairline over the content goes just out of
+           view, so the first line is as far from the top as it was from the
+           hairline. The router has just put the page at its top, and the
+           cross-fade hasn't taken its picture of it yet. Not on the way back
+           or forward, which keeps its place, nor to a link with a fragment,
+           which goes there. */
+        let pastSide = false;
+        document.addEventListener("astro:before-swap", (event) => {
+          pastSide = event.navigationType !== "traverse" && !event.to.hash;
+        });
+        document.addEventListener("astro:after-swap", () => {
+          const main = document.querySelector("main");
+          const side = document.querySelector(".side");
+          if (!pastSide || !main.querySelector("h1")) return;
+          if (getComputedStyle(side).position === "sticky") return;
+          /* Rounded up: the browser rounds a scroll down, which would leave
+             a sliver of the hairline at the top. */
+          const top = main.getBoundingClientRect().top + scrollY + main.clientTop;
+          scrollTo({ top: Math.ceil(top), behavior: "instant" });
+        });
+
         /* Safari on iPhone only marks a link :active under a finger, for
            the press in global.css, when the page listens for touches. */
         document.addEventListener("touchstart", () => {}, { passive: true });
@@ -289,6 +313,43 @@ const schema = {
           );
           document.addEventListener("astro:before-swap", (event) => {
             event.newDocument.documentElement.dataset.navigated = "";
+          });
+
+          /* Where the side heads the page, a navigation can move it: past
+             it to the content, or back up to it. Then it cross-fades like
+             the content, out where it stood and in where it lands, named
+             apart the same way, instead of jumping. Where it stays put it's
+             left out, so it's never a snapshot of itself. Whether it moves
+             is known once the next page is in, before the picture of this
+             one: a heading of its own, which it lands past, or the place it
+             goes back to. */
+          let sideFrom;
+          document.addEventListener("astro:before-preparation", (event) => {
+            const side = document.querySelector(".side");
+            side.style.removeProperty("view-transition-name");
+            sideFrom = undefined;
+            if (getComputedStyle(side).position === "sticky") return;
+            const load = event.loader;
+            event.loader = async () => {
+              await load();
+              const lands =
+                event.navigationType === "traverse"
+                  ? (history.state?.scrollY ?? 0)
+                  : event.to.hash
+                    ? scrollY
+                    : event.newDocument.querySelector("main h1")
+                      ? Infinity
+                      : 0;
+              if (lands !== scrollY && side.getBoundingClientRect().bottom > 0)
+                side.style.setProperty("view-transition-name", "side-out");
+              sideFrom = scrollY;
+            };
+          });
+          document.addEventListener("astro:after-swap", () => {
+            const side = document.querySelector(".side");
+            if (sideFrom === undefined || scrollY === sideFrom) return;
+            if (side.getBoundingClientRect().bottom > 0)
+              side.style.setProperty("view-transition-name", "side-in");
           });
         }
       })();

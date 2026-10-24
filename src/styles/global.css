@@ -814,11 +814,14 @@ main {
 	}
 }
 
-::view-transition-old(content-out) {
+/* The side goes the same way when a navigation moves it (see Base.astro). */
+::view-transition-old(content-out),
+::view-transition-old(side-out) {
 	animation: leave 250ms var(--ease-out) both;
 }
 
-::view-transition-new(content) {
+::view-transition-new(content),
+::view-transition-new(side-in) {
 	animation: enter 400ms var(--ease-out) both;
 }
 
@@ -851,7 +854,9 @@ main {
 	/* Apart from the rule above: a browser without view transitions drops
 	   a whole selector list over one pseudo-element it can't parse. */
 	::view-transition-old(content-out),
-	::view-transition-new(content) {
+	::view-transition-old(side-out),
+	::view-transition-new(content),
+	::view-transition-new(side-in) {
 		animation: none;
 	}
 
