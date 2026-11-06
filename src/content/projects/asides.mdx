@@ -1,14 +1,14 @@
 ---
 title: asides
-seoTitle: "asides: talk through bugs while you test"
-description: A Mac menu-bar app that turns what you say while you test into a Markdown note in your repo, screenshots inline, and hands it to your coding agent.
-summary: Spoken bug notes, straight to your coding agent.
+seoTitle: "asides: point at what's wrong while you test"
+description: A macOS, Windows and Linux app that freezes the screen so you can click what's wrong and say why, then types it into your coding agent's chat with the screenshot and measurements.
+summary: Point at bugs, say why, straight to your agent.
 group: Tools
 order: 1
 years: "2026"
 role: Solo build
-status: Open source · in daily use
-tech: Rust · whisper.cpp · Metal · MCP
+status: Open source · macOS, Windows and Linux
+tech: Rust · GPUI · whisper.cpp · Metal
 featured: 3
 links:
   - label: Visit the site
@@ -16,23 +16,42 @@ links:
   - label: Source on GitHub
     href: https://github.com/mihaicristianfarcas/asides
 shots:
-  - src: ../../assets/projects/asides-recording.png
-    video: ../../assets/projects/asides-recording.mp4
-    alt: "A Mac desktop with a checkout page open in Safari. The recording shortcut flashes on screen and a red timer starts in the menu bar while the spoken words appear as subtitles: 'The summary card needs more padding under the sticky header.' A screenshot of the order summary is taken mid-sentence, then 'And the Pay button text wraps.' The menu bar shows a check and #5, the menu opens, Open Note is chosen, and notes.md opens in TextEdit with the new entry at the end."
-    caption: "The demo from the asides site: say what's wrong, copy a screenshot mid-sentence, and a few seconds later it's entry #5 in the note."
-  - src: ../../assets/projects/asides-note.png
-    alt: "notes.md open in TextEdit over the checkout page, with numbered, timed entries from '## 2 · 14:33' to '## 5 · 14:38'. The last holds the spoken sentence, a link to the screenshot, and the sentence said after it."
-    caption: "The note: one numbered entry per aside, and the screenshot where it was taken."
+  - src: ../../assets/projects/asides-og.png
+    alt: "asides' title card: '[a] asides' and the headline 'Report bugs out loud while you test'. A blue pin marks 'out loud'; a 32 pt gap is measured under the headline; the Download button is circled with a red pin; and a card reads 'Make it a bit bigger'."
+    caption: "Freeze the screen, point at what's wrong, say why: it's in your agent's chat as your own message."
+  - src: ../../assets/projects/asides-overlay.png
+    alt: "A Mac desktop with a checkout page open in Safari, frozen under asides' pill. Numbered pins mark the order summary, a field, the Pay now button and a moved copy of a payment field; a pink measurement reads 460 × 38; an arrow points to the moved field; a card reads 'Keep the label on one line'."
+    caption: "One aside over a checkout page: pins, a measurement, an arrow, and a note typed on a pin."
+  - src: ../../assets/projects/asides-frozen.webp
+    alt: "The top of a frozen checkout page under asides' pill, which says Claude Code (shop), with a microphone, start over, send and close."
+    caption: "Press ⌃⌥Space and every screen freezes under one small pill, in about 110 ms on a Mac."
+  - src: ../../assets/projects/asides-pins.webp
+    alt: "A close-up of an aside: a blue pin on an order summary and a red pin on the Pay now button, with a card under it reading 'Keep the label on one line'."
+    caption: "Pins on the things that are wrong; the card holds what you'd otherwise have to explain."
+  - src: ../../assets/projects/asides-chat.png
+    alt: "A Safari checkout page and a Claude Code terminal side by side over a purple, cloud-streaked wallpaper. The terminal shows the aside as a message: where it was, a measurement, the words with their pin numbers, and each pin's element and location, then Claude Code's reply."
+    caption: "It lands in the agent's chat as your own message: the screenshot, what you marked, and what you said."
+  - src: ../../assets/projects/asides-sessions.webp
+    alt: "The asides pill's Sessions menu over Safari: Claude Code (shop) in Terminal, Codex (api) in Ghostty, and OpenCode (blog) in Diri, then new sessions in shop, api or blog, Choose Folder, and History only."
+    caption: "Send to the session you typed into last, or start a new one in a folder you pick."
 ---
 
-Testing is when you notice things, and stopping to type them up is what breaks
-the flow. With asides you say them instead: press <kbd>⌃⌥Space</kbd>, say what's
-wrong, and keep testing. A few seconds later Whisper has transcribed it on your
-Mac, word for word, and appended it to a Markdown note in the repo, with any
-screenshot you copied right where you said it. There's no account, and no audio
-leaves the machine.
+Testing is when you notice things, and describing them afterwards is what
+breaks the flow. With asides you point instead: press <kbd>⌃⌥Space</kbd>, the
+screen freezes, and you click what's wrong and say why. Press it again and it
+lands in your coding agent's chat as your own message, with a screenshot
+around what you marked, the element's name and place, and anything you
+measured. There's no account, and no audio leaves the machine.
 
-The note is also where a coding agent picks it up. asides runs an MCP server,
-so Claude Code, Codex, or OpenCode can listen while you test and take each aside
-as a prompt as soon as it's transcribed. A good part of this site's redesign was
-asked for that way.
+Pins land at the word you said as you placed them; drag one's number to show
+where it should go, or open its card to type. Measure like PixelSnap, draw an
+arrow or a circle, or take just part of the screen. It works on anything on
+screen, not just the browser.
+
+It runs on macOS, Windows and Linux now, and sends to the agent session you
+typed into last — Claude Code, Codex, OpenCode, Gemini CLI, Copilot CLI or
+Qwen Code — or starts a new one in a folder you pick. Whisper runs on your
+machine, on a Mac's GPU and elsewhere on the CPU, and the history stays there
+for 30 days. The MCP server from the first version is still there for reading
+past asides and measuring screenshots; the app itself needs nothing installed
+in the agent. A good part of this site's redesign was asked for that way.

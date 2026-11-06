@@ -1,0 +1,59 @@
+---
+title: Helio
+seoTitle: "Helio: desktop and game streaming"
+description: Streams a computer's desktop, games included, to another computer inside one post-quantum WireGuard tunnel. Still in the works, with 1.0.0 and the full benchmarks coming soon.
+summary: Low-latency desktop streaming, post‑quantum encrypted.
+group: Systems
+order: 1
+years: "2026–present"
+role: Solo build
+status: In development · 1.0.0 coming soon
+tech: Rust · GPUI · WireGuard · NVENC · VideoToolbox
+featured: 1
+links:
+  - label: Visit the site
+    href: https://helio.mihaicristian.dev
+  - label: Source on GitHub
+    href: https://github.com/mihaicristianfarcas/helio
+shots:
+  - src: ../../assets/projects/helio-og.jpg
+    alt: "Helio's logo and the headline 'Stream your desktop and games', with 'One app for macOS, Windows and Linux. Post-quantum encrypted.' beside overlapping Hosts windows."
+    caption: "Helio: one app for macOS, Windows and Linux."
+  - src: ../../assets/projects/helio-hosts.webp
+    alt: "Helio's Hosts page on macOS: gaming-pc, living-room, mac-studio and linux-box, with two online, one asleep and one not yet paired, over a blue wallpaper. A line beneath says a click streams at 3024 × 1890, 120 FPS, 81 Mbps."
+    caption: "Hosts found on your network and across the internet. A click streams one at its own mode and frame rate."
+  - src: ../../assets/projects/helio-hosting.webp
+    alt: "Helio's Hosting settings: the switch that turns hosting on, what the system must allow, and the host's name and network."
+    caption: "One switch makes this computer a host, reachable from anywhere without forwarding a port."
+  - src: ../../assets/projects/helio-devices.webp
+    alt: "Helio's Devices page: a MacBook Air asking to pair, and three paired devices including an AI agent."
+    caption: "A device asks to pair, and each paired device and agent gets its own permissions."
+  - src: ../../assets/projects/helio-stream-split.jpg
+    video: ../../assets/projects/helio-stream-split.mp4
+    alt: "Two screens side by side, both showing the same running clock and frame counter. The right half, Helio's window, stays one frame behind the left half, the host's screen, throughout."
+    caption: "A Linux host and client in one container, over loopback. The host's screen on the left, Helio's window on the right, one frame behind: 5.1 ms from capture to screen. The full benchmarks, glass to glass included, are on the way."
+  - src: ../../assets/projects/helio-agent.webp
+    alt: "An agent session in Helio titled 'Clean up the Downloads folder'. The agent waits for permission to empty the Recycle Bin, with Allow and Don't buttons. A side panel shows the screen after its last action, screenshots of earlier steps, and its plan."
+    caption: "An agent session in Helio: the screen after its last action, its plan, and a go-ahead before emptying the Recycle Bin."
+---
+
+**Helio** is one app for your computers: the client you sit at and the host
+you stream from, in the same window. It takes pingpong's place, with Ping and
+Pong folded into one: your hosts on one side, this computer on the other, and a
+switch that lets your other devices play it. macOS, Windows and Linux, as
+client and host.
+
+It aims at Moonlight-class streaming: HEVC or H.264, hardware encode and
+decode, HDR and YUV 4:4:4, stereo to 7.1, controllers with rumble, and a
+virtual display at the client's exact mode on Windows and macOS, and on Linux
+under GNOME or KDE on Wayland, so nothing is scaled or letterboxed. Every
+packet still travels inside [pq-boringtun](/projects/pq-boringtun/), the
+post-quantum WireGuard from my thesis; pairing is hybrid SPAKE2 + ML-KEM.
+Hosts are found through sealed records on the BitTorrent DHT, and NATs are
+punched from both sides, so there's no relay server in between.
+
+Agents can use your hosts as clients of their own, from Helio or any MCP
+client, with the host enforcing what each device may do. The clipboard goes
+both ways. Helio is still in the works: 1.0.0 is coming soon, and the full
+benchmarks are on the way. A first loopback run puts capture to screen at
+5.1 ms; the full write-up, with glass-to-glass figures, is still to come.
