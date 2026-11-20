@@ -1,88 +1,147 @@
 /* ------------------------------------------------------------------ */
 /*  mihaicristian.dev — hand-written, no frameworks                    */
+/*                                                                     */
+/*  Everything the site looks like is decided by the tokens in :root.  */
+/*  Components use them and nothing else: no color, size or space of   */
+/*  their own. See docs/design.md for the rules behind them.           */
 /* ------------------------------------------------------------------ */
 
 :root {
 	color-scheme: light dark;
 
-	/* The page sits on a sky: by day pale blue with a haze of white clouds
-	   over it (see Mesh.astro). The text is in one color, and everything
-	   secondary, dates and places, in one gray tinted toward the sky, dark
-	   enough to read on its blue. */
-	--ink: #000;
-	--body: var(--ink);
-	--muted: #4f5f71;
-	/* See-through, so the sky shows through hairlines and washes. */
-	--line: rgba(20, 50, 90, 0.16);
-	--wash: rgba(255, 255, 255, 0.5);
-	/* The sky from its top to its paler bottom. The bottom is also the one
-	   color for what needs a solid one: badges, selected text. */
-	--sky-top: #a7cbee;
-	--paper: #deecf9;
-	--sky: linear-gradient(var(--sky-top), var(--paper));
-	/* The hairline drawn over a screenshot's edge, so a white page in a
+	/* ---- color ---- */
+
+	/* Light: white paper, near-black ink. The field of characters behind
+	   the page shows only under the pointer, in soft blue. */
+	--paper: #ffffff;
+	--ink: #0b0b0c;
+	/* Everything secondary: dates, captions, labels, descriptions under a
+	   title. */
+	--muted: #6b6b73;
+	/* Hairlines, and the faint fill behind frames and code. */
+	--rule: #e7e7ea;
+	--wash: #f6f6f7;
+	/* The hairline over a screenshot's edge, so a white page in a
 	   screenshot still reads as a picture on a white page. */
 	--edge: rgba(0, 0, 0, 0.08);
+	/* The field of characters behind the page (src/scripts/field.js), at
+	   its brightest, under the pointer: the palette's deepest blue, so what
+	   the pointer uncovers can be read. At rest it's the paper's color. */
+	--field-glow: #92b6f0;
+	/* The accent, the same soft blue in both themes: focus rings, selected
+	   text, the field's glow. A one-pixel line in it disappears on white, so
+	   lines drawn in the accent take the palette's deepest step by day:
+	   #d1dff6 #c2d6f6 #b2cbf2 #a0bff0 #92b6f0. */
+	--accent: #d1dff6;
+	--accent-line: #92b6f0;
+	--on-accent: #0b0b0c;
 
-	/* Geist, set up in astro.config.mjs. */
+	/* ---- type ---- */
+
+	/* Geist, set up in astro.config.mjs. Mono is the system's, for code. */
 	--sans: var(--font-geist);
 	--mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
-	--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 
-	/* The site uses one font size; hierarchy comes from color and space.
-	   The name is the only bold. Everything is sized a touch small, at 90%
-	   of where it started (17px), which reads cleaner; the fixed sizes
-	   below are 90% too. */
-	--size: 15.3px;
-	/* One line of text. The space between lines is the same everywhere: lines
-	   in a group sit right under each other, and anything that needs setting
-	   apart is set apart by whole empty lines, so the page keeps one rhythm
-	   from top to bottom. */
-	--line-height: 2;
-	--leading: calc(var(--size) * var(--line-height));
-	/* Between blocks inside a section: one empty line. */
-	--gap: var(--leading);
-	/* Between the blocks of a project's or a post's content, its text and
-	   its media: two empty lines. */
-	--block: calc(var(--leading) * 2);
-	/* The space above every section. */
-	--section: calc(var(--leading) * 4);
-	/* The project grid's columns. Two-column lists take their first column
-	   from it too, so every list's second column starts on the same line. */
-	--cols: 3;
-	--col-gap: 29px;
-	--col: calc((100% - (var(--cols) - 1) * var(--col-gap)) / var(--cols));
+	/* Three sizes, one per kind of text, and no others:
+	   --text-body   everything you read: copy, names, titles, links, buttons
+	   --text-small  what's about the text: dates, captions, labels, code
+	   --text-field  the characters of the background field, never read
+	   Hierarchy otherwise comes from color and space. The name is the one
+	   bold. */
+	--text-body: 15.3px;
+	--text-small: 13px;
+	--text-field: 11px;
+
+	/* ---- space ---- */
+
+	/* One line of body text. Vertical space is measured in it, whole lines
+	   and the half line between a list's short entries, so the page keeps
+	   one rhythm from top to bottom. */
+	--line: 26px;
+	/* Small text keeps its own, tighter line. */
+	--line-small: 20px;
+
+	/* The five kinds of vertical space, and nothing in between:
+	   --line               consecutive lines of one thing: a title over
+	                        its description, the lines of a paragraph
+	   --space-item         between the short entries of one list, a line
+	                        or two each: the side's sections, the
+	                        experience
+	   --space-paragraph    between paragraphs, a list's rows, groups of
+	                        the side, a picture and its caption
+	   --space-block        between the blocks of an entry: its text and
+	                        its pictures
+	   --space-section      between sections */
+	--space-item: calc(var(--line) / 2);
+	--space-paragraph: var(--line);
+	--space-block: calc(var(--line) * 2);
+	--space-section: calc(var(--line) * 4);
+
+	/* Horizontal space:
+	   --space-inline   between things side by side: links in a row, a
+	                    list's columns
+	   --space-column   either side of the hairline between the side and
+	                    the page
+	   --gutter         the page's margin from the screen's edge */
+	--space-inline: var(--line);
+	--space-column: calc(var(--line) * 2);
+	--gutter: 22px;
+
+	/* The page's width, its margins included: the column of text down the
+	   middle of the screen. Wider where the side stands beside the page.
+	   The field (src/scripts/field.js) thins out over it. */
+	--page-width: 936px;
+
+	/* A list's first column, a third of the page, so every two-column list
+	   starts its second column on the same line. */
+	--col: calc((100% - var(--space-inline) * 2) / 3);
+
 	/* Every page's margin above its first line and below its last: as far as
 	   the text is from the side of the page, so its corners are square.
-	   The side margin is half of what the viewport has past the 936px
-	   column, plus the column's own 22px. Never under four lines, so a phone
-	   still gets room, and never over twelve, so a wide display doesn't push
-	   the page down the screen. */
+	   Never under four lines, so a phone still gets room, and never over
+	   twelve, so a wide display doesn't push the page down the screen. */
 	--corner: clamp(
-		calc(var(--leading) * 4),
-		calc((100vw - 936px) / 2 + 22px),
-		calc(var(--leading) * 12)
+		var(--space-section),
+		calc((100vw - var(--page-width)) / 2 + var(--gutter)),
+		calc(var(--line) * 12)
 	);
+
+	/* ---- shape and motion ---- */
+
+	--radius: 10px;
+	--radius-small: 5px;
+	--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* The dark theme: a night sky, dark blue and a little lighter toward the
-   bottom, with faint clouds of light gray over it (see Mesh.astro), and
-   near-white text. */
+/* Dark: a neutral gray close to black, the light theme's ink. The field
+   is a lighter dark gray, and a little lighter again under the pointer.
+   The accent stays the same. */
 @media (prefers-color-scheme: dark) {
 	:root {
-		--ink: #f3f4f6;
-		--muted: #7c879b;
-		--line: rgba(150, 180, 240, 0.16);
-		--wash: rgba(255, 255, 255, 0.05);
-		--sky-top: #050a16;
-		--paper: #0d1830;
-		--edge: rgba(255, 255, 255, 0.08);
+		--paper: #0b0b0c;
+		--ink: #ededef;
+		--muted: #8a8a92;
+		--rule: #1f1f22;
+		--wash: #131315;
+		--edge: rgba(255, 255, 255, 0.07);
+		--field-glow: #45454d;
+		--accent-line: var(--accent);
+	}
+}
+
+@media (max-width: 576px) {
+	:root {
+		--space-section: calc(var(--line) * 3);
+		--gutter: 18px;
+		--radius: 7px;
 	}
 }
 
 /* ---- base ---- */
 
-* {
+*,
+::before,
+::after {
 	box-sizing: border-box;
 }
 
@@ -91,34 +150,31 @@ html {
 	   the browser's default canvas. */
 	background: var(--paper);
 	/* No gray box over a link under a finger: the press shows the way a
-	   hover does (see the end). */
+	   hover does (see .btn). */
 	-webkit-tap-highlight-color: transparent;
 	-webkit-text-size-adjust: 100%;
 	text-size-adjust: 100%;
 	scrollbar-gutter: stable;
-	/* The page stops at its ends instead of springing past them: Safari
-	   carries the background along with the spring, which opens a band of
-	   bare paper above or below it. */
-	overscroll-behavior-y: none;
 }
 
 /* No background of its own: the root's paints the screen, and one here
-   would cover the mesh behind the page. */
+   would cover the field behind the page. */
 body {
 	margin: 0;
 	color: var(--ink);
-	font: var(--size) / var(--line-height) var(--sans);
+	font: var(--text-body) / var(--line) var(--sans);
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 }
 
 ::selection {
-	background: var(--ink);
-	color: var(--paper);
+	background: var(--accent);
+	color: var(--on-accent);
 }
 
-/* A link is in the text's weight, marked by a faint underline in its own
-   color, which comes up to full strength on hover (see the end). */
+/* A link in running text is in the text's weight and color, marked by a
+   faint underline that comes up to full strength on hover. Links that
+   stand on their own are buttons (.btn), with no underline. */
 a {
 	color: inherit;
 	text-decoration-line: underline;
@@ -127,11 +183,11 @@ a {
 	text-underline-offset: 3px;
 }
 
-a:focus-visible,
-button:focus-visible {
-	outline: 2px solid var(--ink);
-	outline-offset: 3px;
-	border-radius: 5px;
+/* The focus ring is the accent, wide enough to see on white. */
+:focus-visible {
+	outline: 3px solid var(--accent);
+	outline-offset: 2px;
+	border-radius: var(--radius-small);
 }
 
 h1,
@@ -147,7 +203,7 @@ dd {
 }
 
 /* Headings and emphasis set no weight of their own: a heading stands out by
-   its color and the space around it, emphasis by its color. */
+   the space around it. */
 h1,
 h2,
 h3,
@@ -156,20 +212,19 @@ b {
 	font-weight: inherit;
 }
 
-/* The name keeps its tracking on pages where it isn't the heading. */
 h1,
 .name {
 	letter-spacing: -0.01em;
 }
 
-/* The one bold on the site. It leads home, and as the site's title it
-   shows its underline only on hover. */
+/* The one bold on the site. It leads home, and as the site's title it has
+   no underline. */
 .name {
 	font-weight: 600;
 }
 
 .name a {
-	text-decoration-color: transparent;
+	text-decoration: none;
 }
 
 /* Until Geist is in, its text is held invisible (see `display` in
@@ -199,18 +254,17 @@ video {
 	height: auto;
 }
 
-/* Key caps and inline code share one quiet badge, a little smaller than the
-   text around it. */
+/* Key caps and inline code share one quiet badge in the small size. */
 kbd,
 :not(pre) > code {
 	display: inline-block;
-	padding: 0 0.3em;
-	font-size: 0.88em;
-	line-height: 1.35;
+	padding: 0 0.35em;
+	font-size: var(--text-small);
+	line-height: var(--line-small);
 	color: var(--ink);
-	background: var(--paper);
-	border: 1px solid var(--line);
-	border-radius: 5px;
+	background: var(--wash);
+	border: 1px solid var(--rule);
+	border-radius: var(--radius-small);
 	white-space: nowrap;
 }
 
@@ -218,13 +272,12 @@ kbd {
 	font-family: var(--sans);
 }
 
-/* Only the sides. In landscape on a phone the sky runs under the notch
-   (see `cover` in Base.astro), and the page keeps the same distance in
-   from it as from an edge. */
+/* Only the sides. In landscape on a phone the page runs under the notch
+   (see `cover` in Base.astro), and keeps the same distance in from it as
+   from an edge. */
 .wrap {
-	--gutter: 22px;
 	width: 100%;
-	max-width: 936px;
+	max-width: var(--page-width);
 	margin: 0 auto;
 	padding-inline: calc(var(--gutter) + env(safe-area-inset-left, 0px))
 		calc(var(--gutter) + env(safe-area-inset-right, 0px));
@@ -241,6 +294,118 @@ kbd {
 	white-space: nowrap;
 }
 
+/* ---- the button ---- */
+
+/* Every link that stands on its own: the side's sections and profiles,
+   a project's links, the pager, a row of a list. No underline, no color
+   of its own. Under the pointer its top-left and bottom-right corners
+   grow a short way along both their edges, the same length on each, and
+   a press carries them on round the box until it has a full border. A
+   full border stays on the button for the page you're on.
+
+   Each corner is a square of the same side, bordered on two edges, that
+   grows from its corner: its width is the arm's length along the top or
+   bottom edge, and its height follows (aspect-ratio) up to the box's own
+   (max-height), so the arm along the side stops at the corner opposite.
+   The box takes as much room as its text: the padding is taken back by
+   the margin, so the text stays in line with the text around it.
+
+   The arms grow with the button, 6% of its width, and never under 0.6em,
+   which is what a button that's a word or two gets. */
+.btn {
+	--pad: 0.5em;
+	--arm: max(0.6em, 6%);
+	position: relative;
+	display: inline-block;
+	padding-inline: var(--pad);
+	margin-inline: calc(var(--pad) * -1);
+	text-decoration: none;
+}
+
+.btn::before,
+.btn::after {
+	content: "";
+	position: absolute;
+	width: 0;
+	aspect-ratio: 1;
+	max-height: 100%;
+	border: 0 solid var(--accent-line);
+	pointer-events: none;
+	opacity: 0;
+	/* Back in: the corners draw in, then go, once they're at nothing. */
+	transition:
+		width 300ms var(--ease-out),
+		opacity 0s linear 300ms;
+}
+
+.btn::before {
+	top: 0;
+	left: 0;
+	border-top-width: 1px;
+	border-left-width: 1px;
+}
+
+.btn::after {
+	right: 0;
+	bottom: 0;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+}
+
+/* A row of a list: a block, with room round its content. */
+.btn.block {
+	--pad: 10px;
+	display: block;
+	padding: var(--pad);
+	margin: calc(var(--pad) * -1);
+}
+
+/* Pressed, or the page you're on: the corners run on round the box. A
+   press is shown for a moment after the click too (data-pressed, set in
+   src/scripts/buttons.ts), long enough to finish, since a click is quicker
+   than the border. */
+.btn:active::before,
+.btn:active::after,
+.btn[data-pressed]::before,
+.btn[data-pressed]::after,
+.btn[aria-current]::before,
+.btn[aria-current]::after {
+	width: 100%;
+	opacity: 1;
+	transition:
+		width 550ms var(--ease-out),
+		opacity 0s;
+}
+
+/* Keyboard focus shows the corners as a hover does, inside the ring. */
+.btn:focus-visible::before,
+.btn:focus-visible::after {
+	width: var(--arm);
+	opacity: 1;
+	transition:
+		width 300ms var(--ease-out),
+		opacity 0s;
+}
+
+.btn:focus-visible {
+	border-radius: 0;
+}
+
+/* ---- the field ---- */
+
+/* The characters behind the page (src/scripts/field.js), filling the
+   screen at its tallest, so it never has to grow when a phone's bars
+   shrink away. */
+.field {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: -1;
+	width: 100vw;
+	height: 100lvh;
+	pointer-events: none;
+}
+
 /* ---- the shell: the side and the page ---- */
 
 /* Who, what, and where, the site's parts, and where else to find me, the
@@ -249,56 +414,45 @@ kbd {
 .side {
 	display: flex;
 	flex-direction: column;
-	gap: var(--gap);
+	gap: var(--space-paragraph);
 	padding-top: var(--corner);
 }
 
-/* The name, what I do and where, in the text's color. */
-.side .title > * {
-	color: var(--ink);
-}
-
-/* The site's parts, in a row here and one to a line beside the page: the
-   one you're in in the text's color, the others in gray. */
+/* The site's parts, in a row here and one to a line beside the page. */
 .tabs {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0 var(--col-gap);
-}
-
-.tabs a {
-	color: var(--muted);
-}
-
-.tabs a[aria-current] {
-	color: var(--ink);
+	gap: 0 var(--space-inline);
 }
 
 /* The page, under a hairline, as far from the bottom as the side is from
    the top. */
 main {
-	margin-top: var(--block);
-	padding-block: var(--block) var(--corner);
-	border-top: 1px solid var(--line);
+	margin-top: var(--space-block);
+	padding-block: var(--space-block) var(--corner);
+	border-top: 1px solid var(--rule);
 }
 
 /* The way back up, set apart like a section at the end of the page. */
 .to-top {
-	padding-top: var(--section);
+	padding-top: var(--space-section);
 }
 
 /* The page fades out as it reaches the screen's top and bottom edges, or
-   on a phone the bars there, into the background it scrolls over: the
-   copies over it hold the same paper and mesh, so the fade lays no band
-   across the mesh. One for each edge, as tall as the fade and pinned to
-   it: mid-scroll Safari moves what's pinned to the bottom along with its
-   bar as the bar shrinks or grows, but resizes what spans the screen only
-   once the scroll is over, which would open a gap between fade and bar. */
+   on a phone the bars there, into the background it scrolls over: these
+   bands are paper, with the field's characters drawn over them again
+   (field.js copies them in), so the fade lays no band across the field.
+   One for each edge, as tall as the fade and pinned to it: mid-scroll
+   Safari moves what's pinned to the bottom along with its bar as the bar
+   shrinks or grows, but resizes what spans the screen only once the
+   scroll is over, which would open a gap between fade and bar. */
 .edges {
 	position: fixed;
-	inset-inline: 0;
+	left: 0;
 	z-index: 1;
-	height: var(--block);
+	display: block;
+	width: 100vw;
+	height: var(--space-block);
 	pointer-events: none;
 	background: var(--paper);
 }
@@ -317,12 +471,11 @@ main {
    top, and the one under its bottom, each in the background color of a
    fixed element at that edge. With none, it paints both in the root's,
    and only once the page has loaded does it show the page through the
-   bottom one, a second late on a phone. These strips give each bar its
-   end of the sky, which runs plain where it meets them (see Mesh.astro),
-   from the first paint, so nothing in the bars changes. Safari takes a
-   strip only over the page, as wide as the screen and more than 10px
-   tall. It reads the color, not the pixels, so the mask hides the strip,
-   and it looks past pointer-events, so taps go through. */
+   bottom one, a second late on a phone. These strips give each bar the
+   paper's color from the first paint, so nothing in the bars changes.
+   Safari takes a strip only over the page, as wide as the screen and more
+   than 10px tall. It reads the color, not the pixels, so the mask hides
+   the strip, and it looks past pointer-events, so taps go through. */
 .tint {
 	position: fixed;
 	inset-inline: 0;
@@ -330,29 +483,32 @@ main {
 	height: 16px;
 	pointer-events: none;
 	mask-image: linear-gradient(transparent, transparent);
+	background-color: var(--paper);
 }
 
 .tint.top {
 	top: 0;
-	background-color: var(--sky-top);
 }
 
 .tint.bottom {
 	bottom: 0;
-	background-color: var(--paper);
 }
 
 /* Wide screens: the side stays put beside the page, centered top to
    bottom, with a hairline down its right, and only the page scrolls.
-   --top centers the side's nine lines, and the page starts level with
-   them and ends as far from the bottom. */
+   --top centers the side's ten lines (three sections an item apart make
+   three and a half), and the page starts level with them and ends as far
+   from the bottom. */
 @media (min-width: 990px) {
+	:root {
+		--page-width: 1134px;
+	}
+
 	.shell {
-		--top: max(var(--block), calc((100dvh - var(--leading) * 9) / 2));
+		--top: max(var(--space-block), calc((100dvh - var(--line) * 10) / 2));
 		display: grid;
 		grid-template-columns: max-content minmax(0, 1fr);
 		align-items: start;
-		max-width: 1116px;
 	}
 
 	/* A set width, not its text's: until Geist is in, the text is laid out
@@ -362,20 +518,23 @@ main {
 	.side {
 		position: sticky;
 		top: var(--top);
-		width: calc(18.25em + 43px);
+		width: calc(18.25em + var(--space-column));
 		margin-top: var(--top);
-		padding: 0 43px 0 0;
-		border-right: 1px solid var(--line);
+		padding: 0 var(--space-column) 0 0;
+		border-right: 1px solid var(--rule);
 	}
 
+	/* One to a line, an item apart, so the border round the current one
+	   stands clear of the others. */
 	.tabs {
 		flex-direction: column;
 		align-items: flex-start;
+		row-gap: var(--space-item);
 	}
 
 	main {
 		margin: 0;
-		padding: var(--top) 0 var(--top) 43px;
+		padding: var(--top) 0 var(--top) var(--space-column);
 		border: 0;
 	}
 
@@ -388,30 +547,32 @@ main {
 /* ---- a page's title and description ---- */
 
 /* A title with its lines right under it, as one group: a page and its
-   description, a post and its date. */
-.title p {
-	color: var(--muted);
+   description, a post and its date, a row of a list. What's under the
+   title is gray. (The side's name, what I do and where are all in the
+   text's color: they're .who, not a title.) */
+.title {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
 }
 
-/* A page's description, in the text's color rather than the date's. */
-.title .lede {
-	color: var(--body);
+.title > :not(:first-child) {
+	color: var(--muted);
 	text-wrap: pretty;
 }
 
-/* A row of links, one line tall, and one line per row when they wrap. */
+/* A row of buttons, one line tall, and one line per row when they wrap. */
 .cta {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0 var(--col-gap);
+	gap: 0 var(--space-inline);
 }
 
-/* A link to act on: "Visit the site", "Read the paper". The padding makes
-   it easy to tap and the margin takes it back, so it still takes one
-   line. */
-.more {
-	padding-block: 10px;
-	margin-block: -10px;
+/* What's about the text, in the small size: a date, a label. */
+.meta {
+	font-size: var(--text-small);
+	line-height: var(--line);
+	color: var(--muted);
 }
 
 /* ---- sections ---- */
@@ -419,54 +580,96 @@ main {
 .section {
 	display: flex;
 	flex-direction: column;
-	gap: var(--gap);
-	padding-top: var(--section);
+	gap: var(--space-paragraph);
+	padding-top: var(--space-section);
 }
 
-.section > p {
-	color: var(--body);
-	text-wrap: pretty;
+/* ---- lists ---- */
+
+/* A list in parts, each under its name, a block from the next: the
+   projects page's groups. The name is a label, a paragraph over its rows. */
+.parts {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-block);
 }
 
-/* A section's heading with a line of its own under it. */
-.head p {
-	color: var(--body);
-	text-wrap: pretty;
+.parts > section {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-paragraph);
 }
 
-/* Projects, three to a row. */
-.grid {
-	display: grid;
-	grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-	gap: var(--leading) var(--col-gap);
+/* A list of rows, each a button: a project, a post. One empty line
+   between rows. */
+.rows {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-paragraph);
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
-.grid li {
-	position: relative;
+/* A project: its picture in the first column, its name over what it is
+   in the second. */
+.project {
+	display: grid;
+	grid-template-columns: var(--col) minmax(0, 1fr);
+	column-gap: var(--space-inline);
+	align-items: start;
 }
 
-/* The whole entry is the link's target, not just its title. */
-.grid h3 a::after {
+/* In the shape of an OG card, 1200:630, so a project's social card shows
+   whole. */
+.thumb {
+	position: relative;
+	overflow: hidden;
+	aspect-ratio: 1200 / 630;
+	border-radius: var(--radius-small);
+	background: var(--wash);
+}
+
+.thumb picture,
+.thumb img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.thumb::after {
 	content: "";
 	position: absolute;
-	inset: -7px;
+	inset: 0;
+	border-radius: inherit;
+	box-shadow: inset 0 0 0 1px var(--edge);
 }
 
-.grid p {
-	color: var(--body);
-	text-wrap: pretty;
+/* A post: its title over its description, and the date at the end of the
+   row, in line with the title. */
+.post {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) max-content;
+	column-gap: var(--space-inline);
+	align-items: baseline;
 }
 
-/* Facts in two columns: a name, and what it stands for, each row right
-   under the last, like a table's. The names take one grid column, so what
-   they stand for starts where the grid's second column does. */
+.post time {
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+	/* Beside the title, on its line: inside it (see .keys.details dt). */
+	line-height: var(--line-small);
+}
+
+/* Entries in two columns: a name, and what it stands for, an item apart,
+   so a line that wraps never runs into the next entry. The names take the
+   first column, so what they stand for starts where every list's second
+   column does. */
 .keys {
 	display: grid;
 	grid-template-columns: var(--col) minmax(0, 1fr);
-	column-gap: var(--col-gap);
+	gap: var(--space-item) var(--space-inline);
 }
 
 /* A name and what it stands for, kept together when the columns stack. */
@@ -475,65 +678,32 @@ main {
 	grid-column: 1 / -1;
 	grid-template-columns: subgrid;
 	align-items: baseline;
-	row-gap: 0;
 }
 
 .keys dd {
-	color: var(--body);
 	text-wrap: pretty;
 }
 
-/* Posts: the title, then the date, one empty line apart like the projects.
-   The titles take one grid column, like the names in .keys, so the dates
-   line up with every other list's second column. */
-.posts {
-	display: grid;
-	grid-template-columns: var(--col) minmax(0, 1fr);
-	gap: var(--leading) var(--col-gap);
-	margin: 0;
-	padding: 0;
-	list-style: none;
-}
-
-/* With descriptions, the titles take the full width, so the dates line up
-   from one year's list to the next. */
-.posts.described {
-	grid-template-columns: minmax(0, 1fr) max-content;
-}
-
-.post {
-	position: relative;
-	display: grid;
-	grid-column: 1 / -1;
-	grid-template-columns: subgrid;
-	align-items: baseline;
+/* A project's details are one table, a fact to a line, each right under
+   the last. The names are labels, in the small size, on the line of what
+   they name: their own, smaller line keeps them inside it, so every row
+   stays one line tall. */
+.keys.details {
 	row-gap: 0;
 }
 
-/* The whole row is the link's target, not just its title. */
-.post a::after {
-	content: "";
-	position: absolute;
-	inset: 0 -7px;
-}
-
-.post time {
+.keys.details dt {
+	font-size: var(--text-small);
+	line-height: var(--line-small);
 	color: var(--muted);
-	font-variant-numeric: tabular-nums;
-	white-space: nowrap;
-}
-
-.post p {
-	color: var(--body);
-	text-wrap: pretty;
 }
 
 /* The way on to the next entry, at the foot of a project or a post. */
 .pager {
 	display: flex;
 	justify-content: space-between;
-	gap: 22px;
-	padding-top: var(--section);
+	gap: var(--space-inline);
+	padding-top: var(--space-section);
 }
 
 .pager p {
@@ -541,12 +711,6 @@ main {
 	flex-direction: column;
 	align-items: flex-start;
 	min-width: 0;
-}
-
-/* "Previous", "Next": a gray label over the link, outside it, so only the
-   title is underlined. */
-.pager span {
-	color: var(--muted);
 }
 
 .pager .next {
@@ -558,40 +722,34 @@ main {
 /* ---- a project's or a post's content ---- */
 
 /* The page's one section under its title: the text and the media in one
-   column, two lines apart. The column sets the spacing; nothing in it has a
+   column, a block apart. The column sets the spacing; nothing in it has a
    margin of its own. */
 .entry {
 	display: flex;
 	flex-direction: column;
-	gap: var(--block);
-	padding-top: var(--section);
+	gap: var(--space-block);
+	padding-top: var(--space-section);
 }
 
 /* Running text spans the page, as wide as the screenshots. Every block in
-   it, a paragraph, a heading, a quote's lines, a list's items, sits one empty
-   line from the next. */
+   it, a paragraph, a heading, a quote's lines, a list's items, sits a
+   paragraph from the next. */
 .prose {
 	display: flex;
 	flex-direction: column;
-	gap: var(--gap);
+	gap: var(--space-paragraph);
 }
 
 .prose p,
 .prose li {
-	color: var(--body);
 	text-wrap: pretty;
-}
-
-.prose a,
-.prose strong {
-	color: var(--ink);
 }
 
 .prose ul,
 .prose ol {
 	display: flex;
 	flex-direction: column;
-	gap: var(--gap);
+	gap: var(--space-paragraph);
 	margin: 0;
 	padding-left: 1.4em;
 }
@@ -603,16 +761,33 @@ main {
 .prose blockquote {
 	display: flex;
 	flex-direction: column;
-	gap: var(--gap);
+	gap: var(--space-paragraph);
 	padding-left: 18px;
-	border-left: 2px solid var(--line);
+	border-left: 2px solid var(--rule);
 }
 
 .prose hr {
 	width: 100%;
 	margin: 0;
 	border: 0;
-	border-top: 1px solid var(--line);
+	border-top: 1px solid var(--rule);
+}
+
+/* A heading inside an entry starts a part of it, a block below what came
+   before and a paragraph above its text, the same as a section's heading.
+   A picture inside the text is a block from what's either side of it. The
+   column's gap is a paragraph, so the margins make up the difference. */
+.prose > h2:not(:first-child),
+.prose > .shot {
+	margin-top: calc(var(--space-block) - var(--space-paragraph));
+}
+
+.prose > .shot:not(:last-child) {
+	margin-bottom: calc(var(--space-block) - var(--space-paragraph));
+}
+
+.prose > .shot + h2 {
+	margin-top: 0;
 }
 
 /* ---- code ---- */
@@ -631,25 +806,26 @@ main {
 	--astro-code-token-link: var(--ink);
 
 	margin: 0;
-	padding: 14px 16px;
+	padding: 13px 16px;
 	overflow-x: auto;
-	line-height: 1.6;
-	border-radius: 9px;
+	font-size: var(--text-small);
+	line-height: var(--line-small);
+	border-radius: var(--radius);
 }
 
 /* ---- a screenshot or a recording ---- */
 
-/* The frame, then its caption one empty line under it. */
+/* The frame, then its caption a paragraph under it. */
 .shot {
 	display: flex;
 	flex-direction: column;
-	gap: var(--gap);
+	gap: var(--space-paragraph);
 }
 
 .frame {
 	position: relative;
 	overflow: hidden;
-	border-radius: 11px;
+	border-radius: var(--radius);
 	background: var(--wash);
 }
 
@@ -673,6 +849,8 @@ main {
 }
 
 figcaption {
+	font-size: var(--text-small);
+	line-height: var(--line-small);
 	color: var(--muted);
 	text-wrap: pretty;
 }
@@ -680,91 +858,82 @@ figcaption {
 /* ---- hover, only where there's a pointer to hover with ---- */
 
 /* A link's underline comes up to full strength under the pointer, and a
-   project's or a post's anywhere over its entry. */
+   button's corners grow. */
 @media (hover: hover) and (pointer: fine) {
-	a:hover,
-	.grid li:hover h3 a,
-	.post:hover a {
+	a:hover {
 		text-decoration-color: currentColor;
+	}
+
+	.btn:hover::before,
+	.btn:hover::after {
+		width: var(--arm);
+		opacity: 1;
+		transition:
+			width 300ms var(--ease-out),
+			opacity 0s;
+	}
+
+	/* Over a button that's pressed or current, the corners stay round it. */
+	.btn:hover:is(:active, [data-pressed], [aria-current])::before,
+	.btn:hover:is(:active, [data-pressed], [aria-current])::after {
+		width: 100%;
 	}
 }
 
 /* ---- under a finger ---- */
 
-/* The same while it's pressed, as the finger lands. */
 a:active {
 	text-decoration-color: currentColor;
 }
 
-/* The side's links, the pager's and the way back up take a target wider
-   and taller than their words, about 44px, overlapping nothing: the
-   margin takes back the padding, so they take the same room. The X in
-   the side is otherwise one letter wide. */
+/* The side's buttons, the pager's and the way back up take a target taller
+   than their text, about 44px, overlapping nothing: the margin takes back
+   the padding, so they take the same room. */
 @media (pointer: coarse) {
-	.side a,
-	.pager a,
-	.to-top a {
-		padding: 7px 14px;
-		margin: -7px -14px;
+	.side .btn,
+	.pager .btn,
+	.to-top .btn,
+	.cta .btn {
+		padding-block: 9px;
+		margin-block: -9px;
 	}
 }
 
 /* ---- smaller screens ---- */
 
-@media (max-width: 810px) {
-	:root {
-		--cols: 2;
-	}
-}
-
 @media (max-width: 576px) {
-	:root {
-		--section: calc(var(--leading) * 3);
-	}
-
-	.wrap {
-		--gutter: 18px;
-	}
-
-	.grid {
-		grid-template-columns: 1fr;
-	}
-
-	/* The name over what it stands for, one empty line from the next name,
-	   so each keeps to its own. */
+	/* The name over what it stands for, which makes each entry a row of
+	   a list, a paragraph from the next. */
 	.keys {
 		grid-template-columns: minmax(0, 1fr);
-		row-gap: var(--leading);
+		row-gap: var(--space-paragraph);
 	}
 
 	/* A project's details are short: they keep their two columns, the
 	   names only as wide as the widest of them. */
 	.keys.details {
 		grid-template-columns: max-content minmax(0, 1fr);
-		row-gap: 0;
 	}
 
-	/* The date under the title. */
-	.posts,
-	.posts.described {
+	/* A project's picture is a little wider than a third here. */
+	.project {
+		grid-template-columns: 38% minmax(0, 1fr);
+	}
+
+	/* The date under the title, on a line of its own. */
+	.post {
 		grid-template-columns: minmax(0, 1fr);
 	}
 
-	/* Long lines scroll sideways here, at the badges' size. */
-	.astro-code {
-		padding: 13px 14px;
-		font-size: 0.88em;
-	}
-
-	.frame {
-		border-radius: 7px;
+	.post time {
+		line-height: var(--line);
 	}
 }
 
 /* ---- arriving ---- */
 
 /* The root takes no part in a navigation: only the content cross-fades (see
-   "between pages"), over the live page. So the side and the mesh are never
+   "between pages"), over the live page. So the side and the field are never
    snapshots of themselves, which the browser draws a little off, and they
    don't flicker while the content changes. This overrides the name Astro
    gives the root. */
@@ -784,7 +953,7 @@ html[data-astro-transition-scope] {
    side never fades: it's the same on every page, so it shows at once. */
 main > :not(.entry),
 .entry > :not(.prose),
-.prose > * {
+.entry > .prose > * {
 	animation: enter 400ms var(--ease-out) both;
 }
 
@@ -794,7 +963,7 @@ main > :not(.entry),
    swaps that page in once it's whole. */
 :root[data-loading] main > :not(.entry),
 :root[data-loading] .entry > :not(.prose),
-:root[data-loading] .prose > * {
+:root[data-loading] .entry > .prose > * {
 	animation-play-state: paused;
 }
 
@@ -831,8 +1000,8 @@ main {
 ::view-transition {
 	mask-image: linear-gradient(
 		transparent,
-		#000 var(--block),
-		#000 calc(100% - var(--block)),
+		#000 var(--space-block),
+		#000 calc(100% - var(--space-block)),
 		transparent
 	);
 }
@@ -840,15 +1009,21 @@ main {
 /* The cross-fade brings the new content in, so it doesn't fade in again. */
 :root[data-navigated] main > :not(.entry),
 :root[data-navigated] .entry > :not(.prose),
-:root[data-navigated] .prose > * {
+:root[data-navigated] .entry > .prose > * {
 	animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
 	main > :not(.entry),
 	.entry > :not(.prose),
-	.prose > * {
+	.entry > .prose > * {
 		animation: none;
+	}
+
+	/* The corners still show, but at once. */
+	.btn::before,
+	.btn::after {
+		transition: none !important;
 	}
 
 	/* Apart from the rule above: a browser without view transitions drops
@@ -863,7 +1038,15 @@ main {
 	/* No animation left to hold, so hold the content itself. */
 	:root[data-loading] main > :not(.entry),
 	:root[data-loading] .entry > :not(.prose),
-	:root[data-loading] .prose > * {
+	:root[data-loading] .entry > .prose > * {
 		opacity: 0;
+	}
+}
+
+@media print {
+	.field,
+	.edges,
+	.tint {
+		display: none;
 	}
 }

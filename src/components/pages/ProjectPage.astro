@@ -37,7 +37,7 @@ const actions = (links ?? []).map((l) => ({
 >
   <header class="title">
     <h1>{project.data.title}</h1>
-    <p class="lede">{project.data.description}</p>
+    <p>{project.data.description}</p>
   </header>
 
   <article class="entry">
@@ -73,7 +73,7 @@ const actions = (links ?? []).map((l) => ({
         <div class="cta">
           {actions.map((l) => (
             <a
-              class="more"
+              class="btn"
               href={l.href}
               target={l.newTab ? "_blank" : undefined}
               rel={l.newTab ? "noopener" : undefined}

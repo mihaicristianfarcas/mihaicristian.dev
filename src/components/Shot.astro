@@ -214,16 +214,18 @@ const imageDark =
     background-image: repeating-linear-gradient(
       -45deg,
       transparent 0 7px,
-      var(--line) 7px 8px
+      var(--rule) 7px 8px
     );
   }
 
+  /* Its label, a badge in the small size, like a key cap's. */
   .ph {
-    padding: 0 11px;
-    line-height: var(--leading);
+    padding: 0 0.7em;
+    font-size: var(--text-small);
+    line-height: var(--line-small);
     color: var(--muted);
     background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 7px;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-small);
   }
 </style>

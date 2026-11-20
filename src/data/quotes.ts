@@ -1,4 +1,5 @@
-/* One quote is chosen at random on each page load. */
+/* Seneca's lines. The shorter ones are hidden in the background field
+   (src/scripts/field.js), a couple on each load, for the pointer to find. */
 type Quote = { text: string; author: string };
 
 export const quotes: Quote[] = [

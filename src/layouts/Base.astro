@@ -2,8 +2,12 @@
 import { ClientRouter } from "astro:transitions";
 import { Font } from "astro:assets";
 import "../styles/global.css";
-import Mesh from "../components/Mesh.astro";
 import { site, person } from "../data/site";
+/* The background field's script, inlined at the top of <body> so the field
+   is there from the first paint (see src/scripts/field.js). */
+import field from "../scripts/field.js?raw";
+/* Seneca's lines, for the field to hide in its floor. */
+import { quotes } from "../data/quotes";
 
 interface Props {
   title?: string;
@@ -35,6 +39,12 @@ const pageTitle = title
   : `${site.name} | Software Engineer`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const path = Astro.url.pathname;
+/* The shorter of Seneca's lines, which fit in the field's floor. */
+const fieldQuotes = JSON.stringify(
+  quotes
+    .filter((q) => q.text.length <= 80)
+    .map((q) => `${q.text} — ${q.author.split(",")[0]}`),
+);
 /* The name heads the homepage; every other page has a title of its own. */
 const Name = path === "/" ? "h1" : "p";
 
@@ -79,7 +89,7 @@ const schema = {
     <meta charset="utf-8" />
     <meta name="color-scheme" content="light dark" />
     {
-      /* `cover`: in landscape the sky runs out under the notch too, and the
+      /* `cover`: in landscape the field runs out under the notch too, and the
         page keeps clear of it (see .wrap). */
     }
     <meta
@@ -87,17 +97,18 @@ const schema = {
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
     {
-      /* The sky's top, for the bar over the page in Chrome on Android.
-        Safari ignores it since 26: see .tint in global.css. */
+      /* The paper, for the bar over the page in Chrome on Android. Safari
+        ignores it since 26: see .tint in global.css. Keep in step with
+        --paper. */
     }
     <meta
       name="theme-color"
-      content="#a7cbee"
+      content="#ffffff"
       media="(prefers-color-scheme: light)"
     />
     <meta
       name="theme-color"
-      content="#050a16"
+      content="#0b0b0c"
       media="(prefers-color-scheme: dark)"
     />
     {
@@ -259,7 +270,8 @@ const schema = {
           };
         });
 
-        /* Back to top glides up, unless motion is turned down, and leaves no
+        /* Back to top glides up (see src/scripts/scroll.ts), unless motion
+           is turned down, and leaves no
            #top in the address. The router leaves a handled click alone, and
            without JS the link still goes there itself. Pressed from the
            keys, focus goes to the top too, so they carry on from there; a
@@ -268,8 +280,8 @@ const schema = {
         document.addEventListener("click", (event) => {
           if (!event.target.closest?.('a[href="#top"]')) return;
           event.preventDefault();
-          const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-          scrollTo({ top: 0, behavior: still ? "instant" : "smooth" });
+          if (window.glideTo) window.glideTo(0);
+          else scrollTo({ top: 0, behavior: "instant" });
           if (event.detail === 0)
             document.querySelector(".side a")?.focus({ preventScroll: true });
         });
@@ -406,9 +418,23 @@ const schema = {
     }
     <meta name="generator" content={Astro.generator} />
     <ClientRouter />
+    <script>
+      import "../scripts/scroll";
+      import "../scripts/buttons";
+    </script>
   </head>
   <body>
-    <Mesh />
+    {
+      /* The field of characters behind the page, which the pointer shows,
+        set up by the script right after it. Kept through navigations, so
+        it never starts over between pages. */
+    }
+    <canvas
+      class="field"
+      aria-hidden="true"
+      data-quotes={fieldQuotes}
+      transition:persist="field"></canvas>
+    <script is:inline set:html={field} />
 
     {
       /* The same side on every page, so a navigation only changes the page
@@ -416,7 +442,7 @@ const schema = {
     }
     <div class="wrap shell">
       <header class="side">
-        <div class="title">
+        <div class="who">
           <Name class="name">
             <a href="/" aria-current={path === "/" ? "page" : undefined}
               >{site.name}</a
@@ -426,10 +452,16 @@ const schema = {
           <p>Based in Cluj-Napoca, Romania.</p>
         </div>
 
-        <nav class="tabs" aria-label="Sections">
+        {
+          /* Kept through navigations, so the border of the section you're
+            going to can finish drawing while the page changes (see
+            src/scripts/buttons.ts). */
+        }
+        <nav class="tabs" aria-label="Sections" transition:persist="tabs">
           {
             sections.map((s) => (
               <a
+                class="btn"
                 href={s.href}
                 aria-current={
                   path === s.href ? "page" : section === s.id ? "true" : undefined
@@ -447,6 +479,7 @@ const schema = {
               const newTab = l.href.startsWith("http");
               return (
                 <a
+                  class="btn"
                   href={l.href}
                   target={newTab ? "_blank" : undefined}
                   rel={newTab ? "noopener" : undefined}
@@ -465,17 +498,22 @@ const schema = {
           /* Where the side scrolls away with the page, the way back up to it.
             "#top" is the top of any page, without an element of that name. */
         }
-        <p class="to-top"><a href="#top">Back to top</a></p>
+        <p class="to-top"><a class="btn" href="#top">Back to top</a></p>
       </main>
     </div>
 
     {
       /* The page fades out at the screen's top and bottom into copies of the
-        background, paper and mesh, laid over it and shown only there, one
-        pinned to each edge (see .edges in global.css). */
+        background, paper and field, laid over it and shown only there, one
+        pinned to each edge (see .edges in global.css). field.js draws the
+        field into them. */
     }
-    <div class="edges top" aria-hidden="true"><Mesh /></div>
-    <div class="edges bottom" aria-hidden="true"><Mesh /></div>
+    <canvas class="edges top" aria-hidden="true" transition:persist="edge-top"
+    ></canvas>
+    <canvas
+      class="edges bottom"
+      aria-hidden="true"
+      transition:persist="edge-bottom"></canvas>
 
     {
       /* Give Safari the colors for its bars over and under the page (see

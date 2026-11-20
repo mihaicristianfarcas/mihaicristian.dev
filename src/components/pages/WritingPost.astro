@@ -22,7 +22,7 @@ const { newer, older } = await getPostNeighbours(post.id);
 >
   <header class="title">
     <h1>{post.data.title}</h1>
-    <p>
+    <p class="meta">
       <time datetime={post.data.date.toISOString().slice(0, 10)}>
         {postDateFmt.format(post.data.date)}
       </time>

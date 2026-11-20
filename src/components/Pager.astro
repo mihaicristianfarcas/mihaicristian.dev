@@ -19,16 +19,16 @@ const { label, prev, next } = Astro.props;
     <nav class="pager" aria-label={label}>
       {prev && (
         <p class="prev">
-          <span>{prev.word}</span>
-          <a href={prev.href} rel="prev">
+          <span class="meta">{prev.word}</span>
+          <a class="btn" href={prev.href} rel="prev">
             {prev.title}
           </a>
         </p>
       )}
       {next && (
         <p class="next">
-          <span>{next.word}</span>
-          <a href={next.href} rel="next">
+          <span class="meta">{next.word}</span>
+          <a class="btn" href={next.href} rel="next">
             {next.title}
           </a>
         </p>
