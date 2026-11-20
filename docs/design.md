@@ -248,10 +248,13 @@ It must never get in the way of reading.
   - three formulas from computer science, from `FORMULA_LIST`;
   - a hunt: a hint somewhere says to go to the top left corner, and each
     corner, once the pointer reaches it, says where to go next, round all
-    four (`HUNT`). The corners are kept clear of everything else for it.
+    four (`HUNT`). A corner only answers once the hint that sends you there
+    has been found, half its letters lit (`FOUND`, `LIT`), so no step shows
+    before the ones before it, however the pointer wanders. The corners are
+    kept clear of everything else for it.
 - The knobs are the constants at the top of `field.js`: `GLYPHS`,
   `WORD_LIST`, `WORDS`, `PAD`, `EASE`, `QUOTES`, `FORMULAS`,
-  `FORMULA_LIST`, `HUNT`, `REACH` and `COOL`. Keep the colors in the tokens,
+  `FORMULA_LIST`, `HUNT`, `FOUND`, `LIT`, `REACH` and `COOL`. Keep the colors in the tokens,
   not in the script, which reads them.
 - **Keep it quiet.** Before you raise `--field-glow` or the reach, or let
   the floor into the ellipse, move the pointer over a long post in both

@@ -72,7 +72,10 @@
 	];
 	/* The hunt: a hint somewhere in the floor sends the pointer to a
 	   corner, and each corner, once reached, says where to go next, until
-	   the last. Within REACH_CORNER px of a corner counts as there. */
+	   the last. Within REACH_CORNER px of a corner counts as there, but
+	   only once the hint that sends you there has been found: FOUND of its
+	   letters lit to at least LIT of the glow. So no hint shows before the
+	   ones before it have been read. */
 	const HUNT = [
 		[null, "psst. go to the top left corner."],
 		["top left", "good. now the bottom right."],
@@ -81,6 +84,8 @@
 		["bottom left", "every corner. per aspera ad astra."],
 	];
 	const REACH_CORNER = 90;
+	const FOUND = 0.5;
+	const LIT = 0.35;
 
 	const MONO = 'ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace';
 	/* Shades from the paper, where a character can't be seen, to its glow. */
@@ -210,24 +215,37 @@
 		return null;
 	};
 
-	/* The hunt: which step it's on, and where its hint is written. */
+	/* The hunt: which step it's on, where its hint is written, which of
+	   its letters the pointer has uncovered, and whether that's enough for
+	   it to count as found. */
 	let step = 0;
 	let hint = null;
+	let letters = new Set();
+	const uncovered = new Set();
+	let found = false;
 	/* Write the hunt's hint for this step: the first anywhere, the rest in
-	   the corner just reached. */
+	   the corner just reached. Written again on a new layout, it stays
+	   found if it was. */
 	const writeHint = () => {
 		if (hint) unwrite(hint);
 		const [corner, text] = HUNT[step];
-		if (!corner) {
-			hint = hide(text);
-			return;
+		if (!corner) hint = hide(text);
+		else {
+			const lines = wrap(text, 28);
+			const w = Math.max(...lines.map((l) => l.length)) + 2;
+			const h = lines.length + 2;
+			const r = corner.startsWith("top") ? 1 : Math.max(0, seen - h - 1);
+			const c = corner.endsWith("left") ? 1 : Math.max(0, cols - w - 1);
+			hint = write(lines, r, c);
 		}
-		const lines = wrap(text, 28);
-		const w = Math.max(...lines.map((l) => l.length)) + 2;
-		const h = lines.length + 2;
-		const r = corner.startsWith("top") ? 1 : Math.max(0, seen - h - 1);
-		const c = corner.endsWith("left") ? 1 : Math.max(0, cols - w - 1);
-		hint = write(lines, r, c);
+		letters = new Set();
+		uncovered.clear();
+		if (!hint) return;
+		for (let y = 0; y < hint.h; y++)
+			for (let x = 0; x < hint.w; x++) {
+				const i = (hint.r + y) * cols + hint.c + x;
+				if (glyphs[i]) letters.add(i);
+			}
 	};
 	const near = (corner, x, y) =>
 		(corner.startsWith("top") ? y : innerHeight - y) < REACH_CORNER &&
@@ -360,6 +378,10 @@
 				if (d2 >= 1) continue;
 				const f = 1 - d2;
 				const i = r * cols + c;
+				if (!found && f >= LIT && letters.has(i)) {
+					uncovered.add(i);
+					found = uncovered.size >= letters.size * FOUND;
+				}
 				if (glyphs[i] && f > heat[i]) {
 					heat[i] = f;
 					warm.add(i);
@@ -440,10 +462,11 @@
 			if (event.pointerType === "touch") return;
 			pointer = { x: event.clientX, y: event.clientY };
 			/* The hunt goes on when the pointer reaches the corner it's
-			   been sent to. */
+			   been sent to, once it's found the hint that sent it. */
 			const next = HUNT[step + 1];
-			if (next && near(next[0], pointer.x, pointer.y)) {
+			if (found && next && near(next[0], pointer.x, pointer.y)) {
 				step++;
+				found = false;
 				writeHint();
 			}
 			kick();
