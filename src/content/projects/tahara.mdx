@@ -1,0 +1,79 @@
+---
+title: Tahara
+seoTitle: "Tahara: a landing page drawn in characters"
+description: The landing page for Tahara, an NGO in Romania, where every picture is drawn live in characters that build each section and come apart again.
+summary: An NGO's landing page, drawn live in characters.
+group: Websites
+order: 1
+years: "2026"
+role: Designed and built end to end
+status: Concept, ahead of its launch at tahara.ro
+tech: Astro · WebGL2 · Canvas · Web Workers · Lenis
+thumb: ../../assets/projects/tahara-cover.jpg
+shots:
+  - src: ../../assets/projects/tahara-cover.jpg
+    alt: "Tahara's hero: the headline 'Învățăm unii de la alții. Construim pentru toți.' and a short paragraph on the left, beside a seated Socrates drawn in light-blue characters on pale paper."
+    caption: The hero at rest, beside Socrates in 42,000 characters.
+---
+
+import Shot from "../../components/Shot.astro";
+import heroPoster from "../../assets/projects/tahara-hero.jpg";
+import testimonialsPoster from "../../assets/projects/tahara-testimonials.jpg";
+import footerPoster from "../../assets/projects/tahara-footer.jpg";
+
+Tahara is an NGO of people who learn from one another and build things for
+anyone who needs them: education, volunteering, and apps. I designed and built its
+new landing page, in Romanian, as one static page where every picture is drawn
+live in characters, on three canvases, with no framework on the client.
+
+One rule runs through all of it: nothing fades. Things arrive by being built out
+of characters that travel to them, and leave by coming apart into characters
+again.
+
+## Hero
+
+The page opens on Tahara's name set in characters, which pour away into
+Socrates while the header and the headline are built out of characters flying to
+their letters. He's 42,000 characters drawn in WebGL2, one instanced quad each,
+and as you scroll the same characters pour out of him into a figure for each
+group of projects. Bigger things take longer to build, and any sign of
+impatience, a scroll, a tap or a key, plays the rest of the intro four times
+faster. With reduced motion there's no intro at all.
+
+<Shot
+  src={heroPoster}
+  video="tahara-hero.mp4"
+  alt="Tahara's name in large letters made of characters dissolves into a stream of blue characters, which gathers into a seated Socrates on the right while the header, the headline, the paragraph and the buttons are built out of characters on the left."
+  caption="The intro, from the first paint: the name pours into Socrates as the text is built."
+/>
+
+## Testimonials
+
+Each card is built out of characters at one edge of the band and comes apart at
+the other, in two lanes running opposite ways, or one column rising on a phone.
+The band is a canvas drawn from the real cards in the page, which stay there for
+screen readers, and it moves at one steady speed.
+
+<Shot
+  src={testimonialsPoster}
+  video="tahara-testimonials.mp4"
+  alt="Under the heading 'Crești mai repede când nu ești singur.', quotes with their authors' initials slide across in two rows going opposite ways, each card assembling from characters at one edge and breaking into characters at the other."
+  caption="The testimonials, each built at one edge and coming apart at the other."
+/>
+
+## Footer
+
+Under the links, Gustave Doré's poets, in about 55,000 characters, scatter
+away from the cursor, gold where it passes, and spring back into place. The
+drawing's first picture is made in a worker while the page starts, so it never
+holds the page up.
+
+<Shot
+  src={footerPoster}
+  video="tahara-footer.mp4"
+  alt="The footer: Tahara's name, a short line, links in three columns and social icons above a crowd of robed figures drawn in blue characters. The cursor moves through them and the characters around it scatter in a ring of gold, then settle back."
+  caption="Doré's poets scatter from the cursor and spring back."
+/>
+
+The page stays hidden until every drawing is drawn, so it appears whole, in one
+paint, and on a desktop it still shows about 115 ms after it starts loading.
