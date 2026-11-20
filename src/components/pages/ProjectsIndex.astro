@@ -1,10 +1,10 @@
 ---
-/* Every project, the selected ones first. */
+/* Every project, in its group, the most impressive first. */
 import Base from "../../layouts/Base.astro";
-import ProjectGrid from "../ProjectGrid.astro";
-import { getProjects } from "../../data/projects";
+import ProjectList from "../ProjectList.astro";
+import { getProjectGroups } from "../../data/projects";
 
-const projects = await getProjects();
+const groups = await getProjectGroups();
 ---
 
 <Base
@@ -13,5 +13,14 @@ const projects = await getProjects();
   section="projects"
 >
   <h1 class="sr-only">Projects</h1>
-  <ProjectGrid projects={projects} />
+  <div class="parts">
+    {
+      groups.map(({ group, projects }) => (
+        <section>
+          <h2 class="meta">{group}</h2>
+          <ProjectList projects={projects} />
+        </section>
+      ))
+    }
+  </div>
 </Base>

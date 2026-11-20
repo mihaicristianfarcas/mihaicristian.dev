@@ -12,8 +12,9 @@ const writing = defineCollection({
 	}),
 });
 
-/* The projects page's groups, ordered as listed here. */
-export const projectGroups = ["Systems", "Products", "Tools"] as const;
+/* The projects page's groups, in this order, each under its name: what
+   people use, what developers use, sites, and research. */
+export const projectGroups = ["Apps", "Tools", "Websites", "Research"] as const;
 
 const projects = defineCollection({
 	loader: glob({ base: "./src/content/projects", pattern: "**/*.{md,mdx}" }),
@@ -27,11 +28,17 @@ const projects = defineCollection({
 			seoTitle: z.string().optional(),
 			/* One sentence: the meta description and the project page's lede. */
 			description: z.string(),
-			/* A few words, for the project grids: read at a glance, where the
+			/* A few words, for the projects list: read at a glance, where the
 			   description would take a paragraph. */
 			summary: z.string(),
+			/* The projects list's picture, cropped to an OG card's 1200:630, so
+			   a project's social card fits it whole. Without one, the first
+			   shot's picture is used (a recording's poster). */
+			thumb: image().optional(),
+			thumbDark: image().optional(),
 			group: z.enum(projectGroups),
-			/* Rank within the group; ties fall back to title. */
+			/* Rank within the group, the most impressive first; ties fall back
+			   to title. */
 			order: z.number(),
 			years: z.string(),
 			role: z.string(),
@@ -76,9 +83,6 @@ const projects = defineCollection({
 						}),
 				)
 				.optional(),
-			/* Rank among the home page's selected projects, from 1; omit to
-			   leave the project off it. */
-			featured: z.number().int().positive().optional(),
 			draft: z.boolean().optional(),
 		}),
 });
