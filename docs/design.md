@@ -45,11 +45,12 @@ Geist, through Astro's Fonts API (`astro.config.mjs`), as `--sans`. Code is
 in the system's monospace, `--mono`. The font has `display: block`: text waits
 for Geist rather than showing in a fallback, so nothing changes face.
 
-**Three sizes, and no others. This is a rule.**
+**Four sizes, and no others. This is a rule.**
 
 | Token          | Size   | Line height                  | For                                                                    |
 | -------------- | ------ | ---------------------------- | ---------------------------------------------------------------------- |
-| `--text-body`  | 15.3px | `--line` (26px)              | everything you read: copy, names, titles, headings, links, buttons     |
+| `--text-name`  | 21px   | `--line` (26px)              | my name in the side, and nothing else                                  |
+| `--text-body`  | 15.3px | `--line` (26px)              | everything you read: copy, titles, headings, links, buttons            |
 | `--text-small` | 13px   | `--line` or `--line-small`   | what's about the text: dates, captions, detail labels, code, key caps  |
 | `--text-field` | 11px   | (canvas)                     | the background field's characters, never read                          |
 
@@ -67,8 +68,10 @@ for Geist rather than showing in a fallback, so nothing changes face.
   text set apart by the space around it.
 - One weight besides regular: the name in the side, at 600. Nothing else is
   bold (`strong` and `b` inherit).
+- The name is also the one text bigger than the body. It keeps the body's
+  line, so it sits on the grid.
 - Hierarchy comes from color (`--ink` over `--muted`) and from space, never
-  from size.
+  from size. The name is the single exception.
 
 To check a page, paste this in the browser console. It lists every size and
 line height that text is set in, and should print at most the rows above:

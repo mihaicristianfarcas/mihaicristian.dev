@@ -34,9 +34,11 @@ These are rules, not preferences.
 1. **Tokens only.** Every color, size and space comes from `:root` in
    `src/styles/global.css`. Don't write a px value, a hex color or a font
    size in a component.
-2. **Three text sizes**: `--text-body`, `--text-small`, and `--text-field` for
-   the canvas. Hierarchy comes from `--ink` against `--muted` and from space,
-   not from size or weight. The name in the side is the only bold.
+2. **Four text sizes**: `--text-name` (my name in the side, and nothing
+   else), `--text-body`, `--text-small`, and `--text-field` for the canvas.
+   Hierarchy comes from `--ink` against `--muted` and from space, not from
+   size or weight. The name in the side is the only bold and the only big
+   text.
 3. **Five kinds of vertical space**: a line, `--space-item` (half a line),
    `--space-paragraph`, `--space-block` and `--space-section`, measured in
    lines of 26px. The container sets the space with `gap`, and children have

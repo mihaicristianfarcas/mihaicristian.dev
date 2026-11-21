@@ -42,12 +42,14 @@
 	--sans: var(--font-geist);
 	--mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
 
-	/* Three sizes, one per kind of text, and no others:
-	   --text-body   everything you read: copy, names, titles, links, buttons
+	/* Four sizes, one per kind of text, and no others:
+	   --text-name   my name in the side, the one large text
+	   --text-body   everything you read: copy, titles, links, buttons
 	   --text-small  what's about the text: dates, captions, labels, code
 	   --text-field  the characters of the background field, never read
 	   Hierarchy otherwise comes from color and space. The name is the one
-	   bold. */
+	   bold, and the one bigger size. */
+	--text-name: 21px;
 	--text-body: 15.3px;
 	--text-small: 13px;
 	--text-field: 11px;
@@ -217,9 +219,11 @@ h1,
 	letter-spacing: -0.01em;
 }
 
-/* The one bold on the site. It leads home, and as the site's title it has
-   no underline. */
+/* The one bold on the site, and the one text bigger than the body. It leads
+   home, and as the site's title it has no underline. Its line stays the
+   body's, so it sits on the grid. */
 .name {
+	font-size: var(--text-name);
 	font-weight: 600;
 }
 
