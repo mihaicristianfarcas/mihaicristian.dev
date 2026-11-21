@@ -98,7 +98,7 @@ These are rules, not preferences.
   events for per-page work.
 - `field.js` is inlined raw into `<body>` and runs before the first paint. Keep
   it plain JavaScript with no imports.
-- The side's height (ten lines) is counted in `--top`. If you add or remove
+- The side's height (eleven lines) is counted in `--top`. If you add or remove
   a line or a gap in the side, change the count.
 - The `theme-color` metas in `Base.astro` repeat `--paper`. Change them
   together.

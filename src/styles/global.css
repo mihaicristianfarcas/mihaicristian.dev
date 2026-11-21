@@ -500,16 +500,17 @@ main {
 
 /* Wide screens: the side stays put beside the page, centered top to
    bottom, with a hairline down its right, and only the page scrolls.
-   --top centers the side's ten lines (three sections an item apart make
-   three and a half), and the page starts level with them and ends as far
-   from the bottom. */
+   --top centers the side's eleven lines: the name, a paragraph, the two lines
+   under it, a paragraph, three sections an item apart (four lines), a
+   paragraph and the profiles. The page starts level with them and ends as
+   far from the bottom. */
 @media (min-width: 990px) {
 	:root {
 		--page-width: 1134px;
 	}
 
 	.shell {
-		--top: max(var(--space-block), calc((100dvh - var(--line) * 10) / 2));
+		--top: max(var(--space-block), calc((100dvh - var(--line) * 11) / 2));
 		display: grid;
 		grid-template-columns: max-content minmax(0, 1fr);
 		align-items: start;
@@ -563,6 +564,15 @@ main {
 .title > :not(:first-child) {
 	color: var(--muted);
 	text-wrap: pretty;
+}
+
+/* The side's name, a paragraph above what I do and where, which follow each
+   other as the lines of one thing. That's the same space as the one between
+   those lines and the sections after them. */
+.who {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-paragraph);
 }
 
 /* A row of buttons, one line tall, and one line per row when they wrap. */

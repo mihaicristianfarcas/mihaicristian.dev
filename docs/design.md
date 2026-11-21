@@ -117,7 +117,7 @@ every two-column list (projects, experience, details) starts its second column
 on the same line. `--corner` is the page's margin above its first line and
 below its last. `--page-width` is the page's width, margins included (936px,
 1134px where the side stands beside the page): `.wrap` is that wide, and the
-field reads it to find the text column. `--top`, on wide screens, centers the side's ten lines.
+field reads it to find the text column. `--top`, on wide screens, centers the side's eleven lines.
 
 How to apply it:
 
@@ -189,7 +189,10 @@ A button has no underline and no color, weight or background of its own.
 - `.title`: a title with its lines right under it, as one group. The first
   child is ink, and the rest are muted. Used for a page's title and
   description, and for each list row.
-- `.who`: the side's name, what I do and where, all in ink.
+- `.who`: the side's name, what I do and where, all in ink. The name is a
+  paragraph above the other two, which follow each other as lines, so the
+  space under the name is the same as the space between those lines and the
+  sections after them.
 - `.meta`: small and muted, on the body's line. Dates and labels.
 
 ### Lists
