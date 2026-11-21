@@ -75,8 +75,8 @@
 	                        paragraph's space, so it's plainly closer than
 	                        the next thing and plainly not a line
 	   --space-paragraph    between the items of anything: paragraphs, a
-	                        list's rows and entries, the side's groups and
-	                        its sections. A blank line
+	                        list's rows and entries, the side's groups. A
+	                        blank line
 	   --space-block        between the blocks of an entry: its text and
 	                        its pictures. Two blank lines
 	   --space-section      between sections. Four blank lines */
@@ -448,16 +448,27 @@ kbd {
 
 /* Who, what, and where, the site's parts, and where else to find me, the
    same on every page. On narrower screens it heads the page, as far from
-   the top as it is from the side (see --corner), and scrolls away with it. */
+   the top as it is from the side (see --corner), and scrolls away with it.
+   It's as wide as its widest line, the subtitle, on every screen (and never
+   wider than the screen), so its two rows of links span the same width
+   wherever it is. */
 .side {
+	--side-width: 18.25em;
 	display: flex;
 	flex-direction: column;
 	gap: var(--space-paragraph);
+	max-width: min(var(--side-width), 100%);
 	padding-top: var(--corner);
 }
 
-/* The site's parts, in a row here and one to a line beside the page. A
-   line apart if the row wraps. */
+/* The site's parts, and where else to find me: two rows of links, each
+   spread evenly across the side, the first and last level with its edges.
+   A line apart if a row wraps. */
+.tabs,
+.side .cta {
+	justify-content: space-between;
+}
+
 .tabs {
 	display: flex;
 	flex-wrap: wrap;
@@ -539,11 +550,11 @@ main {
 /* Wide screens: the side stays put beside the page, centered top to
    bottom, with a hairline down its right, and only the page scrolls.
    --top centers the side: the name's capitals, a space under it, the two
-   lines under that, a paragraph, three sections a paragraph apart, a
-   paragraph and the profiles. That adds up to ten lines and half a
-   capital, and the name's capitals, which are a little under one and a
-   half of the body's: two capitals, to within a pixel of the middle. The
-   page starts level with the side and ends as far from the bottom. */
+   lines under that, a paragraph, the sections, a paragraph and the
+   profiles. That adds up to six lines and half a capital, and the name's
+   capitals, which are a little under one and a half of the body's: two
+   capitals, to within a pixel of the middle. The page starts level with
+   the side and ends as far from the bottom. */
 @media (min-width: 990px) {
 	:root {
 		--page-width: 1134px;
@@ -552,7 +563,7 @@ main {
 	.shell {
 		--top: max(
 			var(--space-block),
-			calc((100dvh - var(--line) * 10 - 2cap) / 2)
+			calc((100dvh - var(--line) * 6 - 2cap) / 2)
 		);
 		display: grid;
 		grid-template-columns: max-content minmax(0, 1fr);
@@ -562,22 +573,15 @@ main {
 	/* A set width, not its text's: until Geist is in, the text is laid out
 	   in the fallback, which runs a little wider, and the hairline would
 	   stand off to the right until the font swapped in. Room for the widest
-	   line, the subtitle, in either. */
+	   line, the subtitle, in either, and the space to the hairline. */
 	.side {
 		position: sticky;
 		top: var(--top);
-		width: calc(18.25em + var(--space-column));
+		width: calc(var(--side-width) + var(--space-column));
+		max-width: none;
 		margin-top: var(--top);
 		padding: 0 var(--space-column) 0 0;
 		border-right: 1px solid var(--rule);
-	}
-
-	/* One to a line, a paragraph apart like everything else in the side,
-	   so the border round the current one stands clear of the others. */
-	.tabs {
-		flex-direction: column;
-		align-items: flex-start;
-		row-gap: var(--space-paragraph);
 	}
 
 	main {

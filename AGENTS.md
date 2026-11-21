@@ -100,7 +100,7 @@ These are rules, not preferences.
   events for per-page work.
 - `field.js` is inlined raw into `<body>` and runs before the first paint. Keep
   it plain JavaScript with no imports.
-- The side's height (ten lines and about two capitals) is counted in `--top`.
+- The side's height (six lines and about two capitals) is counted in `--top`.
   If you add or remove a line or a gap in the side, change the count.
 - Every box is trimmed to its text (`text-box` on `*`), so two boxes with no
   gap touch, letters to letters. Badges and anything else drawn round its

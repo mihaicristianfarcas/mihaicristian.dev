@@ -105,7 +105,7 @@ between:**
 | --------- | ------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------- |
 | Line      | `--space-line`      | a line less a capital, 15px  | the lines of one thing: a paragraph's lines (its line height), and lines set as boxes of their own: what I do and where, a project's details, the pager's label and title, a post's date under its description on phones |
 | Under     | `--space-under`     | half a paragraph, 20.5px     | a title or a picture and what's under it: my name and what I do, a page's title and its description or date, a row's title and its summary, an experience entry's name and what it stands for on phones, a picture and its caption |
-| Paragraph | `--space-paragraph` | a blank line, 41px           | the items of anything: paragraphs, a list's rows and entries, the side's groups and its sections, a heading and its text |
+| Paragraph | `--space-paragraph` | a blank line, 41px           | the items of anything: paragraphs, a list's rows and entries, the side's groups (its two rows of links among them), a heading and its text |
 | Block     | `--space-block`     | two blank lines, 67px        | the blocks of an entry: lede, cover, text, details; a heading or picture inside the text        |
 | Section   | `--space-section`   | four blank lines, 119px (three, 93px, on phones) | sections: the content under a page's title, the details, the pager, Back to top |
 
@@ -129,7 +129,7 @@ on the same line. `--corner` is the page's margin above its first line and
 below its last. `--page-width` is the page's width, margins included (936px,
 1134px where the side stands beside the page): `.wrap` is that wide, and the
 field reads it to find the text column. `--top`, on wide screens, centers the
-side: its height is ten lines and about two capitals (the sum is in the CSS).
+side: its height is six lines and about two capitals (the sum is in the CSS).
 
 How to apply it:
 
@@ -213,6 +213,18 @@ A button has no underline and no color, weight or background of its own.
   changes, and after the swap.
 - Links inside running text are not buttons. They keep the text's color and
   a faint underline that comes up to full strength on hover.
+
+### The side
+
+- `.side`: my name, what I do and where (`.who`), then the site's sections
+  (`.tabs`) and my profiles (`.cta`), a paragraph apart. It's as wide as its
+  widest line, the subtitle (`--side-width`, 18.25em, and never wider than
+  the screen), on every screen: beside the page, and over it on narrower
+  screens.
+- The sections and the profiles are two rows of links, each spread evenly
+  across the side's width (`justify-content: space-between`), the first link
+  level with its left edge and the last with its right. The sections are a
+  row beside the page too, so the two rows match.
 
 ### Text groups
 
