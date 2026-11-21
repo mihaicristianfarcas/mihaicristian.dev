@@ -907,6 +907,25 @@ a:active {
 	text-decoration-color: currentColor;
 }
 
+/* There's no hover under a finger, so a button shows nothing that looks
+   like one: its corners never grow. A tap shows the full border at once
+   and drops it at once (over every state's own transition, hence
+   !important). Only a tap that lands shows it, by data-pressed, set on
+   the click: :active comes on as soon as a finger lands, to scroll too,
+   and would flash a border on every button the page is scrolled by. */
+@media (hover: none) {
+	.btn::before,
+	.btn::after {
+		transition: none !important;
+	}
+
+	.btn:active:not([data-pressed], [aria-current])::before,
+	.btn:active:not([data-pressed], [aria-current])::after {
+		width: 0;
+		opacity: 0;
+	}
+}
+
 /* The side's buttons, the pager's and the way back up take a target taller
    than their text, about 44px, overlapping nothing: the margin takes back
    the padding, so they take the same room. */

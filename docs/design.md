@@ -142,6 +142,8 @@ How to apply it:
 - Reduced motion turns off every fade and the button transitions (the
   borders still show, at once), the field's trail (characters show only
   right under the pointer), and the smooth scrolling.
+- Under a finger the button transitions are off too, since there's no hover
+  for growing corners to stand for (see the button).
 
 ## Components
 
@@ -178,6 +180,11 @@ A button has no underline and no color, weight or background of its own.
   `.btn.block` (list rows) pads 10px all round the same way.
 - A click is quicker than the border, so `src/scripts/buttons.ts` keeps
   `data-pressed` on for 800ms.
+- **Under a finger (`hover: none`) nothing looks like a hover: the corners
+  never grow.** A tap shows the full border at once and drops it at once,
+  and only a tap that lands shows it (`data-pressed`, set on the click).
+  `:active` comes on as soon as a finger lands, to scroll too, so there it
+  shows nothing, or every button the page is scrolled by would flash.
 - `aria-current="page"` marks the button for the page you're on, and
   `aria-current="true"` the section the page belongs to (a project lights
   Projects). `Base.astro` renders it. Because the side's sections are

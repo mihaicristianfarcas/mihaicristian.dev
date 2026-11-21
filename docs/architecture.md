@@ -117,8 +117,11 @@ site has one: `buttons.ts` holds a pressed border long enough to finish
   shows there.
 - Tap targets in the side, the pager and the CTA rows grow to about 44px
   without taking more room (`pointer: coarse` in `global.css`).
-- A press shows the way a hover does. A passive `touchstart` listener makes
-  Safari apply `:active` at all.
+- A link's underline comes up while it's pressed, as on hover. A passive
+  `touchstart` listener makes Safari apply `:active` at all.
+- A button shows a tap at once, its full border, from the click
+  (`data-pressed`), and never grows its corners: there's no hover to stand
+  for (see the button in design.md).
 - Safari 26 ignores `theme-color` and paints its bars from fixed elements at
   the screen's edges: the `.tint` strips.
 - The page runs under the notch in landscape (`viewport-fit=cover`), and

@@ -2,7 +2,8 @@
 
    A click is over long before the border it starts has finished drawing,
    so a pressed button keeps its full border a moment longer
-   (data-pressed). The section you're going to takes its full border as
+   (data-pressed). Under a finger this is the only press a button shows,
+   at once, and the hold is what lets the tap be seen. The section you're going to takes its full border as
    soon as you click, and the one you're leaving gives it up: the side's
    sections are kept through navigations, so both draw while the page
    changes rather than jumping once it's in. */
