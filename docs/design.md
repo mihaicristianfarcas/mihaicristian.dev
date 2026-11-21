@@ -166,10 +166,13 @@ A button has no underline and no color, weight or background of its own.
   button that's a word or two gets 0.6em (about 9px), and a project's row
   about 44px.
 - Each corner is a pseudo-element square with a border on two sides. It
-  grows in width, `aspect-ratio: 1` gives it the same height, and
-  `max-height: 100%` stops it at the box. So both arms stay the same length
+  grows in width, `aspect-ratio: 1` gives it the same height, and the button's
+  `overflow: clip` cuts it at the box. So both arms stay the same length
   until the side arm reaches the box's far edge, and from there the top (or
-  bottom) arm carries on alone to the far corner.
+  bottom) arm carries on alone to the far corner. Don't cap the square with
+  `max-height` instead: in Safari, for a button that's a flex item (the side's
+  sections, the profiles, the pager), that cuts its width to the height too,
+  and the border never gets past a corner.
 - The box is as big as its text plus `--pad`, and a negative margin takes
   the padding back, so a button's text lines up with the text around it.
   `.btn.block` (list rows) pads 10px all round the same way.

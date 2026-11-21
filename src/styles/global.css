@@ -309,8 +309,12 @@ kbd {
 
    Each corner is a square of the same side, bordered on two edges, that
    grows from its corner: its width is the arm's length along the top or
-   bottom edge, and its height follows (aspect-ratio) up to the box's own
-   (max-height), so the arm along the side stops at the corner opposite.
+   bottom edge, and its height follows (aspect-ratio). The button clips
+   what falls outside its box, so the arm along the side stops at the
+   corner opposite while the one along the top or bottom carries on. The
+   square isn't capped with max-height instead: Safari then cuts its width
+   to match, for a button that's a flex item (the side's sections, the
+   profiles, the pager), and the border never gets past a corner.
    The box takes as much room as its text: the padding is taken back by
    the margin, so the text stays in line with the text around it.
 
@@ -324,6 +328,7 @@ kbd {
 	padding-inline: var(--pad);
 	margin-inline: calc(var(--pad) * -1);
 	text-decoration: none;
+	overflow: clip;
 }
 
 .btn::before,
@@ -332,7 +337,6 @@ kbd {
 	position: absolute;
 	width: 0;
 	aspect-ratio: 1;
-	max-height: 100%;
 	border: 0 solid var(--accent-line);
 	pointer-events: none;
 	opacity: 0;
