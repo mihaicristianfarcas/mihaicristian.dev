@@ -39,11 +39,13 @@ These are rules, not preferences.
    `--text-field` for the canvas. Hierarchy comes from `--ink` against
    `--muted` and from space, not from size or weight. The name in the side
    is the only bold, and it and those titles are the only big text.
-3. **Five kinds of vertical space**: a line, `--space-item` (half a line),
-   `--space-paragraph`, `--space-block` and `--space-section`, measured in
-   lines of 26px. The container sets the space with `gap`, and children have
-   no margins. Choose by what the two things are to each other (see the table
-   in design.md), never by eye.
+3. **Five kinds of vertical space, measured as you see them**, from a
+   baseline to the capitals below (every box is trimmed to its text):
+   `--space-line`, `--space-under` (a title or picture and what's under it,
+   half a paragraph), `--space-paragraph` (the items of anything),
+   `--space-block` and `--space-section`. The container sets the space with
+   `gap`, and children have no margins. Choose by what the two things are to
+   each other (see the table in design.md), never by eye.
 4. **A link that stands on its own is a `.btn`**: no underline, no color of
    its own, the corner-border animation, and a full border when current
    (`aria-current`). A link inside running text keeps its faint underline.
@@ -98,8 +100,11 @@ These are rules, not preferences.
   events for per-page work.
 - `field.js` is inlined raw into `<body>` and runs before the first paint. Keep
   it plain JavaScript with no imports.
-- The side's height (eleven lines) is counted in `--top`. If you add or remove
-  a line or a gap in the side, change the count.
+- The side's height (ten lines and about two capitals) is counted in `--top`.
+  If you add or remove a line or a gap in the side, change the count.
+- Every box is trimmed to its text (`text-box` on `*`), so two boxes with no
+  gap touch, letters to letters. Badges and anything else drawn round its
+  text opt out with `text-box: normal`.
 - The `theme-color` metas in `Base.astro` repeat `--paper`. Change them
   together.
 - `field.js` reads `--page-width`, `--gutter`, `--line` and `--text-field` to

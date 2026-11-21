@@ -47,30 +47,25 @@ for Geist rather than showing in a fallback, so nothing changes face.
 
 **Four sizes, and no others. This is a rule.**
 
-| Token          | Size   | Line height                  | For                                                                    |
-| -------------- | ------ | ---------------------------- | ---------------------------------------------------------------------- |
-| `--text-name`  | 21px   | `--line` (26px)              | my name in the side, and a project's or a post's title (`.headline`)   |
-| `--text-body`  | 15.3px | `--line` (26px)              | everything you read: copy, titles, headings, links, buttons            |
-| `--text-small` | 13px   | `--line` or `--line-small`   | what's about the text: dates, captions, detail labels, code, key caps  |
-| `--text-field` | 11px   | (canvas)                     | the background field's characters, never read                          |
+| Token          | Size   | Line height          | For                                                                    |
+| -------------- | ------ | -------------------- | ---------------------------------------------------------------------- |
+| `--text-name`  | 21px   | `--line` (26px)      | my name in the side, and a project's or a post's title (`.headline`)   |
+| `--text-body`  | 15.3px | `--line` (26px)      | everything you read: copy, titles, headings, links, buttons            |
+| `--text-small` | 13px   | `--line-small` (20px)| what's about the text: dates, captions, detail labels, code, key caps  |
+| `--text-field` | 11px   | (canvas)             | the background field's characters, never read                          |
 
-- Small text takes one of the two lines, by where it sits:
-  - **on a line of its own among body lines**, it keeps the body's line,
-    `--line`, so the stack stays on the grid: `.meta` (a date, the pager's
-    labels);
-  - **beside body text, on the same line**, it is baseline-aligned to it and
-    takes `--line-small`, so its box fits inside the body's line and the row
-    stays one line tall: the labels of a project's details, and a post's
-    date beside its title (under it on phones, it's on a line of its own);
-  - **in a block of its own**, it takes `--line-small`: `figcaption`, code
-    blocks, `kbd` and inline `code` badges, and the placeholder label.
+- So three sizes you read, and one you don't.
+- The line height is the distance between the lines of one paragraph, and
+  nothing else: every box is trimmed to its text (see Space), so a line
+  height never adds space above or below a box. Small text runs on its own,
+  tighter line, which only shows when it wraps (a caption, code).
 - Headings have no size or weight of their own. An `h1`, `h2` or `h3` is body
   text set apart by the space around it. The one exception is a project's or
   a post's title, `.headline`, in the name's size.
 - One weight besides regular: the name in the side, at 600. Nothing else is
   bold (`strong` and `b` inherit), not even the titles in the name's size.
 - The name and a project's or a post's title are the only text bigger than
-  the body. They keep the body's line, so they sit on the grid.
+  the body.
 - Hierarchy comes from color (`--ink` over `--muted`) and from space, never
   from size. The name and those titles are the only exception.
 
@@ -91,19 +86,34 @@ console.table([...seen].map(([k, v]) => ({ size: k, used: [...new Set(v)].join("
 
 ## Space
 
-Vertical space is measured in lines (`--line`, 26px), so the page keeps one
-rhythm from top to bottom: whole lines, and half a line between a list's short
-entries.
+**Space is measured as you see it**: from the baseline of the text above (or
+a picture's bottom edge) to the top of the capitals below (or a picture's top
+edge). Every box is trimmed to its text, `text-box: trim-both cap alphabetic`
+on `*` in `global.css`, so a gap of 20px is 20px between what's drawn, whatever
+the sizes on either side. Measure it that way too: in a screenshot, from a
+baseline to the capitals under it.
 
-**Five kinds of vertical space, and nothing in between:**
+The exceptions to the trim are boxes drawn round their text: the `kbd` and
+inline `code` badges and the placeholder label. A link in running text isn't
+trimmed either, so its focus ring clears the letters below the line. A button
+is trimmed, and its padding gives it a line's height back (see the button).
 
-| Kind                | Token               | Size                    | Between                                                                                         |
-| ------------------- | ------------------- | ----------------------- | ----------------------------------------------------------------------------------------------- |
-| Line                | `--line`            | none, lines just follow | consecutive lines of one thing: a title and its description, a paragraph's lines, a project's details table |
-| Item                | `--space-item`      | half a line             | the short entries of one list, a line or two each: the side's sections, the experience entries |
-| Paragraph           | `--space-paragraph` | 1 line                  | paragraphs, a list's rows (projects, posts; experience on phones, where each entry stacks), the side's groups, a heading and its text, a picture and its caption |
-| Block               | `--space-block`     | 2 lines                 | the blocks of an entry: lede, cover, text, details; a heading or picture inside the text        |
-| Section             | `--space-section`   | 4 lines (3 on phones)   | sections: the content under a page's title, the details, the pager, Back to top                |
+**One size for each relation between two things, five in all, and nothing in
+between:**
+
+| Kind      | Token               | Size, as you see it          | Between                                                                                         |
+| --------- | ------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------- |
+| Line      | `--space-line`      | a line less a capital, 15px  | the lines of one thing: a paragraph's lines (its line height), and lines set as boxes of their own: what I do and where, a project's details, the pager's label and title, a post's date under its description on phones |
+| Under     | `--space-under`     | half a paragraph, 20.5px     | a title or a picture and what's under it: my name and what I do, a page's title and its description or date, a row's title and its summary, an experience entry's name and what it stands for on phones, a picture and its caption |
+| Paragraph | `--space-paragraph` | a blank line, 41px           | the items of anything: paragraphs, a list's rows and entries, the side's groups and its sections, a heading and its text |
+| Block     | `--space-block`     | two blank lines, 67px        | the blocks of an entry: lede, cover, text, details; a heading or picture inside the text        |
+| Section   | `--space-section`   | four blank lines, 119px (three, 93px, on phones) | sections: the content under a page's title, the details, the pager, Back to top |
+
+- A blank line leaves the next baseline whole lines below the last, so the
+  paragraph, the block and the section keep the text on one grid of 26px
+  lines: each is so many lines less a capital (`1cap`, the body's).
+- Under is exactly half a paragraph, so a description is plainly closer to its
+  title than the next thing is, and plainly not just its next line.
 
 Horizontal space:
 
@@ -118,13 +128,16 @@ every two-column list (projects, experience, details) starts its second column
 on the same line. `--corner` is the page's margin above its first line and
 below its last. `--page-width` is the page's width, margins included (936px,
 1134px where the side stands beside the page): `.wrap` is that wide, and the
-field reads it to find the text column. `--top`, on wide screens, centers the side's eleven lines.
+field reads it to find the text column. `--top`, on wide screens, centers the
+side: its height is ten lines and about two capitals (the sum is in the CSS).
 
 How to apply it:
 
 - **The container sets the spacing, with `gap`. Children have no margins.**
-  `.side`, `.rows`, `.section`, `.entry`, `.prose`, `.shot` and `.pager` are
-  flex or grid columns with one of the five gaps.
+  `.side`, `.who`, `.title`, `.rows`, `.keys`, `.section`, `.entry`, `.prose`,
+  `.shot` and `.pager` are flex or grid columns with one of the five gaps.
+  Because boxes are trimmed, two boxes with no gap between them touch, letters
+  to letters: lines of one thing set as separate boxes need `--space-line`.
 - There is one exception, and it's documented in the CSS. Inside `.prose`, whose
   gap is a paragraph, an `h2` or an inline `.shot` needs a block above it, so
   it takes the difference (`--space-block - --space-paragraph`) as a margin.
@@ -176,9 +189,15 @@ A button has no underline and no color, weight or background of its own.
   `max-height` instead: in Safari, for a button that's a flex item (the side's
   sections, the profiles, the pager), that cuts its width to the height too,
   and the border never gets past a corner.
-- The box is as big as its text plus `--pad`, and a negative margin takes
-  the padding back, so a button's text lines up with the text around it.
-  `.btn.block` (list rows) pads 10px all round the same way.
+- The box is as big as its text plus `--pad` either side and `--pad-block`
+  above and below, and a negative margin takes the padding back, so a
+  button's text lines up with the text around it and takes no more room.
+  Its text is trimmed to its capitals like everything else, so `--pad-block`
+  is half of what's left of a line, which makes the box a line tall and
+  centered on the capitals. `.btn.block` (list rows) pads 10px all round
+  the same way, round its trimmed picture and text. Under a finger the
+  side's, the pager's and Back to top's buttons pad 9px more above and
+  below, for a target about 44px tall.
 - A click is quicker than the border, so `src/scripts/buttons.ts` keeps
   `data-pressed` on for 800ms.
 - **Under a finger (`hover: none`) nothing looks like a hover: the corners
@@ -197,16 +216,16 @@ A button has no underline and no color, weight or background of its own.
 
 ### Text groups
 
-- `.title`: a title with its lines right under it, as one group. The first
-  child is ink, and the rest are muted. Used for a page's title and
-  description, and for each list row.
+- `.title`: a title with what's under it a space under it (`--space-under`),
+  as one group. The first child is ink, and the rest are muted. Used for a
+  page's title and description, and for each list row.
 - `.headline`: a project's or a post's title, in `--text-name` but the
-  body's weight, on the body's line.
+  body's weight.
 - `.who`: the side's name, what I do and where, all in ink. The name is a
-  paragraph above the other two, which follow each other as lines, so the
-  space under the name is the same as the space between those lines and the
-  sections after them.
-- `.meta`: small and muted, on the body's line. Dates and labels.
+  space (`--space-under`) above the other two, as a title is above its
+  description, so it's half as far from them as they are from the sections.
+  The two follow each other a line apart.
+- `.meta`: small and muted. Dates and labels.
 
 ### Lists
 
@@ -214,15 +233,15 @@ A button has no underline and no color, weight or background of its own.
 - `.parts`: a list in named parts, a block apart, each a label (`h2.meta`)
   a paragraph over its rows: the projects page's groups.
 - `.project`: a project row, with its thumbnail (`.thumb`, shaped like an OG
-  card, 1200:630) in the first
-  column and its name over its summary in the second.
+  card, 1200:630) in the first column and its name over its summary in the
+  second. The name's capitals line up with the thumbnail's top edge.
 - `.post`: a post row, with its title over its description and the date at
-  the end (under the title on phones).
-- `.keys`: entries in two columns, a name and what it stands for, an item
-  apart (experience). On phones the name stacks over what it stands for, and
-  the entries are a paragraph apart, like rows. `.keys.details` is a
-  project's details, one table with a fact to a line and no gap between
-  them, and the names as small labels.
+  the end (on phones, a line under the description).
+- `.keys`: entries in two columns, a name and what it stands for, a
+  paragraph apart (experience). On phones the name stacks over what it
+  stands for, a space under it, like a title. `.keys.details` is a project's
+  details, one table with a fact to a line, a line apart, and the names as
+  small labels on the baseline of what they name.
 
 ### Pages
 
@@ -232,9 +251,10 @@ A button has no underline and no color, weight or background of its own.
 - `.prose`: running text, a paragraph between each of its blocks. MDX content
   goes in here, and so do inline `<Shot>`s and `## headings`.
 - `.shot`, `.frame`, `figcaption`: a screenshot or recording, with its caption
-  a paragraph under it (`src/components/Shot.astro`).
-- `.cta`: a row of buttons. `.pager`: previous and next. `.to-top`: the way
-  back up where the side scrolls away.
+  a space under it (`src/components/Shot.astro`).
+- `.cta`: a row of buttons, a line apart when it wraps. `.pager`: previous
+  and next, each a label a line over its title. `.to-top`: the way back up
+  where the side scrolls away.
 
 ## The field
 

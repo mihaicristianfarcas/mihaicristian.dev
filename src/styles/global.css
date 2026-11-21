@@ -57,28 +57,34 @@
 
 	/* ---- space ---- */
 
-	/* One line of body text. Vertical space is measured in it, whole lines
-	   and the half line between a list's short entries, so the page keeps
-	   one rhythm from top to bottom. */
+	/* One line of body text: from one baseline to the next. */
 	--line: 26px;
 	/* Small text keeps its own, tighter line. */
 	--line-small: 20px;
 
-	/* The five kinds of vertical space, and nothing in between:
-	   --line               consecutive lines of one thing: a title over
-	                        its description, the lines of a paragraph
-	   --space-item         between the short entries of one list, a line
-	                        or two each: the side's sections, the
-	                        experience
-	   --space-paragraph    between paragraphs, a list's rows, groups of
-	                        the side, a picture and its caption
+	/* The five kinds of vertical space, and nothing in between. Each is
+	   the space you see: from the baseline above (or a picture's edge) to
+	   the top of the capitals below (or a picture's edge), since every box
+	   is trimmed to its text (see "base"). The bigger three are blank lines
+	   on the body's grid: the next baseline lands whole lines below the
+	   last, so each is so many lines less a capital (1cap).
+	   --space-line         the lines of one thing set as boxes of their
+	                        own, as far apart as a paragraph's lines
+	   --space-under        between a title or a picture and what's under
+	                        it: a description, a date, a caption. Half a
+	                        paragraph's space, so it's plainly closer than
+	                        the next thing and plainly not a line
+	   --space-paragraph    between the items of anything: paragraphs, a
+	                        list's rows and entries, the side's groups and
+	                        its sections. A blank line
 	   --space-block        between the blocks of an entry: its text and
-	                        its pictures
-	   --space-section      between sections */
-	--space-item: calc(var(--line) / 2);
-	--space-paragraph: var(--line);
-	--space-block: calc(var(--line) * 2);
-	--space-section: calc(var(--line) * 4);
+	                        its pictures. Two blank lines
+	   --space-section      between sections. Four blank lines */
+	--space-line: calc(var(--line) - 1cap);
+	--space-under: calc(var(--space-paragraph) / 2);
+	--space-paragraph: calc(var(--line) * 2 - 1cap);
+	--space-block: calc(var(--line) * 3 - 1cap);
+	--space-section: calc(var(--line) * 5 - 1cap);
 
 	/* Horizontal space:
 	   --space-inline   between things side by side: links in a row, a
@@ -101,8 +107,9 @@
 
 	/* Every page's margin above its first line and below its last: as far as
 	   the text is from the side of the page, so its corners are square.
-	   Never under four lines, so a phone still gets room, and never over
-	   twelve, so a wide display doesn't push the page down the screen. */
+	   Never under a section's space, so a phone still gets room, and never
+	   over twelve lines, so a wide display doesn't push the page down the
+	   screen. */
 	--corner: clamp(
 		var(--space-section),
 		calc((100vw - var(--page-width)) / 2 + var(--gutter)),
@@ -134,7 +141,7 @@
 
 @media (max-width: 576px) {
 	:root {
-		--space-section: calc(var(--line) * 3);
+		--space-section: calc(var(--line) * 4 - 1cap);
 		--gutter: 18px;
 		--radius: 7px;
 	}
@@ -146,6 +153,21 @@
 ::before,
 ::after {
 	box-sizing: border-box;
+}
+
+/* Every box is trimmed to its text, from the top of its capitals to its
+   last baseline, so the space between two things is the space you see,
+   whatever their sizes. Lines inside a box keep their line. Not the
+   badges, which are boxes drawn round their text, nor a link in running
+   text, whose focus ring would cut through the letters below the line. */
+* {
+	text-box: trim-both cap alphabetic;
+}
+
+a:not(.btn),
+kbd,
+:not(pre) > code {
+	text-box: normal;
 }
 
 html {
@@ -317,17 +339,20 @@ kbd {
    to match, for a button that's a flex item (the side's sections, the
    profiles, the pager), and the border never gets past a corner.
    The box takes as much room as its text: the padding is taken back by
-   the margin, so the text stays in line with the text around it.
+   the margin, so the text stays in line with the text around it. The
+   text is trimmed to its capitals, so the padding above and below gives
+   the box back a line's height, centered on them.
 
    The arms grow with the button, 6% of its width, and never under 0.6em,
    which is what a button that's a word or two gets. */
 .btn {
 	--pad: 0.5em;
+	--pad-block: calc((var(--line) - 1cap) / 2);
 	--arm: max(0.6em, 6%);
 	position: relative;
 	display: inline-block;
-	padding-inline: var(--pad);
-	margin-inline: calc(var(--pad) * -1);
+	padding: var(--pad-block) var(--pad);
+	margin: calc(var(--pad-block) * -1) calc(var(--pad) * -1);
 	text-decoration: none;
 	overflow: clip;
 }
@@ -361,7 +386,8 @@ kbd {
 	border-bottom-width: 1px;
 }
 
-/* A row of a list: a block, with room round its content. */
+/* A row of a list: a block, with the same room all round its content,
+   which is trimmed to its picture and its text. */
 .btn.block {
 	--pad: 10px;
 	display: block;
@@ -430,11 +456,12 @@ kbd {
 	padding-top: var(--corner);
 }
 
-/* The site's parts, in a row here and one to a line beside the page. */
+/* The site's parts, in a row here and one to a line beside the page. A
+   line apart if the row wraps. */
 .tabs {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0 var(--space-inline);
+	gap: var(--space-line) var(--space-inline);
 }
 
 /* The page, under a hairline, as far from the bottom as the side is from
@@ -457,14 +484,17 @@ main {
    One for each edge, as tall as the fade and pinned to it: mid-scroll
    Safari moves what's pinned to the bottom along with its bar as the bar
    shrinks or grows, but resizes what spans the screen only once the
-   scroll is over, which would open a gap between fade and bar. */
+   scroll is over, which would open a gap between fade and bar. The fade
+   is two lines tall, in whole lines, not a space: a space is less a
+   capital, which the cross-fade (see "between pages") would measure in
+   another font. */
 .edges {
 	position: fixed;
 	left: 0;
 	z-index: 1;
 	display: block;
 	width: 100vw;
-	height: var(--space-block);
+	height: calc(var(--line) * 2);
 	pointer-events: none;
 	background: var(--paper);
 }
@@ -508,17 +538,22 @@ main {
 
 /* Wide screens: the side stays put beside the page, centered top to
    bottom, with a hairline down its right, and only the page scrolls.
-   --top centers the side's eleven lines: the name, a paragraph, the two lines
-   under it, a paragraph, three sections an item apart (four lines), a
-   paragraph and the profiles. The page starts level with them and ends as
-   far from the bottom. */
+   --top centers the side: the name's capitals, a space under it, the two
+   lines under that, a paragraph, three sections a paragraph apart, a
+   paragraph and the profiles. That adds up to ten lines and half a
+   capital, and the name's capitals, which are a little under one and a
+   half of the body's: two capitals, to within a pixel of the middle. The
+   page starts level with the side and ends as far from the bottom. */
 @media (min-width: 990px) {
 	:root {
 		--page-width: 1134px;
 	}
 
 	.shell {
-		--top: max(var(--space-block), calc((100dvh - var(--line) * 11) / 2));
+		--top: max(
+			var(--space-block),
+			calc((100dvh - var(--line) * 10 - 2cap) / 2)
+		);
 		display: grid;
 		grid-template-columns: max-content minmax(0, 1fr);
 		align-items: start;
@@ -537,12 +572,12 @@ main {
 		border-right: 1px solid var(--rule);
 	}
 
-	/* One to a line, an item apart, so the border round the current one
-	   stands clear of the others. */
+	/* One to a line, a paragraph apart like everything else in the side,
+	   so the border round the current one stands clear of the others. */
 	.tabs {
 		flex-direction: column;
 		align-items: flex-start;
-		row-gap: var(--space-item);
+		row-gap: var(--space-paragraph);
 	}
 
 	main {
@@ -559,13 +594,14 @@ main {
 
 /* ---- a page's title and description ---- */
 
-/* A title with its lines right under it, as one group: a page and its
-   description, a post and its date, a row of a list. What's under the
-   title is gray. (The side's name, what I do and where are all in the
+/* A title with what's under it, a space under it, as one group: a page
+   and its description, a post and its date, a row of a list. What's under
+   the title is gray. (The side's name, what I do and where are all in the
    text's color: they're .who, not a title.) */
 .title {
 	display: flex;
 	flex-direction: column;
+	gap: var(--space-under);
 	min-width: 0;
 }
 
@@ -580,26 +616,32 @@ main {
 	font-size: var(--text-name);
 }
 
-/* The side's name, a paragraph above what I do and where, which follow each
-   other as the lines of one thing. That's the same space as the one between
-   those lines and the sections after them. */
+/* The side's name, a space above what I do and where, as a title is above
+   its description, so it's half as far from them as they are from the
+   sections. Those two follow each other as the lines of one thing. */
 .who {
 	display: flex;
 	flex-direction: column;
-	gap: var(--space-paragraph);
+	gap: var(--space-under);
 }
 
-/* A row of buttons, one line tall, and one line per row when they wrap. */
+.who > div {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-line);
+}
+
+/* A row of buttons, a line apart when they wrap. */
 .cta {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0 var(--space-inline);
+	gap: var(--space-line) var(--space-inline);
 }
 
 /* What's about the text, in the small size: a date, a label. */
 .meta {
 	font-size: var(--text-small);
-	line-height: var(--line);
+	line-height: var(--line-small);
 	color: var(--muted);
 }
 
@@ -686,25 +728,24 @@ main {
 .post time {
 	font-variant-numeric: tabular-nums;
 	white-space: nowrap;
-	/* Beside the title, on its line: inside it (see .keys.details dt). */
-	line-height: var(--line-small);
 }
 
-/* Entries in two columns: a name, and what it stands for, an item apart,
-   so a line that wraps never runs into the next entry. The names take the
-   first column, so what they stand for starts where every list's second
-   column does. */
+/* Entries in two columns: a name, and what it stands for, a paragraph
+   apart, like the items of anything. The names take the first column, so
+   what they stand for starts where every list's second column does. */
 .keys {
 	display: grid;
 	grid-template-columns: var(--col) minmax(0, 1fr);
-	gap: var(--space-item) var(--space-inline);
+	gap: var(--space-paragraph) var(--space-inline);
 }
 
-/* A name and what it stands for, kept together when the columns stack. */
+/* A name and what it stands for, kept together when the columns stack,
+   where the name is a title over what it stands for. */
 .keys > div {
 	display: grid;
 	grid-column: 1 / -1;
 	grid-template-columns: subgrid;
+	row-gap: var(--space-under);
 	align-items: baseline;
 }
 
@@ -713,11 +754,10 @@ main {
 }
 
 /* A project's details are one table, a fact to a line, each right under
-   the last. The names are labels, in the small size, on the line of what
-   they name: their own, smaller line keeps them inside it, so every row
-   stays one line tall. */
+   the last as a paragraph's lines are. The names are labels, in the small
+   size, on the baseline of what they name. */
 .keys.details {
-	row-gap: 0;
+	row-gap: var(--space-line);
 }
 
 .keys.details dt {
@@ -734,9 +774,11 @@ main {
 	padding-top: var(--space-section);
 }
 
+/* Its label over the title it leads to, as two lines of one thing. */
 .pager p {
 	display: flex;
 	flex-direction: column;
+	gap: var(--space-line);
 	align-items: flex-start;
 	min-width: 0;
 }
@@ -843,11 +885,12 @@ main {
 
 /* ---- a screenshot or a recording ---- */
 
-/* The frame, then its caption a paragraph under it. */
+/* The frame, then its caption a space under it, as a title's description
+   is under the title. */
 .shot {
 	display: flex;
 	flex-direction: column;
-	gap: var(--space-paragraph);
+	gap: var(--space-under);
 }
 
 .frame {
@@ -934,26 +977,24 @@ a:active {
 }
 
 /* The side's buttons, the pager's and the way back up take a target taller
-   than their text, about 44px, overlapping nothing: the margin takes back
+   than their line, about 44px, overlapping nothing: the margin takes back
    the padding, so they take the same room. */
 @media (pointer: coarse) {
 	.side .btn,
 	.pager .btn,
 	.to-top .btn,
 	.cta .btn {
-		padding-block: 9px;
-		margin-block: -9px;
+		padding-block: calc(var(--pad-block) + 9px);
+		margin-block: calc((var(--pad-block) + 9px) * -1);
 	}
 }
 
 /* ---- smaller screens ---- */
 
 @media (max-width: 576px) {
-	/* The name over what it stands for, which makes each entry a row of
-	   a list, a paragraph from the next. */
+	/* The name over what it stands for, a title over its description. */
 	.keys {
 		grid-template-columns: minmax(0, 1fr);
-		row-gap: var(--space-paragraph);
 	}
 
 	/* A project's details are short: they keep their two columns, the
@@ -967,13 +1008,10 @@ a:active {
 		grid-template-columns: 38% minmax(0, 1fr);
 	}
 
-	/* The date under the title, on a line of its own. */
+	/* The date under the description, as its next line. */
 	.post {
 		grid-template-columns: minmax(0, 1fr);
-	}
-
-	.post time {
-		line-height: var(--line);
+		row-gap: var(--space-line);
 	}
 }
 
@@ -1047,8 +1085,8 @@ main {
 ::view-transition {
 	mask-image: linear-gradient(
 		transparent,
-		#000 var(--space-block),
-		#000 calc(100% - var(--space-block)),
+		#000 calc(var(--line) * 2),
+		#000 calc(100% - var(--line) * 2),
 		transparent
 	);
 }
