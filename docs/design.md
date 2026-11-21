@@ -49,7 +49,7 @@ for Geist rather than showing in a fallback, so nothing changes face.
 
 | Token          | Size   | Line height                  | For                                                                    |
 | -------------- | ------ | ---------------------------- | ---------------------------------------------------------------------- |
-| `--text-name`  | 21px   | `--line` (26px)              | my name in the side, and nothing else                                  |
+| `--text-name`  | 21px   | `--line` (26px)              | my name in the side, and a project's or a post's title (`.headline`)   |
 | `--text-body`  | 15.3px | `--line` (26px)              | everything you read: copy, titles, headings, links, buttons            |
 | `--text-small` | 13px   | `--line` or `--line-small`   | what's about the text: dates, captions, detail labels, code, key caps  |
 | `--text-field` | 11px   | (canvas)                     | the background field's characters, never read                          |
@@ -65,13 +65,14 @@ for Geist rather than showing in a fallback, so nothing changes face.
   - **in a block of its own**, it takes `--line-small`: `figcaption`, code
     blocks, `kbd` and inline `code` badges, and the placeholder label.
 - Headings have no size or weight of their own. An `h1`, `h2` or `h3` is body
-  text set apart by the space around it.
+  text set apart by the space around it. The one exception is a project's or
+  a post's title, `.headline`, in the name's size.
 - One weight besides regular: the name in the side, at 600. Nothing else is
-  bold (`strong` and `b` inherit).
-- The name is also the one text bigger than the body. It keeps the body's
-  line, so it sits on the grid.
+  bold (`strong` and `b` inherit), not even the titles in the name's size.
+- The name and a project's or a post's title are the only text bigger than
+  the body. They keep the body's line, so they sit on the grid.
 - Hierarchy comes from color (`--ink` over `--muted`) and from space, never
-  from size. The name is the single exception.
+  from size. The name and those titles are the only exception.
 
 To check a page, paste this in the browser console. It lists every size and
 line height that text is set in, and should print at most the rows above:
@@ -199,6 +200,8 @@ A button has no underline and no color, weight or background of its own.
 - `.title`: a title with its lines right under it, as one group. The first
   child is ink, and the rest are muted. Used for a page's title and
   description, and for each list row.
+- `.headline`: a project's or a post's title, in `--text-name` but the
+  body's weight, on the body's line.
 - `.who`: the side's name, what I do and where, all in ink. The name is a
   paragraph above the other two, which follow each other as lines, so the
   space under the name is the same as the space between those lines and the

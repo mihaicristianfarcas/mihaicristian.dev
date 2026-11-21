@@ -43,12 +43,13 @@
 	--mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
 
 	/* Four sizes, one per kind of text, and no others:
-	   --text-name   my name in the side, the one large text
+	   --text-name   my name in the side, and the title of a project or a
+	                 post: the one large text
 	   --text-body   everything you read: copy, titles, links, buttons
 	   --text-small  what's about the text: dates, captions, labels, code
 	   --text-field  the characters of the background field, never read
 	   Hierarchy otherwise comes from color and space. The name is the one
-	   bold, and the one bigger size. */
+	   bold, and it and those titles the one bigger size. */
 	--text-name: 21px;
 	--text-body: 15.3px;
 	--text-small: 13px;
@@ -219,9 +220,9 @@ h1,
 	letter-spacing: -0.01em;
 }
 
-/* The one bold on the site, and the one text bigger than the body. It leads
-   home, and as the site's title it has no underline. Its line stays the
-   body's, so it sits on the grid. */
+/* The one bold on the site. It leads home, and as the site's title it has
+   no underline. It's bigger than the body, like a project's or a post's
+   title (.headline). */
 .name {
 	font-size: var(--text-name);
 	font-weight: 600;
@@ -571,6 +572,12 @@ main {
 .title > :not(:first-child) {
 	color: var(--muted);
 	text-wrap: pretty;
+}
+
+/* A project's or a post's title, in the name's size but not its weight:
+   the page is about it, as the side is about me. */
+.headline {
+	font-size: var(--text-name);
 }
 
 /* The side's name, a paragraph above what I do and where, which follow each
