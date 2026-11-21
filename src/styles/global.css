@@ -368,6 +368,23 @@ kbd {
 	margin: calc(var(--pad) * -1);
 }
 
+/* Keyboard focus shows the corners as a hover does, inside the ring. It
+   comes before the rule below, which has the same weight, so a button that's
+   pressed or current keeps its whole border while it has focus too, as it
+   does when a navigation puts focus back on the section you're going to. */
+.btn:focus-visible::before,
+.btn:focus-visible::after {
+	width: var(--arm);
+	opacity: 1;
+	transition:
+		width 300ms var(--ease-out),
+		opacity 0s;
+}
+
+.btn:focus-visible {
+	border-radius: 0;
+}
+
 /* Pressed, or the page you're on: the corners run on round the box. A
    press is shown for a moment after the click too (data-pressed, set in
    src/scripts/buttons.ts), long enough to finish, since a click is quicker
@@ -383,20 +400,6 @@ kbd {
 	transition:
 		width 550ms var(--ease-out),
 		opacity 0s;
-}
-
-/* Keyboard focus shows the corners as a hover does, inside the ring. */
-.btn:focus-visible::before,
-.btn:focus-visible::after {
-	width: var(--arm);
-	opacity: 1;
-	transition:
-		width 300ms var(--ease-out),
-		opacity 0s;
-}
-
-.btn:focus-visible {
-	border-radius: 0;
 }
 
 /* ---- the field ---- */
