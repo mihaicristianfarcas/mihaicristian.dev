@@ -26,10 +26,11 @@
 	--edge: rgba(0, 0, 0, 0.08);
 	/* The field of characters behind the page (src/scripts/field.js), at
 	   its brightest, under the pointer: the palette's deepest blue, so what
-	   the pointer uncovers can be read. At rest it's the paper's color. */
+	   the pointer uncovers can be read, in both themes. At rest it's the
+	   paper's color. */
 	--field-glow: #92b6f0;
 	/* The accent, the same soft blue in both themes: focus rings, selected
-	   text, the field's glow. A one-pixel line in it disappears on white, so
+	   text. A one-pixel line in it disappears on white, so
 	   lines drawn in the accent take the palette's deepest step by day:
 	   #d1dff6 #c2d6f6 #b2cbf2 #a0bff0 #92b6f0. */
 	--accent: #d1dff6;
@@ -123,18 +124,17 @@
 	--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* Dark: a neutral gray close to black, the light theme's ink. The field
-   is a lighter dark gray, and a little lighter again under the pointer.
-   The accent stays the same. */
+/* Dark: the warm gray of a macOS window at night, with every surface on
+   it warmed to match. The field glows in the same soft blue as by day,
+   and the accent stays the same. */
 @media (prefers-color-scheme: dark) {
 	:root {
-		--paper: #0b0b0c;
-		--ink: #ededef;
-		--muted: #8a8a92;
-		--rule: #1f1f22;
-		--wash: #131315;
+		--paper: #1f1e1c;
+		--ink: #ecebe8;
+		--muted: #8f8b85;
+		--rule: #363431;
+		--wash: #282725;
 		--edge: rgba(255, 255, 255, 0.07);
-		--field-glow: #45454d;
 		--accent-line: var(--accent);
 	}
 }

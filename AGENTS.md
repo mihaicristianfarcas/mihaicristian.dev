@@ -51,8 +51,8 @@ These are rules, not preferences.
    (`aria-current`). A link inside running text keeps its faint underline.
    Don't add other hover, active or current styles.
 5. **The accent is `#d1dff6`**, in both themes: focus rings, selection, button
-   borders (the deeper `#92b6f0` by day), the field's glow by day. No other
-   hues.
+   borders (the deeper `#92b6f0` by day), the field's glow (`#92b6f0`, in both
+   themes). No other hues.
 6. **Never load lazily.** A page holds until its fonts, images and fully
    downloaded recordings are in, then fades in whole. No `loading="lazy"`,
    no skeletons, no spinners.

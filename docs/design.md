@@ -14,13 +14,13 @@ the same tokens.
 
 | Token           | Light                     | Dark      | For                                                                      |
 | --------------- | ------------------------- | --------- | ------------------------------------------------------------------------ |
-| `--paper`       | `#ffffff`                 | `#0b0b0c` | the page's background, set on `<html>`                                   |
-| `--ink`         | `#0b0b0c`                 | `#ededef` | all text you read                                                        |
-| `--muted`       | `#6b6b73`                 | `#8a8a92` | what's about the text: dates, captions, labels, lines under a title     |
-| `--rule`        | `#e7e7ea`                 | `#1f1f22` | hairlines, quote bars, badge borders                                     |
-| `--wash`        | `#f6f6f7`                 | `#131315` | the faint fill behind frames, thumbnails and code                        |
+| `--paper`       | `#ffffff`                 | `#1f1e1c` | the page's background, set on `<html>`                                   |
+| `--ink`         | `#0b0b0c`                 | `#ecebe8` | all text you read                                                        |
+| `--muted`       | `#6b6b73`                 | `#8f8b85` | what's about the text: dates, captions, labels, lines under a title     |
+| `--rule`        | `#e7e7ea`                 | `#363431` | hairlines, quote bars, badge borders                                     |
+| `--wash`        | `#f6f6f7`                 | `#282725` | the faint fill behind frames, thumbnails and code                        |
 | `--edge`        | `rgba(0,0,0,.08)`         | `rgba(255,255,255,.07)` | the inset hairline round a screenshot                      |
-| `--field-glow`  | `#92b6f0`                 | `#45454d` | the background field's characters at their brightest, under the pointer |
+| `--field-glow`  | `#92b6f0`                 | same      | the background field's characters at their brightest, under the pointer |
 | `--accent`      | `#d1dff6`                 | same      | focus rings and selected text                                            |
 | `--accent-line` | `#92b6f0`                 | `#d1dff6` | lines drawn in the accent: the buttons' borders                          |
 | `--on-accent`   | `#0b0b0c`                 | same      | text on the accent (selection)                                           |
@@ -30,9 +30,11 @@ the same tokens.
   On white a one-pixel line in `#d1dff6` disappears, so lines take the
   deepest step by day (`--accent-line`). Fills and the focus ring stay
   `#d1dff6`. Use only steps from this palette.
-- Dark mode is a neutral gray close to black, `#0b0b0c` (the light theme's
-  ink), not warm and not blue. Each surface is one step up from the one
-  behind it: paper, then field, then glow.
+- Dark mode is the warm gray of a macOS window at night, `#1f1e1c`, and
+  the text, hairlines and fills on it are warmed to match. It is a gray,
+  not a hue: the only color is still the accent. Each surface is one step
+  up from the one behind it: paper, then wash, then rule.
+- The field glows in the same deepest blue in both themes, `#92b6f0`.
 - The two `theme-color` metas in `Base.astro` repeat `--paper`. Change them
   together.
 - No other colors. In particular, nothing is greyed out to rank it below
@@ -285,7 +287,7 @@ It must never get in the way of reading.
   color, so nothing is drawn. Under a mouse or a pen, the characters within
   110px come up toward `--field-glow`, fully near the centre, and fade back
   as the pointer moves on, leaving a short trail. The glow is the palette's
-  deepest blue by day, so what the pointer uncovers can be read. A finger is
+  deepest blue in both themes, so what the pointer uncovers can be read. A finger is
   scrolling, so on a phone the field never shows.
 - The characters are symbols, `0` and `1`, `x y z` and brackets, with a
   whole word every 90 cells or so (code words, the names of the projects,
