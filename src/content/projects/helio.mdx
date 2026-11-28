@@ -1,13 +1,13 @@
 ---
 title: Helio
 seoTitle: "Helio: desktop and game streaming"
-description: Streams a computer's desktop, games included, to another computer inside one post-quantum WireGuard tunnel. Still in the works, with 1.0.0 and the full benchmarks coming soon.
-summary: Low-latency desktop streaming, post‑quantum encrypted.
+description: Streams a computer's desktop, games included, to another computer inside one post-quantum WireGuard tunnel. In public beta as 0.10.0, and measured against Moonlight on the same two computers.
+summary: Low-latency desktop and game streaming, post‑quantum encrypted.
 group: Apps
 order: 1
 years: "2026–present"
 role: Solo build
-status: In development · 1.0.0 coming soon
+status: Public beta · 0.10.0
 tech: Rust · GPUI · WireGuard · NVENC · VideoToolbox
 links:
   - label: Visit the site
@@ -16,23 +16,23 @@ links:
     href: https://github.com/mihaicristianfarcas/helio
 shots:
   - src: ../../assets/projects/helio-og.jpg
-    alt: "Helio's logo and the headline 'Stream your desktop and games', with 'One app for macOS, Windows and Linux. Post-quantum encrypted.' beside overlapping Hosts windows."
-    caption: "Helio: one app for macOS, Windows and Linux."
-  - src: ../../assets/projects/helio-hosts.webp
-    alt: "Helio's Hosts page on macOS: gaming-pc, living-room, mac-studio and linux-box, with two online, one asleep and one not yet paired, over a blue wallpaper. A line beneath says a click streams at 3024 × 1890, 120 FPS, 81 Mbps."
-    caption: "Hosts found on your network and across the internet. A click streams one at its own mode and frame rate."
-  - src: ../../assets/projects/helio-hosting.webp
-    alt: "Helio's Hosting settings: the switch that turns hosting on, what the system must allow, and the host's name and network."
+    alt: "Helio's card: 'Your PC's games, on any screen. Smooth, even when your network isn't.', beside a Windows PC's monitor showing the host's Overview of a session, and a MacBook in front showing the stream of that screen, with its statistics."
+    caption: "Helio: one app for macOS, Windows and Linux, free and open source."
+  - src: ../../assets/projects/helio-overview.jpg
+    alt: "This computer → Overview in Helio on a Mac, during a session: the stream's figures (119 frames a second, 4.8 ms of host latency, 0.03% packet loss), a MacBook Air asking to pair, and the host's details."
+    caption: "This computer while it hosts: the session as it runs, and a device asking to pair."
+  - src: ../../assets/projects/helio-hosting.jpg
+    alt: "Settings → Hosting in Helio on a Mac: the switch that lets your devices play this Mac, what hosting needs (Screen Recording allowed, Accessibility not yet), the host's name, and its network settings."
     caption: "One switch makes this computer a host, reachable from anywhere without forwarding a port."
-  - src: ../../assets/projects/helio-devices.webp
-    alt: "Helio's Devices page: a MacBook Air asking to pair, and three paired devices including an AI agent."
-    caption: "A device asks to pair, and each paired device and agent gets its own permissions."
+  - src: ../../assets/projects/helio-permissions.jpg
+    alt: "What a paired device may do, in Helio's This computer → Devices: whether it may see the screen, start apps and take over, and use the keyboard, mouse and controllers, each a switch."
+    caption: "Each paired device and agent gets its own permissions."
   - src: ../../assets/projects/helio-stream-split.jpg
     video: ../../assets/projects/helio-stream-split.mp4
     alt: "Two screens side by side, both showing the same running clock and frame counter. The right half, Helio's window, stays one frame behind the left half, the host's screen, throughout."
-    caption: "A Linux host and client in one container, over loopback. The host's screen on the left, Helio's window on the right, one frame behind: 5.1 ms from capture to screen. The full benchmarks, glass to glass included, are on the way."
-  - src: ../../assets/projects/helio-agent.webp
-    alt: "An agent session in Helio titled 'Clean up the Downloads folder'. The agent waits for permission to empty the Recycle Bin, with Allow and Don't buttons. A side panel shows the screen after its last action, screenshots of earlier steps, and its plan."
+    caption: "A Linux host and client in one container, over loopback. The host's screen on the left, Helio's window on the right, one frame behind: 5.1 ms from capture to screen."
+  - src: ../../assets/projects/helio-agent.jpg
+    alt: "An agent session in Helio on a Mac: the agent asks for a go-ahead to empty the Recycle Bin, beside the Windows desktop it saw after its last step, and its plan."
     caption: "An agent session in Helio: the screen after its last action, its plan, and a go-ahead before emptying the Recycle Bin."
 ---
 
@@ -51,8 +51,18 @@ post-quantum WireGuard from my thesis; pairing is hybrid SPAKE2 + ML-KEM.
 Hosts are found through sealed records on the BitTorrent DHT, and NATs are
 punched from both sides, so there's no relay server in between.
 
+I measured it against Moonlight, with Sunshine and with Apollo, on the same
+two computers: a MacBook Pro with an M4 Pro as the client, a Windows 11 PC with
+an RTX 3070 Ti as the host, on Ethernet, every stack at the same bitrate on the
+wire. A click in a game reaches the screen as fast as with Moonlight or faster
+at every mode, from 1080p to 4K at 60 and 120 fps. At 120 fps Helio shows
+97–98% of the host's frames to Moonlight's 83–87%, and 96% to 84–85% with 5%
+of the packets lost. A stream starts in 1.1 s, against 2.8–4.3 s.
+[The benchmarks](https://github.com/mihaicristianfarcas/helio/blob/main/docs/benchmarks.md)
+have every figure with its conditions.
+
 Agents can use your hosts as clients of their own, from Helio or any MCP
 client, with the host enforcing what each device may do. The clipboard goes
-both ways. Helio is still in the works: 1.0.0 is coming soon, and the full
-benchmarks are on the way. A first loopback run puts capture to screen at
-5.1 ms; the full write-up, with glass-to-glass figures, is still to come.
+both ways. Helio is a public beta: it's best tested with a Mac streaming a
+Windows PC with an NVIDIA GPU, and Report a Bug in its settings opens the bug
+form with your version and system already filled in.
